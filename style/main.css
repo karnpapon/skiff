@@ -1,5 +1,5 @@
 :root {
-  --main-color: #f5f5f5;
+  --main-color: white;
   --secondary-color: #a1a1a1;
   --third-color: #cccccc;
   --color-black: black;
@@ -279,6 +279,19 @@ a p :hover {
   } */
 }
 
+.next-item-wrapper p {
+  color: black;
+}
+
+strong {
+  color: #002aff;
+  text-decoration: underline;
+}
+
+.work-title {
+  font-size: 2rem;
+}
+
 .flex1 {
   flex: 1;
 }
@@ -287,7 +300,19 @@ a p :hover {
 }
 
 .icon {
+  width: 100px;
+}
+
+.icon-cc {
   margin: 0 5px;
+}
+
+.icon-social img {
+  vertical-align: unset;
+  height: fit-content;
+}
+.icon-social a {
+  width: 50px;
 }
 
 .icon-size {
@@ -314,22 +339,41 @@ a p :hover {
 .control-worklist-detail {
   justify-content: center;
   display: flex;
+  flex-basis: unset;
   flex-direction: column;
   height: 100%;
 }
 
 .control-worklist-detail > .work-list-detail {
-  border-bottom: 1px solid var(--color-black);
+  /* border-bottom: 1px solid var(--color-black); */
   align-items: center;
   display: flex;
+}
+
+.control-worklist-detail > .work-list-detail .thumb2 {
+  display: none;
+}
+.control-worklist-detail > .work-list-detail:hover .thumb2 {
+  display: inline;
+}
+.control-worklist-detail > .work-list-detail:hover[data-thumbnail='patithin'] {
+  /* display: inline-table; */
+  background-image: url('../media/images/patithin-thumb-00.jpg');
+}
+.control-worklist-detail
+  > .work-list-detail:hover[data-thumbnail='songkranizer'] {
+  /* display: inline-table; */
+  background-image: url('../media/images/songkranizer-thumb-00.jpg');
 }
 
 .control-worklist-detail > .work-list-detail:hover {
   background-color: black;
   cursor: pointer;
 }
-.control-worklist-detail > .work-list-detail:hover p {
-  color: white !important;
+.control-worklist-detail > .work-list-detail:hover p,
+.control-worklist-detail > .work-list-detail:hover .work-title {
+  /* color: white !important; */
+  visibility: hidden;
 }
 
 .overflow {
@@ -394,7 +438,7 @@ a p :hover {
 }
 
 .cate-year {
-  font-size: 20vw;
+  font-size: 10vw;
   font-weight: lighter;
   pointer-events: none;
   color: var(--color-black);
@@ -435,16 +479,21 @@ a p :hover {
 }
 
 .thumbnail-placeholder {
-  background-size: cover;
+  display: none;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   color: #ffffff00;
-  -webkit-text-stroke: 2px white;
+  /* -webkit-text-stroke: 2px white; */
 
   /* @media screen and(max-width: $mobile-screen){
     height: 100%;
   } */
 }
+
+/* div[data-background='patithin'] {
+  background-image: url('../media/images/thumb-00.jpg');
+} */
 
 .year-txt-dp {
   align-items: flex-start;
@@ -453,6 +502,13 @@ a p :hover {
   /* @media screen and(max-width: $mobile-screen){
     display: block !important;
   } */
+}
+
+.thumb {
+  visibility: hidden;
+}
+.thumb2 {
+  /* visibility: hidden; */
 }
 
 .work-lists-subtitle {
@@ -476,13 +532,13 @@ input[type='checkbox'] {
 .footer-ctl {
   padding: 1rem 1rem;
   bottom: 0;
-  border-top: 1px solid black;
+  /* border-top: 1px solid black; */
   right: 0;
 }
 .footer-ctl-toggle {
   padding: 0;
   bottom: 0;
-  border-top: 1px solid black;
+  /* border-top: 1px solid black; */
   right: 0;
   align-items: center;
 }
@@ -491,7 +547,7 @@ input[type='checkbox'] {
   color: black;
 }
 .footer-overview {
-  border-right: 1px solid black;
+  /* border-right: 1px solid black; */
   left: 0;
   justify-content: center;
   display: flex;
@@ -527,6 +583,7 @@ input[type='checkbox'] {
   justify-content: center;
   align-items: center;
   display: flex;
+  z-index: 99;
 }
 
 .w-medium {
@@ -584,7 +641,7 @@ input[type='checkbox'] {
 }
 
 .right-col {
-  width: 50px;
+  /* width: 50px; */
   display: flex;
   justify-content: space-between;
 
@@ -635,6 +692,7 @@ input:checked ~ .toggle {
 
 .list-overview p {
   color: black;
+  width: max-content;
 }
 .list-overview p:hover {
   color: var(--hover-color);
@@ -664,6 +722,7 @@ input:checked ~ .toggle {
   background-color: white;
   font-size: 14px;
   user-select: none;
+  z-index: 99;
 }
 
 .go-about {

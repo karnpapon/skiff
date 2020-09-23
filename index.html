@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Wiki</title>
     <link rel="stylesheet" type="text/css" href="style/buefy.min.css" />
     <link rel="stylesheet" type="text/css" href="style/main.css" />
   </head>
@@ -11,28 +11,274 @@
     <div class="container-ctrl">
       <section class="color-grey detail-section">
         <div class="detail-wrapper relative flex-col">
-          <section
-            v-for="( data, index) of dataList"
-            :key="index"
-            class="flex-wrapper works-wrapper"
-          >
+          <section class="flex-wrapper works-wrapper">
             <!-- year's column -->
-            <div class="column is-half w-light year-txt-dp">
+            <div class="column w-light year-txt-dp">
               <div class="cate-year position-sticky">
                 <p>2020</p>
               </div>
             </div>
 
             <!-- works' column -->
-            <div class="column is-half control-worklist-detail">
+            <div class="column control-worklist-detail">
               <!-- work item (each ) -->
+              <div
+                data-thumbnail="patithin"
+                class="work-list-detail with-padding thumbnail-placeholder"
+              >
+                <div class="column w-light year-txt-dp thumb2">
+                  <div class="cate-year position-sticky">
+                    <p class="thumb">2020</p>
+                  </div>
+                </div>
+
+                <div class="next-item-wrapper flex-wrapper">
+                  <div class="flex3">
+                    <strong class="work-title">patithin</strong>
+                    <div class="subtitle is-6 padding-top work-lists-subtitle">
+                      <p>
+                        calendrical sequencer based on Github's contribution
+                        history. where velocity of the note is determined by
+                        commit's frequency.
+                      </p>
+                      <p>
+                        total 53 weeks, the only way to assign trigger is just
+                        commit!.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex1 align-end icon-size">
+                    <b-tooltip
+                      v-for="(_tag, _tagIdx) of _data.tags"
+                      :key="_tagIdx"
+                      :label="_tag.title"
+                      type="is-light"
+                      square
+                    >
+                      <i :class=" 'icon-'+ _tag.key"> </i>
+                    </b-tooltip>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
+              <div
+                data-thumbnail="songkranizer"
+                class="work-list-detail with-padding thumbnail-placeholder"
+              >
+                <div class="column w-light year-txt-dp thumb2">
+                  <div class="cate-year position-sticky">
+                    <p class="thumb">2020</p>
+                  </div>
+                </div>
+                <div class="next-item-wrapper flex-wrapper">
+                  <div class="flex3">
+                    <strong class="work-title">patithin</strong>
+                    <div class="subtitle is-6 padding-top work-lists-subtitle">
+                      <p>
+                        Chrome’s Extension to simulate Songkran festival through
+                        sight and sound without any VR’s equipment needed!,
+                      </p>
+                      <p>
+                        for those who wanted to *feels* like participating in
+                        one of the most famous festival in Thailand, where
+                        people prompt to pour water on each others,
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex1 align-end icon-size">
+                    <b-tooltip
+                      v-for="(_tag, _tagIdx) of _data.tags"
+                      :key="_tagIdx"
+                      :label="_tag.title"
+                      type="is-light"
+                      square
+                    >
+                      <i :class=" 'icon-'+ _tag.key"> </i>
+                    </b-tooltip>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
               <div class="work-list-detail with-padding">
                 <div class="next-item-wrapper flex-wrapper">
                   <div class="flex3">
-                    <p class="title is-3">{{_data.name}}</p>
+                    <strong class="work-title">songkranizer</strong>
+                    <div class="subtitle is-6 padding-top work-lists-subtitle">
+                      <p>an audio music player</p>
+                      <p>seamlessly jump between your terminal workflow.</p>
+                    </div>
+                  </div>
+
+                  <div class="flex1 align-end icon-size">
+                    <b-tooltip
+                      v-for="(_tag, _tagIdx) of _data.tags"
+                      :key="_tagIdx"
+                      :label="_tag.title"
+                      type="is-light"
+                      square
+                    >
+                      <i :class=" 'icon-'+ _tag.key"> </i>
+                    </b-tooltip>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
+              <div class="work-list-detail with-padding">
+                <div class="next-item-wrapper flex-wrapper">
+                  <div class="flex3">
+                    <strong class="work-title">tsiant</strong>
                     <div class="subtitle is-6 padding-top work-lists-subtitle">
                       <p>{{ _data.description1}}</p>
                       <p>{{_data.description2}}</p>
+                    </div>
+                  </div>
+
+                  <div class="flex1 align-end icon-size">
+                    <b-tooltip
+                      v-for="(_tag, _tagIdx) of _data.tags"
+                      :key="_tagIdx"
+                      :label="_tag.title"
+                      type="is-light"
+                      square
+                    >
+                      <i :class=" 'icon-'+ _tag.key"> </i>
+                    </b-tooltip>
+                  </div>
+                </div>
+              </div>
+
+              <!--  -->
+              <div class="work-list-detail with-padding">
+                <div class="next-item-wrapper flex-wrapper">
+                  <div class="flex3">
+                    <strong class="work-title">patithin</strong>
+                    <div class="subtitle is-6 padding-top work-lists-subtitle">
+                      <p>{{ _data.description1}}</p>
+                      <p>{{_data.description2}}</p>
+                    </div>
+                  </div>
+
+                  <div class="flex1 align-end icon-size">
+                    <b-tooltip
+                      v-for="(_tag, _tagIdx) of _data.tags"
+                      :key="_tagIdx"
+                      :label="_tag.title"
+                      type="is-light"
+                      square
+                    >
+                      <i :class=" 'icon-'+ _tag.key"> </i>
+                    </b-tooltip>
+                  </div>
+                </div>
+              </div>
+              <!-- end of work item (each ) -->
+            </div>
+          </section>
+        </div>
+        <!-- <div class="column is-full home-scroll-spacing no-pointer-event"></div> -->
+      </section>
+
+      <section class="color-grey detail-section">
+        <div class="detail-wrapper relative flex-col">
+          <section class="flex-wrapper works-wrapper">
+            <!-- year's column -->
+            <div class="column w-light year-txt-dp">
+              <div class="cate-year position-sticky">
+                <p>2019</p>
+              </div>
+            </div>
+
+            <!-- works' column -->
+            <div class="column control-worklist-detail">
+              <!-- work item (each ) -->
+              <div class="work-list-detail with-padding">
+                <div class="column w-light year-txt-dp thumb2">
+                  <div
+                    class="cate-year position-sticky thumbnail-placeholder"
+                    data-thumbnail="patithin"
+                  >
+                    <p class="thumb">2020</p>
+                  </div>
+                </div>
+
+                <div class="next-item-wrapper flex-wrapper">
+                  <div class="flex3">
+                    <p class="title is-3">patithin</p>
+                    <div class="subtitle is-6 padding-top work-lists-subtitle">
+                      <p>
+                        calendrical sequencer based on Github's contribution
+                        history. where velocity of the note is determined by
+                        commit's frequency.
+                      </p>
+                      <p>
+                        total 53 weeks, the only way to assign trigger is just
+                        commit!.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex1 align-end icon-size">
+                    <b-tooltip
+                      v-for="(_tag, _tagIdx) of _data.tags"
+                      :key="_tagIdx"
+                      :label="_tag.title"
+                      type="is-light"
+                      square
+                    >
+                      <i :class=" 'icon-'+ _tag.key"> </i>
+                    </b-tooltip>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
+              <div class="work-list-detail with-padding">
+                <div class="column w-light year-txt-dp thumb2">
+                  <div
+                    class="cate-year position-sticky thumbnail-placeholder"
+                    data-thumbnail="songkranizer"
+                  >
+                    <p class="thumb">2020</p>
+                  </div>
+                </div>
+                <div class="next-item-wrapper flex-wrapper">
+                  <div class="flex3">
+                    <p class="title is-3">songkranizer</p>
+                    <div class="subtitle is-6 padding-top work-lists-subtitle">
+                      <p>
+                        Chrome’s Extension to simulate Songkran festival through
+                        sight and sound without any VR’s equipment needed!,
+                      </p>
+                      <p>
+                        for those who wanted to *feels* like participating in
+                        one of the most famous festival in Thailand, where
+                        people prompt to pour water on each others,
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex1 align-end icon-size">
+                    <b-tooltip
+                      v-for="(_tag, _tagIdx) of _data.tags"
+                      :key="_tagIdx"
+                      :label="_tag.title"
+                      type="is-light"
+                      square
+                    >
+                      <i :class=" 'icon-'+ _tag.key"> </i>
+                    </b-tooltip>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
+              <div class="work-list-detail with-padding">
+                <div class="next-item-wrapper flex-wrapper">
+                  <div class="flex3">
+                    <p class="title is-3">tsiangt</p>
+                    <div class="subtitle is-6 padding-top work-lists-subtitle">
+                      <p>an audio music player</p>
+                      <p>seamlessly jump between your terminal workflow.</p>
                     </div>
                   </div>
 
@@ -73,6 +319,7 @@
                   </div>
                 </div>
               </div>
+
               <!--  -->
               <div class="work-list-detail with-padding">
                 <div class="next-item-wrapper flex-wrapper">
@@ -101,48 +348,7 @@
             </div>
           </section>
         </div>
-        <div class="column is-full home-scroll-spacing no-pointer-event"></div>
-      </section>
-
-      <section class="color-grey detail-section">
-        <div class="detail-wrapper relative flex-col">
-          <section class="flex-wrapper works-wrapper">
-            <!-- year's column -->
-            <div class="column is-half w-light year-txt-dp">
-              <div class="cate-year position-sticky">
-                <p>2019</p>
-              </div>
-            </div>
-
-            <!-- works' column -->
-            <div class="column is-half control-worklist-detail">
-              <div class="work-list-detail with-padding">
-                <div class="next-item-wrapper flex-wrapper">
-                  <div class="flex3">
-                    <p class="title is-3">{{_data.name}}</p>
-                    <div class="subtitle is-6 padding-top work-lists-subtitle">
-                      <p>{{ _data.description1}}</p>
-                      <p>{{_data.description2}}</p>
-                    </div>
-                  </div>
-
-                  <div class="flex1 align-end icon-size">
-                    <b-tooltip
-                      v-for="(_tag, _tagIdx) of _data.tags"
-                      :key="_tagIdx"
-                      :label="_tag.title"
-                      type="is-light"
-                      square
-                    >
-                      <i :class=" 'icon-'+ _tag.key"> </i>
-                    </b-tooltip>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-        <div class="column is-full home-scroll-spacing no-pointer-event"></div>
+        <!-- <div class="column is-full home-scroll-spacing no-pointer-event"></div> -->
       </section>
     </div>
 
@@ -234,29 +440,21 @@
                 <div class="go-about">
                   <p><strong> Karnpapon </strong></p>
                 </div>
-                <span class="icon">
+                <span class="icon-cc">
                   <img src="../src/icon/cc-logo.svg" alt="github" width="30" />
                 </span>
                 <p class="w-medium cc-details">CC BY NC SA 4.0</p>
               </div>
               <div class="level-right right-col">
-                <span class="icon">
+                <span class="icon icon-social">
                   <a target="blank" href="https://twitter.com/snuffvideo1">
-                    <img
-                      src="../src/icon/github-logo.svg"
-                      alt="github"
-                      width="30"
-                    />
+                    <img src="../src/icon/github-logo.svg" alt="github" />
                   </a>
                 </span>
 
-                <span class="icon">
+                <span class="icon icon-social">
                   <a target="blank" href="https://twitter.com/snuffvideo1">
-                    <img
-                      src="../src/icon/github-logo.svg"
-                      alt="github"
-                      width="30"
-                    />
+                    <img src="../src/icon/github-logo.svg" alt="github" />
                   </a>
                 </span>
               </div>
