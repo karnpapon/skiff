@@ -394,7 +394,7 @@
   border-radius: 4px;
   box-shadow: none;
   display: inline-flex;
-  font-size: 1rem;
+  font-size: 1.25rem;
   height: 2.5em;
   justify-content: flex-start;
   line-height: 1.5;
@@ -1900,7 +1900,7 @@ fieldset[disabled] .button.is-danger.is-inverted.is-outlined {
   font-size: 0.75rem;
 }
 .button.is-normal {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .button.is-medium {
   font-size: 1.25rem;
@@ -2821,7 +2821,7 @@ fieldset[disabled] .button {
   margin-bottom: 1rem;
 }
 .tags.are-medium .tag:not(.is-normal):not(.is-large) {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .tags.are-large .tag:not(.is-normal):not(.is-medium) {
   font-size: 1.25rem;
@@ -2940,7 +2940,7 @@ fieldset[disabled] .button {
   font-size: 0.75rem;
 }
 .tag:not(body).is-medium {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .tag:not(body).is-large {
   font-size: 1.25rem;
@@ -3049,7 +3049,7 @@ a.tag:hover {
   font-size: 1.25rem;
 }
 .title.is-6 {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .title.is-7 {
   font-size: 0.75rem;
@@ -3083,7 +3083,7 @@ a.tag:hover {
   font-size: 1.25rem;
 }
 .subtitle.is-6 {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .subtitle.is-7 {
   font-size: 0.75rem;
@@ -4164,7 +4164,7 @@ fieldset[disabled] .select select:hover {
 .label {
   color: #363636;
   display: block;
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
 }
 .label:not(:last-child) {
@@ -4388,7 +4388,7 @@ fieldset[disabled] .select select:hover {
 .control {
   box-sizing: border-box;
   clear: both;
-  font-size: 1rem;
+  font-size: 1.25rem;
   position: relative;
   text-align: inherit;
 }
@@ -4456,7 +4456,7 @@ fieldset[disabled] .select select:hover {
   font-size: 1.5rem;
 }
 .breadcrumb {
-  font-size: 1rem;
+  font-size: 1.25rem;
   white-space: nowrap;
 }
 .breadcrumb a {
@@ -4808,7 +4808,7 @@ button.dropdown-item.is-active {
   }
 }
 .menu {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .menu.is-small {
   font-size: 0.75rem;
@@ -4856,7 +4856,7 @@ button.dropdown-item.is-active {
 .message {
   background-color: #f5f5f5;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .message strong {
   color: currentColor;
@@ -6152,7 +6152,7 @@ a.navbar-item:hover {
   min-height: calc(100vh - 3.25rem);
 }
 .pagination {
-  font-size: 1rem;
+  font-size: 1.25rem;
   margin: -0.25rem;
 }
 .pagination.is-small {
@@ -6296,7 +6296,7 @@ a.navbar-item:hover {
   border-radius: 6px;
   box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1),
     0 0 0 1px rgba(10, 10, 10, 0.02);
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .panel:not(:last-child) {
   margin-bottom: 1.5rem;
@@ -6491,7 +6491,7 @@ label.panel-block:hover {
   -webkit-overflow-scrolling: touch;
   align-items: stretch;
   display: flex;
-  font-size: 1rem;
+  font-size: 1.25rem;
   justify-content: space-between;
   overflow: hidden;
   overflow-x: auto;
@@ -8987,7 +8987,7 @@ a.has-text-danger-dark:hover {
   font-size: 1.25rem !important;
 }
 .is-size-6 {
-  font-size: 1rem !important;
+  font-size: 1.25rem !important;
 }
 .is-size-7 {
   font-size: 0.75rem !important;
@@ -9009,7 +9009,7 @@ a.has-text-danger-dark:hover {
     font-size: 1.25rem !important;
   }
   .is-size-6-mobile {
-    font-size: 1rem !important;
+    font-size: 1.25rem !important;
   }
   .is-size-7-mobile {
     font-size: 0.75rem !important;
@@ -9032,7 +9032,7 @@ a.has-text-danger-dark:hover {
     font-size: 1.25rem !important;
   }
   .is-size-6-tablet {
-    font-size: 1rem !important;
+    font-size: 1.25rem !important;
   }
   .is-size-7-tablet {
     font-size: 0.75rem !important;
@@ -9055,7 +9055,7 @@ a.has-text-danger-dark:hover {
     font-size: 1.25rem !important;
   }
   .is-size-6-touch {
-    font-size: 1rem !important;
+    font-size: 1.25rem !important;
   }
   .is-size-7-touch {
     font-size: 0.75rem !important;
@@ -9078,7 +9078,7 @@ a.has-text-danger-dark:hover {
     font-size: 1.25rem !important;
   }
   .is-size-6-desktop {
-    font-size: 1rem !important;
+    font-size: 1.25rem !important;
   }
   .is-size-7-desktop {
     font-size: 0.75rem !important;
@@ -9101,7 +9101,7 @@ a.has-text-danger-dark:hover {
     font-size: 1.25rem !important;
   }
   .is-size-6-widescreen {
-    font-size: 1rem !important;
+    font-size: 1.25rem !important;
   }
   .is-size-7-widescreen {
     font-size: 0.75rem !important;
@@ -9124,7 +9124,7 @@ a.has-text-danger-dark:hover {
     font-size: 1.25rem !important;
   }
   .is-size-6-fullhd {
-    font-size: 1rem !important;
+    font-size: 1.25rem !important;
   }
   .is-size-7-fullhd {
     font-size: 0.75rem !important;
@@ -13808,7 +13808,7 @@ a.has-text-danger-dark:hover {
   flex-direction: row-reverse;
 }
 .b-steps .steps {
-  font-size: 1rem;
+  font-size: 1.25rem;
   min-height: 2rem;
 }
 .b-steps .steps .step-items .step-item .step-marker {
@@ -13817,7 +13817,7 @@ a.has-text-danger-dark:hover {
 }
 .b-steps .steps .step-items .step-item .step-marker .icon *,
 .b-steps .steps .step-items .step-item .step-marker .icon :before {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .b-steps .steps .step-items .step-item .step-details .step-title {
   font-size: 1.2rem;
@@ -15056,7 +15056,7 @@ a.has-text-danger-dark:hover {
 .b-table .table th .th-wrap .icon {
   margin-left: 0.5rem;
   margin-right: 0;
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 .b-table .table th .th-wrap.is-numeric {
   flex-direction: row-reverse;

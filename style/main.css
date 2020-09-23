@@ -30,6 +30,7 @@ body {
   padding: 0 !important;
   height: 100% !important;
   width: 100% !important;
+  line-height: initial;
   -moz-osx-font-smoothing: grayscale !important;
   -webkit-font-smoothing: antialiased !important;
 }
@@ -39,11 +40,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-/* p,
-strong {
-  color: black !important;
-} */
 
 pre {
   background-color: white !important;
@@ -77,8 +73,11 @@ pre {
   opacity: 0;
 }
 
+i {
+  color: black;
+}
 a {
-  color: var(--color-black) !important;
+  /* color: var(--color-black) !important; */
 }
 a p :hover {
   color: var(--hover-color);
@@ -97,12 +96,6 @@ a p :hover {
   font-weight: lighter;
   font-size: 2.5rem;
   padding: 4rem 0rem;
-}
-
-.container-ctrl {
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 50px;
 }
 
 .index-page-container {
@@ -135,6 +128,10 @@ a p :hover {
 }
 .with-padding-medium {
   padding: var(--medium-padding) !important;
+}
+
+.with-padding p {
+  /* color: black; */
 }
 .no-padding {
   padding: 0px !important;
@@ -196,7 +193,7 @@ a p :hover {
 
 .tag-cat {
   border: 1px solid var(--color-black);
-  font-size: 0.8rem;
+  font-size: 1rem;
   padding: var(--medium-padding);
 }
 
@@ -233,10 +230,7 @@ a p :hover {
   padding-bottom: 40px;
   margin-left: unset !important;
   display: flex;
-
-  /* @media screen and(max-width: $mobile-screen) {
-    display: block;
-  } */
+  width: 100%;
 }
 
 .line {
@@ -284,12 +278,22 @@ a p :hover {
 }
 
 strong {
-  color: #002aff;
+  /* color: #002aff; */
+  color: black;
+  text-decoration: underline;
+}
+a strong {
+  /* color: #002aff; */
+  color: black;
   text-decoration: underline;
 }
 
 .work-title {
   font-size: 2rem;
+}
+
+.work-title-left * {
+  color: black;
 }
 
 .flex1 {
@@ -300,7 +304,7 @@ strong {
 }
 
 .icon {
-  width: 100px;
+  width: fit-content;
 }
 
 .icon-cc {
@@ -323,17 +327,22 @@ strong {
   height: var(--scroll-space-height);
   width: 100%;
   display: flex !important;
-
-  /* @media screen and(max-width: $mobile-screen) {
-    display: flex !important;
-    flex-grow: 0 !important;
-    flex-basis: unset !important;
-  } */
 }
 
 .detail-level {
   font-size: 4rem;
   font-weight: lighter;
+  color: black;
+}
+
+.link-default {
+  color: rgb(0, 38, 255);
+  text-decoration: underline;
+}
+
+.link-defaultr:hover {
+  background-color: black;
+  color: white;
 }
 
 .control-worklist-detail {
@@ -370,6 +379,15 @@ strong {
   background-color: black;
   cursor: pointer;
 }
+
+.control-worklist-detail
+  > .work-list-detail:hover
+  > .flex-wrapper
+  .next-item-wrapper
+  p {
+  color: white;
+  visibility: visible;
+}
 .control-worklist-detail > .work-list-detail:hover p,
 .control-worklist-detail > .work-list-detail:hover .work-title {
   /* color: white !important; */
@@ -394,17 +412,6 @@ strong {
   pointer-events: none;
   padding: 9px;
 }
-
-/* .work-list-detail :hover {
-  cursor: pointer;
-  background-color: var(--color-black);
-}
-.work-list-detail :hover p {
-  color: white;
-}
-.work-list-detail :hover i {
-  color: white;
-} */
 
 .background-black {
   background-color: var(--color-black);
@@ -513,7 +520,7 @@ strong {
 
 .work-lists-subtitle {
   /* @media screen and(max-width: $mobile-screen){
-    p{font-size: 1rem !important;}
+    p{font-size: 1.25rem !important;}
   } */
 }
 
