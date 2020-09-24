@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="stylesheet" type="text/css" href="style/main.css" /> -->
+    <title>karnpapon site</title>
+  </head>
+  <body>
+    <h1>Index of</h1>
+    <h1>2020</h1>
+    <ul>
+      <li><a href="/patithin.html">patithin</a></li>
+      <li><a href="/">seeq</a></li>
+      <li><a href="/">tsiangt</a></li>
+      <li><a href="/">etctecect</a></li>
+      <li><a href="/">songkranizer</a></li>
+    </ul>
+    <h1>2019</h1>
+    <ul>
+      <li><a href="/">patithin</a></li>
+      <li><a href="/">seeq</a></li>
+      <li><a href="/">tsiangt</a></li>
+      <li><a href="/">etctecect</a></li>
+      <li><a href="/">songkranizer</a></li>
+    </ul>
+
+    <!-- footer -->
+    <!-- footer -->
+    <footer>
+      <div class="column is-full footer-container">
+        <div class="footer-wrapper">
+          <div class="footer footer-ctl-toggle column is-1 footer-overview">
+            <input id="css-toggle-switch" type="checkbox" />
+            <label for="css-toggle-switch" class="toggle-switch">index </label>
+            <div class="column is-full overview-wrapper toggle">
+              <div class="overview-container">
+                <div class="columns is-full overview-lists">
+                  <!-- each -->
+                  <div
+                    class="column with-padding"
+                    :class="['is-' + list.widthRatio]"
+                  >
+                    <p class="title is-6 padding-top-small">2020</p>
+                    <div
+                      v-for="(itemlist , itemindex) of list.works"
+                      :key="itemindex"
+                      class="list-overview"
+                      v-on:click="selectWork(itemlist)"
+                    >
+                      <p class="is-6">{{ itemlist.name }}</p>
+                      <p class="is-6">{{ itemlist.name }}</p>
+                      <p class="is-6">{{ itemlist.name }}</p>
+                      <p class="is-6">{{ itemlist.name }}</p>
+                      <p class="is-6">{{ itemlist.name }}</p>
+                      <p class="is-6">{{ itemlist.name }}</p>
+                      <p class="is-6">{{ itemlist.name }}</p>
+                      <p class="is-6">{{ itemlist.name }}</p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="column with-padding"
+                    :class="['is-' + list.widthRatio]"
+                  >
+                    <p class="title is-6 padding-top-small">2019</p>
+                    <div
+                      v-for="(itemlist , itemindex) of list.works"
+                      :key="itemindex"
+                      class="list-overview"
+                      v-on:click="selectWork(itemlist)"
+                    >
+                      <router-link
+                        :to="{ path: `/work/${itemlist.year}/${itemlist.slug}`}"
+                        active-class="active"
+                        exact
+                      >
+                        <p class="subtitle is-6">{{ itemlist.name }}</p>
+                      </router-link>
+                    </div>
+                  </div>
+
+                  <div
+                    class="column with-padding"
+                    :class="['is-' + list.widthRatio]"
+                  >
+                    <p class="title is-6 padding-top-small">2018</p>
+                    <div
+                      v-for="(itemlist , itemindex) of list.works"
+                      :key="itemindex"
+                      class="list-overview"
+                      v-on:click="selectWork(itemlist)"
+                    >
+                      <router-link
+                        :to="{ path: `/work/${itemlist.year}/${itemlist.slug}`}"
+                        active-class="active"
+                        exact
+                      >
+                        <p class="subtitle is-6">{{ itemlist.name }}</p>
+                      </router-link>
+                    </div>
+                  </div>
+                  <!-- end each -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer footer-ctl column is-11">
+            <div class="level">
+              <div
+                @click="handleClick(undefined,'about')"
+                class="level-left left-col"
+              >
+                <div class="go-about">
+                  <p><strong> Karnpapon </strong></p>
+                </div>
+                <span class="icon-cc">
+                  <img src="../src/icon/cc-logo.svg" alt="github" width="30" />
+                </span>
+                <p class="w-medium cc-details">BY-NC-SA 4.0</p>
+              </div>
+              <div class="level-right right-col">
+                <span class="icon icon-social">
+                  <a target="blank" href="https://twitter.com/snuffvideo1">
+                    <img src="../src/icon/twitter-logo.svg" alt="github" />
+                  </a>
+                </span>
+
+                <span class="icon icon-social">
+                  <a target="blank" href="https://twitter.com/snuffvideo1">
+                    <img src="../src/icon/github-logo.svg" alt="github" />
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
