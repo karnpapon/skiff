@@ -5,6 +5,4 @@
   },
   "editor.formatOnSave": true,
   "editor.tabSize": 2
-  // "eslint.workingDirectories": ["./frontend"],
-  // "liveServer.settings.port": 5501
 }

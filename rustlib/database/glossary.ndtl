@@ -1,0 +1,18 @@
+; The glossary is a collection of lists
+; https://wiki.xxiivv.com/site/indental.html
+
+; Dictionaries
+
+DICTIONARY
+  Anthropomorphism : Attributing distinctly human characteristics to nonhuman processes.
+  Antifragile : Some things benefit from shocks, they thrive and grow when exposed to volatility, randomness, disorder, stressors, risk, and uncertainty.
+  Parsimony : Refers to the quality of economy or frugality in the use of resources.
+  Lateralus : The affliction of illusion of inescapable cyclicality. Example: The failure to recognize one's growth.
+  Rationality : Characteristic of thinking and acting optimally.
+  Epistemology : A theory of knowledge, especially with regard to its methods, validity, and scope, and the distinction between justified belief and opinion.
+
+STATIONARY
+  Test1 : test stationary1.
+  Test2 : test stationary2.
+  Test3 : test stationary3.
+  test list item without title.
