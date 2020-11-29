@@ -46,25 +46,25 @@ pub struct List {
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
 pub struct Term {
-  name: String,
-  host: String,
+  name: String, // title
+  host: String, // HOST, nothing fancy.
   bref: String,
   r#type: String,
-  body:  Vec<String>,
-  body_len: i32,
-  link: List,
-  list: Vec<String>,
+  body:  Vec<String>, // BODY list item (no linking in parsing process ).
+  body_len: usize, // BODY list item counter.
+  link: List, // LINK item ( empty `.name` field eg. link.name = "" )
+  list: Vec<String>, // LIST field.
 	list_len: i32,
 	/* generated */
-	filename: String,
-	date_from: String,
+	filename: String, // generate from name field.
+	date_from: String, // not in parsing process.
 	date_last: String,
-	parent: Box<Term>, // re-check pointer
-	children: Box<Vec<Term>>, // re-check pointer
+	// parent: Box<Term>, // re-check pointer
+	// children: Box<Vec<Term>>, // re-check pointer
 	children_len: i32,
   docs: Vec<List>, 
 	docs_len: i32,
-  incoming: Box<Vec<Term>>, 
+  // incoming: Box<Vec<Term>>, 
 	incoming_len: i32,
 	outgoing_len: i32
 }
@@ -120,7 +120,8 @@ impl Term {
       host: String::with_capacity(KEY_BUF_LEN),
       bref: String::with_capacity(STR_BUF_LEN),
       r#type: String::with_capacity(KEY_BUF_LEN),
-      body: vec![String::with_capacity(STR_BUF_LEN); 750],
+      // body: vec![String::with_capacity(STR_BUF_LEN); 750],
+      body: vec![],
       body_len: 0,
       link: List::new(),
       list: vec![],
@@ -128,12 +129,13 @@ impl Term {
       filename: String::with_capacity(KEY_BUF_LEN),
       date_from: String::with_capacity(6),
       date_last: String::with_capacity(6),
-      parent: Box::new(Term::new()),
-      children: Box::new(vec![]),
+      // parent: Box::new(Term::new()),
+      // children: Box::new(vec![Term::new()]),
       children_len: 0,
-      docs: vec![List::new(); 20],
+      // docs: vec![List::new(); 20],
+      docs: vec![],
       docs_len: 0,
-      incoming: Box::new(vec![]),
+      // incoming: Box::new(vec![]),
       incoming_len: 0,
       outgoing_len: 0,
     }
@@ -179,7 +181,7 @@ impl Lexicon {
   fn new() -> Lexicon {
     Lexicon{
       len: 0,
-      terms: vec![Term::new(); 350]
+      terms: vec![Term::new()]
     }
   }
 }
@@ -192,66 +194,6 @@ impl Journal {
     }
   }
 }
-
-// // impl File
-// fn parse_glossary(fp: &File, glossary: &mut Glossary) -> Result<(), SkiffError> {
-//   let mut len: usize = 0;
-//   let mut depth: usize;
-//   let count: i32 = 0;
-//   let mut split: i32 = 0;
-//   let mut trimmed_line = String::new();
-//   // let mut title;
-
-
-//   // let line: RefCell<String> = RefCell::new(String::with_capacity(512));
-//   let line: Vec<char> = Vec::new();
-//   let mut l: &List = &glossary.lists[glossary.len as usize];
-//   let mut f = BufReader::new(fp);
-
-  
-//   while f.read_line(&mut line).unwrap() > 0 {
-    
-//     depth = helpers::cpad(&line.borrow(), ' ');
-
-//     // TODO: needs recheck since len is less than original oscean -1 item.
-//     match helpers::strm(&line.borrow()){
-//       Some(l) => len = helpers::slen(l),
-//       None => len = 0
-//     }
-//     if len < 4 || line.borrow().chars().nth(0).unwrap() == ';' { continue; }
-//     if len > 400 { return Err(SkiffError::ParseError("Line is too long".to_string())); }
-    
-    
-//     // if depth == 0 {
-//     //   l = &glossary.lists[glossary.len as usize]; // targeting list scope item ( the one with capital title).
-//     //   title = helpers::sstr(&line.borrow(), &mut l.name, 0, len);
-//     //   helpers::slca(&title); // string to lowercase (eg. DICTIONARY -> dictionary ).
-// 		// 	glossary.len += 1; // advancing len to local `l`.
-//     // } else if depth == 2 { // in case of list item( 2 spaces at beginning of line).
-// 		// 	if l.len >= LIST_ITEMS as i32 {
-//     //     return Err(SkiffError::ParseError("Reached list item limit".to_string()));
-//     //   }
-// 		// 	split = helpers::cpos(&line.borrow(), ':'); // find index of `:` return -1 if not found. 
-// 		// 	if split < 0 { // handle only list which not include `:` in sentence.
-// 		// 		helpers::sstr(&line.borrow(), &mut l.vals[l.len as usize], 2, len + 2); // return normal string.
-// 		// 	} else {
-// 		// 		helpers::sstr(&line.borrow(), &mut l.keys[l.len as usize], 2, ( split - 3 ) as usize); // title of list line.
-// 		// 		helpers::sstr(&line.borrow(), &mut l.vals[l.len as usize], ( split + 2 ) as usize, len - split as usize); // details of list line.
-// 		// 	}
-// 		// 	l.len += 1;
-// 		// }
-
-
-//     line.borrow_mut().clear(); // clear to reuse the buffer
-//   }
-	
-// 	println!("({} lines) ", count);
-//   // return fp;
-//   Ok(())
-// }
-
-
-
 
 fn scan_glossary(content: &str) {
   let mut tokens: Vec<Token> = Vec::new();
@@ -291,9 +233,9 @@ fn scan_glossary(content: &str) {
 
 // ------------------main-----------------------
 
-fn run_file(path: String, glossary: &mut Glossary) -> Result<(), SkiffError>  {
+fn parse_glossary(path: String, glossary: &mut Glossary) -> Result<(), SkiffError>  {
 
-  let mut f = File::open(path).expect("file not found");
+  let mut f = File::open(path).expect("Glossary Parsing: file not found");
   let mut f_reader = BufReader::new(f);
   let mut len: usize = 0;
   let mut line = String::new();
@@ -303,8 +245,15 @@ fn run_file(path: String, glossary: &mut Glossary) -> Result<(), SkiffError>  {
   let mut scanner: Scanner;
 
   while f_reader.read_line(&mut line).unwrap() > 0 {
-    scanner = Scanner::new(&line);
+    scanner = Scanner::new(&line.trim_end());
     depth = helpers::cpad(&scanner.source, ' ');
+
+    // skip blank line case.
+    if scanner.source.len() == 0 as usize  {
+      line.clear(); 
+      continue; 
+    }
+
     match helpers::strm(&scanner.source){
       Some(string) => len = helpers::slen(string.trim_end().chars().collect::<Vec<char>>().as_ref()),
       None => len = 0
@@ -315,7 +264,7 @@ fn run_file(path: String, glossary: &mut Glossary) -> Result<(), SkiffError>  {
       line.clear(); 
       continue; 
     }
-    if len > 400 { return Err(SkiffError::ParseError("Line is too long".to_string())); }
+    if len > 400 { return Err(SkiffError::ParseError("Glossary Parsing: Line is too long".to_string())); }
     
     if depth == 0 {
       if l.len > 0 {
@@ -323,11 +272,11 @@ fn run_file(path: String, glossary: &mut Glossary) -> Result<(), SkiffError>  {
         l = &mut glossary.lists[glossary.len as usize];
       }
       l.name = scanner.source.into_iter().collect();
-      l.name = helpers::slca(&mut l.name.chars().collect::<Vec<char>>()); // string to lowercase (eg. DICTIONARY -> dictionary ).
+      helpers::slca(&mut l.name.chars().collect::<Vec<char>>()); // string to lowercase (eg. DICTIONARY -> dictionary ).
       glossary.len += 1;
     } else if depth == 2 { // in case of list item( 2 spaces at beginning of line).
 			if l.len >= LIST_ITEMS as i32 {
-        return Err(SkiffError::ParseError("Reached LIST_ITEMS limit".to_string()));
+        return Err(SkiffError::ParseError("Glossary Parsing: Reached LIST_ITEMS limit".to_string()));
       }
       split = helpers::cpos(&scanner.source, ':'); // find index of `:` return -1 if not found. 
 			if split < 0 { // handle only list which not include `:` in sentence.
@@ -346,9 +295,103 @@ fn run_file(path: String, glossary: &mut Glossary) -> Result<(), SkiffError>  {
     line.clear(); 
   }
   
+  println!("glossary = {:#?}", &glossary);
+  Ok(())
+}
+
+// TODO: make it less C-ish style.
+fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> {
+
+  let mut f = File::open(path).expect("lexicon parsing: file not found");
+  let mut f_reader = BufReader::new(f);
+  let mut key_len: usize;
+  let mut val_len: usize; 
+  let mut len: usize = 0;
+  let count = 0;
+  let mut catch_body = false; 
+  let mut catch_link = false;
+  let mut catch_list = false;
+  let mut t = &mut lexicon.terms[lexicon.len as usize];
+  let mut line = String::new();
+  let mut scanner: Scanner;
+  let mut depth: usize;
+
+  while f_reader.read_line(&mut line).unwrap() > 0 {
+
+    scanner = Scanner::new(&line.trim_end());
+    depth = helpers::cpad(&scanner.source, ' ');
+
+    if scanner.source.len() == 0 as usize  {
+      line.clear(); 
+      continue; 
+    }
+
+    match helpers::strm(&scanner.source){
+      Some(string) => len = string.len(),
+      None => len = 0
+    }
+
+    // len < 3 = skip 'newline' eg. '\n';
+    if len < 3 || &scanner.source[0] == &';'{
+      line.clear(); 
+      continue;
+    }
+
+    if len > 750 { return Err(SkiffError::ParseError("Lexicon Parsing: Line is too long".to_string())); }
+    
+    if depth == 0 {
+      
+      if lexicon.len > 0 {
+        lexicon.terms.insert(lexicon.len as usize, Term::new());
+        t = &mut lexicon.terms[lexicon.len as usize];
+      }
+      if !helpers::sans(&scanner.source) != 0 { 
+        println!("Lexicon warning: {}", SkiffError::ParseError("Lexicon key is not alphanum".to_string()));
+      } 
+      t.name = helpers::sstr(&scanner.source, 0, len).to_lowercase();
+      t.filename = helpers::sstr(&scanner.source, 0, len).replace(" ", "_").to_lowercase();
+      lexicon.len += 1;
+    } else if depth == 2 {
+      t = &mut lexicon.terms[(lexicon.len - 1) as usize];
+      if helpers::spos(&scanner.source, "HOST : ") >= 0{
+        t.host = helpers::sstr(&scanner.source, 9, len - 9);
+      }
+      if helpers::spos(&scanner.source, "BREF : ") >= 0{
+        t.bref = helpers::sstr(&scanner.source, 9, len - 9);
+      }
+      if helpers::spos(&scanner.source, "TYPE : ") >= 0{
+        t.r#type = helpers::sstr(&scanner.source, 9, len - 9); 
+      }
+      catch_body = helpers::spos(&scanner.source, "BODY") >= 0;
+      catch_link = helpers::spos(&scanner.source, "LINK") >= 0;
+      catch_list = helpers::spos(&scanner.source, "LIST") >= 0;
+    } else if depth == 4 { // BODY item ( 4 indent spaces.)
+        t = &mut lexicon.terms[(lexicon.len - 1) as usize];
+        /* Body */
+        if catch_body {
+          t.body.insert(t.body_len, helpers::sstr(&scanner.source,  4, len - 4));
+          t.body_len += 1;
+        }
+        /* Link */
+        if catch_link {
+          key_len = (helpers::cpos(&scanner.source, ':') - 5 ) as usize;
+          t.link.keys.insert(t.link.len as usize, helpers::sstr(&scanner.source, 4, key_len));
+          val_len = len - key_len - 5;
+          t.link.vals.insert(t.link.len as usize, helpers::sstr(&scanner.source,  key_len + 7, val_len));
+          t.link.len += 1;
+        }
+        /* List */
+        if catch_list {
+          t.list.insert(t.list_len as usize,helpers::sstr(&scanner.source, 4, len - 4));
+          t.list_len += 1;
+        }
+        // t.list_len += 1;
+    }
+    // count += 1;
+    line.clear(); 
+  }
   
-  // TODO: check blank line at thelast line.
-  println!("l.keys = {:#?}", &glossary);
+  println!("lexicon = {:#?}", &lexicon);
   Ok(())
 }
 
@@ -360,12 +403,10 @@ pub fn scan(content: &str)  {
 
 
 fn main() {
-  // let all_terms = Lexicon::new();
+  let mut all_terms = Lexicon::new();
   let mut all_lists = Glossary::new();
   // let all_logs = Journal::new();
 
-  // parse(&mut all_lists).unwrap();
-  run_file(String::from("./database/glossary.ndtl"), &mut all_lists ).unwrap();
-
-  // println!("all_lists = {}", all_lists.len);
+  parse_lexicon(String::from("./database/lexicon.ndtl"), &mut all_terms ).unwrap();
+  parse_glossary(String::from("./database/glossary.ndtl"), &mut all_lists ).unwrap();
 }

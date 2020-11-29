@@ -1,14 +1,18 @@
-pub fn cisp(c: char) -> bool {
-	return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+/// check is space / null-terminate.
+pub fn cisp(c: &char) -> bool {
+	return c == &' ' || c == &'\t' || c == &'\n' || c == &'\r';
 }
 
-// fn cial(c: &str) -> i32 {
-// 	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-// }
+/// check is alphabet.
+fn cial(c: &char) -> bool {
+	// return (c >= &"a" && c <= &"z") || (c >= &"A" && c <= &"Z");
+	return c.is_digit(16);
+}
 
-// fn cinu(c: &str) -> i32 {
-// 	return c >= '0' && c <= '9';
-// }
+/// check is number.
+fn cinu(c: &char) -> bool {
+	return c.is_digit(10);
+}
 
 fn clca(c: char) -> char {
 	if c.is_alphabetic() {
@@ -18,13 +22,15 @@ fn clca(c: char) -> char {
 	}
 }
 
+/// check alphabet / number / space.
+fn cans(c: &char) -> bool {
+	return cial(c) || cinu(c) || cisp(c);
+}
+
 // fn cuca(c: &str) -> i32 {
 // 	return c >= 'a' && c <= 'z' ? c - ('a' - 'A') : c;
 // }
 
-// fn cans(c: &str) -> i32 {
-// 	return cial(c) || cinu(c) || cisp(c);
-// }
 
 /// check length of string (until encounter null-terminator) and return total len.
 /// 
@@ -39,7 +45,7 @@ pub fn slen(s: &[char]) -> usize {
 
 /// count indent (depth)
 pub fn cpad(s: &[char], c: char) -> usize {
-	for i in 0..slen(s) + 1 {
+	for i in 0..s.len() {
 		if s[i] != c {
 			return i;
 		}
@@ -50,7 +56,7 @@ pub fn cpad(s: &[char], c: char) -> usize {
 pub fn cpos(s: &[char], c: char) -> i32 {
 	let i: usize;
 
-	for i in 0..slen(s){
+	for i in 0..s.len() {
 		if s[i] == c { return i as i32; }
 	}
 	
@@ -88,14 +94,23 @@ pub fn slca(s: &mut [char]) -> String {
 	return _s.into_iter().collect();
 }
 
-// char*
-// scsw(char* s, char a, char b)
-// {
-// 	int i;
-// 	for(i = 0; i < slen(s); i++)
-// 		s[i] = s[i] == a ? b : s[i];
-// 	return s;
-// }
+pub fn scsw<'a>(s: &'a str, a: &str, b: &str) -> String {
+	let mut result = String::with_capacity(s.len() + 1);
+	// for i in 0..s.len() {
+	// 	if s.as_bytes()[i] == a.as_bytes()[0] {
+	// 		s.as_bytes()[i] = b.as_bytes()[0];
+	// 		// result.push(s)
+	// 	} else {
+	// 		// s.as_bytes()[i] = s.as_bytes()[i];
+	// 	}
+	// }
+	result = s.replace(" ", "_");
+
+	return result;
+}
+
+
+
 
 // int
 // scmp(char* a, char* b)
@@ -109,48 +124,45 @@ pub fn slca(s: &mut [char]) -> String {
 // 	return 1;
 // }
 
-// int
-// sans(char* s)
-// {
-// 	int i;
-// 	for(i = 0; i < slen(s); i++)
-// 		if(!cans(s[i]))
-// 			return 0;
-// 	return 1;
-// }
+pub fn sans(s: &[char]) -> usize {
+	for i in 0..slen(s) {
+		// if !cans(&s[i]) {
+		if !&s[i].is_digit(36) {
+			return 0;
+		}
+	}
+	return 1;
+}
 
 
 /// return only title (indent = 0).
 pub fn strm(s: &[char]) -> Option<String> {
 	let mut i: usize = 0;
-	if s[0] == '\n' { return None }
-	while cisp(s[i]) { i += 1 };
-	if s[i] == '\0' { 
-		return Some(s.into_iter()
-						.map(|i| i.to_string())
-						.collect::<String>()); 
-	};
+	if s.len() == 0 { return None }
+	while cisp(&s[i]) { i += 1 };
+	// if s[i] == '\0' { 
+	// 	return Some(s.into_iter()
+	// 					.map(|i| i.to_string())
+	// 					.collect::<String>()); 
+	// };
 	return Some(s.into_iter()
 					.map(|i| i.to_string())
 					.collect::<String>());
 }
 
-// int
-// spos(char* a, char* b)
-// {
-// 	int i, j, alen = slen(a), blen = slen(b);
-// 	for(i = 0; i < alen; i++) {
-// 		for(j = 0; j < blen; j++) {
-// 			if(a[i + j] == '\0')
-// 				return -1;
-// 			if(a[i + j] != b[j])
-// 				break;
-// 			if(j == blen - 1)
-// 				return i;
-// 		}
-// 	}
-// 	return -1;
-// }
+pub fn spos(a: &[char], b: &str) -> i32 {
+	let alen = a.len();
+	let blen = b.len();
+
+	for i in 0..alen {
+		for j in 0..blen {
+			if a[i + j] == '\0' { return -1; }
+			if a[i + j] != b.chars().nth(j).unwrap() { break; }
+			if j == blen - 1 { return i as i32; }
+		}
+	}
+	return -1;
+}
 
 // int
 // sint(char* s, int len)
