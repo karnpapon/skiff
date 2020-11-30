@@ -1,5 +1,5 @@
 use std::io::{self, Read, Write, BufReader };
-use std::cell::RefCell;
+use std::cell::{RefCell, RefMut};
 use std::rc::Rc;
 use std::io::LineWriter;
 use std::io::BufWriter;
@@ -57,8 +57,8 @@ pub struct Term<'a> {
 	list_len: i32,
 	/* generated */
 	filename: String, // generate from name field.
-	date_from: String, // not in parsing process.
-	date_last: String,
+	date_from: RefCell<String>, // not in parsing process.
+	date_last: RefCell<String>,
 	// parent: Box<Term>, // re-check pointer
 	// children: Box<Vec<Term>>, // re-check pointer
 	children_len: i32,
@@ -78,7 +78,7 @@ pub struct Log<'a> {
 	host: String,
 	pict: i32,
 	name: String,
-  term: Option<&'a Term<'a>> // re-check pointer
+  term: RefCell<Option<&'a Term<'a>>>
 }
 
 #[derive(Debug)]
@@ -127,8 +127,8 @@ impl<'a> Term<'a> {
       list: vec![],
       list_len: 0,
       filename: String::with_capacity(KEY_BUF_LEN),
-      date_from: String::with_capacity(6),
-      date_last: String::with_capacity(6),
+      date_from: RefCell::new(String::with_capacity(6)),
+      date_last: RefCell::new(String::with_capacity(6)),
       // parent: Box::new(Term::new()),
       // children: Box::new(vec![Term::new()]),
       children_len: 0,
@@ -153,7 +153,7 @@ impl <'a>Log<'a> {
       host: String::with_capacity(KEY_BUF_LEN),
       pict: 0,
       name: String::with_capacity(LOG_BUF_LEN),
-      term: None,
+      term: RefCell::new(None),
     }
   }
   fn finddiary(){}
@@ -342,7 +342,6 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
       t = &mut lexicon.terms[(lexicon.len - 1) as usize];
       if helpers::spos(&scanner.source, "HOST : ") >= 0{
         t.host = helpers::sstr(&scanner.source, 9, len - 9);
-        println!(">>host = {:#?}", t.host);
       }
       if helpers::spos(&scanner.source, "BREF : ") >= 0{
         t.bref = helpers::sstr(&scanner.source, 9, len - 9);
@@ -452,18 +451,21 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
 fn link<'a,'b>(glo: &'a mut Glossary, lex: &'b mut Lexicon, jou: &'b mut Journal<'b>) {
 	println!("Linking  | ");
 	for i in 0..jou.len { // iterate through jou list (horaire's table)
-    let l: &Log = &mut jou.logs[i as usize];
+    let l = &mut jou.logs[i as usize];
     
     // match HOST in jou to lex.
     match findterm(lex, &l.host){
-     Some(t) => jou.logs[i as usize].term = Some(t),
-     None =>  jou.logs[i as usize].term = None 
+     Some(t) => *l.term.borrow_mut() = Some(t),
+     None =>  *l.term.borrow_mut() = None 
     } 
 
-    // if l.term.date_last.len() == 0 {
-      // l.term.date_last = l.date;
-    // }
-    // l.term.date_from = l.date;
+    if let Some(_t) = *l.term.borrow_mut() {
+      if _t.date_last.borrow().len() == 0 {
+        _t.date_last.borrow_mut().push_str(&l.date);
+      }
+      _t.date_from.borrow_mut().push_str(&l.date);
+    }
+    
 	}
   println!("lexicon({} entries) ", lex.len);
   
