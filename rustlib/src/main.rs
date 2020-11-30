@@ -45,7 +45,7 @@ pub struct List {
 
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
-pub struct Term {
+pub struct Term<'a> {
   name: String, // title
   host: String, // HOST, nothing fancy.
   bref: String,
@@ -62,7 +62,7 @@ pub struct Term {
 	// parent: Box<Term>, // re-check pointer
 	// children: Box<Vec<Term>>, // re-check pointer
 	children_len: i32,
-  docs: Vec<List>, 
+  docs: Vec<&'a List>, 
 	docs_len: i32,
   // incoming: Box<Vec<Term>>, 
 	incoming_len: i32,
@@ -70,15 +70,15 @@ pub struct Term {
 }
 
 
-#[derive(Clone, Debug)]
-pub struct Log {
+#[derive(Debug)]
+pub struct Log<'a> {
 	date: String,
 	// rune: String,
 	code: i32,
 	host: String,
 	pict: i32,
 	name: String,
-  term: Term // re-check pointer
+  term: Option<&'a Term<'a>> // re-check pointer
 }
 
 #[derive(Debug)]
@@ -88,15 +88,15 @@ pub struct Glossary {
 }
 
 #[derive(Debug)]
-pub struct Lexicon {
+pub struct Lexicon<'l> {
 	len: i32,
-	terms: Vec<Term> 
+	terms: Vec<Term<'l>> 
 }
 
 #[derive(Debug)]
-pub struct Journal {
+pub struct Journal<'b> {
 	len: i32,
-  logs: Vec<Log>
+  logs: Vec<Log<'b>>
 }
 
 impl List {
@@ -113,8 +113,8 @@ impl List {
 }
 
 
-impl Term {
-  fn new() -> Term {
+impl<'a> Term<'a> {
+  fn new() -> Term<'a> {
     Term{
       name:  String::with_capacity(KEY_BUF_LEN),
       host: String::with_capacity(KEY_BUF_LEN),
@@ -140,11 +140,12 @@ impl Term {
       outgoing_len: 0,
     }
   }
+
   fn findterm(){}
 }
 
-impl Log {
-  pub fn new() -> Log{
+impl <'a>Log<'a> {
+  pub fn new() -> Log<'a>{
     Log{
       date: String::with_capacity(6),
       // rune: String::new(),
@@ -152,7 +153,7 @@ impl Log {
       host: String::with_capacity(KEY_BUF_LEN),
       pict: 0,
       name: String::with_capacity(LOG_BUF_LEN),
-      term: Term::new(),
+      term: None,
     }
   }
   fn finddiary(){}
@@ -177,8 +178,8 @@ impl Glossary {
 }
 
 
-impl Lexicon {
-  fn new() -> Lexicon {
+impl <'a>Lexicon<'a> {
+  fn new() -> Lexicon<'a> {
     Lexicon{
       len: 0,
       terms: vec![Term::new()]
@@ -186,8 +187,8 @@ impl Lexicon {
   }
 }
 
-impl Journal {
-  fn new() -> Journal{
+impl <'a>Journal<'a> {
+  fn new() -> Journal<'a>{
     Journal{
       len: 0,
       logs: vec![Log::new()]
@@ -209,26 +210,12 @@ fn scan_glossary(content: &str) {
 
 // ------------------methods-----------------------
 
-// /// TODO: get Lexicon, Journal 
-// pub fn parse(glo: &mut Glossary) -> Result<(),std::io::Error> {
-//   println!("Parsing  | ");
-
-//   println!("glossary"); 
-//   match File::open("../src/database/glossary.ndtl") {
-//     Ok(glossary_file) => { 
-//       parse_glossary(&glossary_file, glo).unwrap();
-//       Ok(())
-//     },
-//     // Err(e) => Err(SkiffError::ParseError(e.to_string()))
-//     Err(e) => Err(e)
-//   }
-
-// 	// println!("lexicon"); // this will going to be a page, contains details of host (parent directory) / title / desc
-//   // fclose(parse_lexicon(fopen("database/lexicon.ndtl", "r"), lex));
-
-// 	// println!("horaire"); // time&desc log
-//   // fclose(parse_horaire(fopen("database/horaire.tbtl", "r"), jou));
-// }
+pub fn parse(all_lists: &mut Glossary, all_terms: &mut Lexicon, all_logs: &mut Journal) {
+  println!("Parsing  | ");
+  parse_glossary(String::from("./database/glossary.ndtl"), all_lists ).unwrap();
+  parse_lexicon(String::from("./database/lexicon.ndtl"), all_terms ).unwrap();
+  parse_horaire(String::from("./database/horaire.ndtl"), all_logs ).unwrap();
+}
 
 
 // ------------------main-----------------------
@@ -295,7 +282,7 @@ fn parse_glossary(path: String, glossary: &mut Glossary) -> Result<(), SkiffErro
     line.clear(); 
   }
   
-  println!("glossary = {:#?}", &glossary);
+  // println!("glossary = {:#?}", &glossary);
   Ok(())
 }
 
@@ -355,6 +342,7 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
       t = &mut lexicon.terms[(lexicon.len - 1) as usize];
       if helpers::spos(&scanner.source, "HOST : ") >= 0{
         t.host = helpers::sstr(&scanner.source, 9, len - 9);
+        println!(">>host = {:#?}", t.host);
       }
       if helpers::spos(&scanner.source, "BREF : ") >= 0{
         t.bref = helpers::sstr(&scanner.source, 9, len - 9);
@@ -391,7 +379,7 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
     line.clear(); 
   }
   
-  println!("lexicon = {:#?}", &lexicon);
+  // println!("lexicon = {:#?}", &lexicon);
   Ok(())
 }
 
@@ -431,18 +419,21 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
 		l.date = helpers::sstr(&scanner.source , 0, 5);
 		/* Rune */
 		// l.rune = &scanner.source[6];
-		/* Code */
+    /* Code */
 		l.code = helpers::sint(&scanner.source[7..], 3) as i32;
-		/* Term */
-    l.host = helpers::sstr(&scanner.source, 11, 21);
+    /* Term */
+    // extract only `host` type.
+    let mut split_line = line.split_whitespace().into_iter();
+    let host_len = &split_line.nth(2).unwrap().len();
+    l.host = helpers::sstr(&scanner.source, 11, *host_len);
     
     let _host = &l.host.chars().collect::<Vec<char>>();
 
-    match helpers::strm(_host){
-      Some(string) => len = string.len(),
-      None => len = 0
+    /* Name */
+    if let Some(code_col) = split_line.nth(1){
+      l.name = code_col.to_string().replace("_", " ");
     }
-
+    
 		if !helpers::sans(_host) != 0 {
 			println!("Warning: {} is not alphanum", l.host);
     }
@@ -450,21 +441,74 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
 		if len >= 35 {
 			l.pict = helpers::sint(&scanner.source[32..], 3) as i32;
     }
-		/* Name */
-		if len >= 38 {
-      l.name = helpers::sstr(&scanner.source, 36, LOG_BUF_LEN);
-      let _name = &l.name.chars().collect::<Vec<char>>();
-			match helpers::strm(_name){
-       Some(string) => l.name = string,
-       None => l.name = "none".to_string()
-      }
-		}
     journal.len += 1;
     line.clear(); 
   }
 
-  println!("journal = {:#?}", &journal);
+  // println!("journal = {:#?}", &journal);
   Ok(())
+}
+
+fn link<'a,'b>(glo: &'a mut Glossary, lex: &'b mut Lexicon, jou: &'b mut Journal<'b>) {
+	println!("Linking  | ");
+	for i in 0..jou.len { // iterate through jou list (horaire's table)
+    let l: &Log = &mut jou.logs[i as usize];
+    
+    // match HOST in jou to lex.
+    match findterm(lex, &l.host){
+     Some(t) => jou.logs[i as usize].term = Some(t),
+     None =>  jou.logs[i as usize].term = None 
+    } 
+
+    // if l.term.date_last.len() == 0 {
+      // l.term.date_last = l.date;
+    // }
+    // l.term.date_from = l.date;
+	}
+  println!("lexicon({} entries) ", lex.len);
+  
+	// for i in 0..lex.len {
+	// 	let mut t: &Term = &lex.terms[i as usize];
+	// 	for j in 0..t.body_len {
+	// 		// ftemplate(NULL, lex, t, t.body[j]);
+  //   }
+	// 	t.parent = findterm(lex, t.host);
+	// 	if !t.parent {
+  //     return Err(SkiffError::ParseError("Unknown term host = {}, , t->host".to_string())); 
+  //   }
+	// 	t.parent.children[t.parent.children_len] = t;
+	// 	t.parent.children_len += 1;
+	// }
+	// println!("glossary({} entries) ", glo.len); 
+	// find and matching title(name field in glossary.ndtl file) 
+	// to lex terms ( lex->terms.list in lexicon.ndtl file)
+	// for i in 0..lex.len { 
+	// 	let mut t: &Term = &lex.terms[i as usize];
+	// 	for j in 0..t.list_len {
+	// 		let mut l: &List = helpers::findlist(glo, t.list[j]);
+	// 		if(!l) {
+	// 			return Err(SkiffError::ParseError("Unknown list = {}, t->list[j]".to_string())); 
+  //     }
+	// 		t.docs[t.docs_len as usize] = l;
+	// 		t.docs_len += 1;
+	// 		l.routes += 1;
+	// 	}
+  // }
+  
+  println!("log = {:#?}", jou);
+}
+
+fn findterm<'a>(lex: &'a Lexicon, name: &str) -> Option<&'a Term<'a>> {
+  let mut _name = String::with_capacity(name.len());
+  _name  = name.to_lowercase().replace("_", " ");
+  
+	for i in 0..lex.len {
+    if &_name == &lex.terms[i as usize].name  {
+      return Some(&lex.terms[i as usize]);
+    }
+  }
+
+	return None;
 }
 
 
@@ -479,7 +523,7 @@ fn main() {
   let mut all_lists = Glossary::new();
   let mut all_logs = Journal::new();
 
-  parse_lexicon(String::from("./database/lexicon.ndtl"), &mut all_terms ).unwrap();
-  parse_glossary(String::from("./database/glossary.ndtl"), &mut all_lists ).unwrap();
-  parse_horaire(String::from("./database/horaire.ndtl"), &mut all_logs ).unwrap();
+  parse(&mut all_lists, &mut all_terms, &mut all_logs);
+  link(&mut all_lists, &mut all_terms, &mut all_logs);
+  
 }

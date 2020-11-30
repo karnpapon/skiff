@@ -110,19 +110,16 @@ pub fn scsw<'a>(s: &'a str, a: &str, b: &str) -> String {
 }
 
 
-
-
-// int
-// scmp(char* a, char* b)
-// {
-// 	int i, l = slen(a);
-// 	if(l != slen(b))
-// 		return 0;
-// 	for(i = 0; i < l; ++i)
-// 		if(a[i] != b[i])
-// 			return 0;
-// 	return 1;
-// }
+pub fn scmp(a: &str, b: &str) -> bool {
+	let l = a.len();
+	if l != b.len() {
+		return false;
+	}
+	for i in 0..l {
+		if a.chars().nth(i).unwrap() != b.chars().nth(i).unwrap() { return false;}
+	}
+	return true;
+}
 
 pub fn sans(s: &[char]) -> usize {
 	for i in 0..slen(s) {
@@ -174,12 +171,11 @@ pub fn sint(s: &[char], len: usize) -> usize {
 // 	return spos(s, "://") >= 0 || spos(s, "./") >= 0;
 // }
 
-// char*
-// scpy(char* src, char* dest)
-// {
-// 	int i = 0;
-// 	while((dest[i] = src[i]) != '\0')
-// 		i++;
+// pub fn scpy(src: &str, dest: &str) {
+// 	let mut i = 0;
+// 	while (dest[i] = src[i]) != '\0' {
+// 		i += 1;
+// 	}
 // 	return dest;
 // }
 
