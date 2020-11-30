@@ -73,7 +73,7 @@ pub struct Term {
 #[derive(Clone, Debug)]
 pub struct Log {
 	date: String,
-	rune: String,
+	// rune: String,
 	code: i32,
 	host: String,
 	pict: i32,
@@ -147,7 +147,7 @@ impl Log {
   pub fn new() -> Log{
     Log{
       date: String::with_capacity(6),
-      rune: String::new(),
+      // rune: String::new(),
       code: 0,
       host: String::with_capacity(KEY_BUF_LEN),
       pict: 0,
@@ -190,7 +190,7 @@ impl Journal {
   fn new() -> Journal{
     Journal{
       len: 0,
-      logs: vec![Log::new(); 3500 ]
+      logs: vec![Log::new()]
     }
   }
 }
@@ -395,6 +395,78 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
   Ok(())
 }
 
+fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> {
+
+  let f = File::open(path).expect("journal parsing: file not found");
+  let mut f_reader = BufReader::new(f);
+  let mut len;
+  let mut line = String::new();
+  let mut scanner: Scanner;
+  let mut l = &mut journal.logs[journal.len as usize];
+  // let mut count = 0;
+  // let mut depth: usize;
+  
+  while f_reader.read_line(&mut line).unwrap() > 0 {
+
+    scanner = Scanner::new(&line.trim_end());
+    // depth = helpers::cpad(&scanner.source, ' ');
+
+    match helpers::strm(&scanner.source){
+      Some(string) => len = string.len(),
+      None => len = 0
+    }
+    
+		if len < 14 || &scanner.source[0] == &';' {
+      line.clear();
+			continue;
+    }
+
+    if len > 72 { return Err(SkiffError::ParseError("Log is too long".to_string()))}
+    
+    if journal.len > 0 {
+      journal.logs.insert(journal.len as usize, Log::new());
+      l = &mut journal.logs[journal.len as usize];
+    }
+		/* Date */
+		l.date = helpers::sstr(&scanner.source , 0, 5);
+		/* Rune */
+		// l.rune = &scanner.source[6];
+		/* Code */
+		l.code = helpers::sint(&scanner.source[7..], 3) as i32;
+		/* Term */
+    l.host = helpers::sstr(&scanner.source, 11, 21);
+    
+    let _host = &l.host.chars().collect::<Vec<char>>();
+
+    match helpers::strm(_host){
+      Some(string) => len = string.len(),
+      None => len = 0
+    }
+
+		if !helpers::sans(_host) != 0 {
+			println!("Warning: {} is not alphanum", l.host);
+    }
+		/* Pict */
+		if len >= 35 {
+			l.pict = helpers::sint(&scanner.source[32..], 3) as i32;
+    }
+		/* Name */
+		if len >= 38 {
+      l.name = helpers::sstr(&scanner.source, 36, LOG_BUF_LEN);
+      let _name = &l.name.chars().collect::<Vec<char>>();
+			match helpers::strm(_name){
+       Some(string) => l.name = string,
+       None => l.name = "none".to_string()
+      }
+		}
+    journal.len += 1;
+    line.clear(); 
+  }
+
+  println!("journal = {:#?}", &journal);
+  Ok(())
+}
+
 
 pub fn scan(content: &str)  {
   println!("Scanner  | ");
@@ -405,8 +477,9 @@ pub fn scan(content: &str)  {
 fn main() {
   let mut all_terms = Lexicon::new();
   let mut all_lists = Glossary::new();
-  // let all_logs = Journal::new();
+  let mut all_logs = Journal::new();
 
   parse_lexicon(String::from("./database/lexicon.ndtl"), &mut all_terms ).unwrap();
   parse_glossary(String::from("./database/glossary.ndtl"), &mut all_lists ).unwrap();
+  parse_horaire(String::from("./database/horaire.ndtl"), &mut all_logs ).unwrap();
 }

@@ -126,7 +126,6 @@ pub fn scsw<'a>(s: &'a str, a: &str, b: &str) -> String {
 
 pub fn sans(s: &[char]) -> usize {
 	for i in 0..slen(s) {
-		// if !cans(&s[i]) {
 		if !&s[i].is_digit(36) {
 			return 0;
 		}
@@ -140,11 +139,6 @@ pub fn strm(s: &[char]) -> Option<String> {
 	let mut i: usize = 0;
 	if s.len() == 0 { return None }
 	while cisp(&s[i]) { i += 1 };
-	// if s[i] == '\0' { 
-	// 	return Some(s.into_iter()
-	// 					.map(|i| i.to_string())
-	// 					.collect::<String>()); 
-	// };
 	return Some(s.into_iter()
 					.map(|i| i.to_string())
 					.collect::<String>());
@@ -164,16 +158,15 @@ pub fn spos(a: &[char], b: &str) -> i32 {
 	return -1;
 }
 
-// int
-// sint(char* s, int len)
-// {
-// 	int num = 0, i = 0;
-// 	while(s[i] && cinu(s[i]) && i < len) {
-// 		num = num * 10 + (s[i] - '0');
-// 		i++;
-// 	}
-// 	return num;
-// }
+pub fn sint(s: &[char], len: usize) -> usize {
+	let mut num = 0;
+	let mut i = 0;
+	while cinu(&s[i]) && i < len {
+		// num = num * 10 + (s[i] - '0');
+		i += 1;
+	}
+	return num;
+}
 
 // int
 // surl(char* s)
