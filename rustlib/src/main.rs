@@ -1,3 +1,5 @@
+#![ allow( dead_code, unused_imports, unused_variables, unused_assignments,unused_mut ) ]
+
 use std::io::{self, Read, Write, BufReader };
 use std::cell::{RefCell, RefMut};
 use std::rc::Rc;
@@ -45,7 +47,7 @@ pub struct List {
 
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
-pub struct Term<'a> {
+pub struct Term{
   name: String, // title
   host: String, // HOST, nothing fancy.
   bref: String,
@@ -57,12 +59,12 @@ pub struct Term<'a> {
 	list_len: i32,
 	/* generated */
 	filename: String, // generate from name field.
-	date_from: RefCell<String>, // not in parsing process.
+	date_from: RefCell<String>, // use RefCell, since this field shared mutability.
 	date_last: RefCell<String>,
-	// parent: Box<Term>, // re-check pointer
-	// children: Box<Vec<Term>>, // re-check pointer
+	parent: Option<Box<Rc<RefCell<Term>>>>, 
+	children: Vec<Option<Box<Rc<RefCell<Term>>>>>,
 	children_len: i32,
-  docs: Vec<&'a List>, 
+  docs: Vec<Option<Rc<RefCell<List>>>>,
 	docs_len: i32,
   // incoming: Box<Vec<Term>>, 
 	incoming_len: i32,
@@ -71,32 +73,32 @@ pub struct Term<'a> {
 
 
 #[derive(Debug)]
-pub struct Log<'a> {
+pub struct Log {
 	date: String,
 	// rune: String,
 	code: i32,
 	host: String,
 	pict: i32,
 	name: String,
-  term: RefCell<Option<&'a Term<'a>>>
+  term: Option<Rc<RefCell<Term>>>, 
 }
 
 #[derive(Debug)]
 pub struct Glossary {
 	len: i32,
-	lists: Vec<List>
+	lists: Vec<Rc<RefCell<List>>> 
 }
 
 #[derive(Debug)]
-pub struct Lexicon<'l> {
+pub struct Lexicon {
 	len: i32,
-	terms: Vec<Term<'l>> 
+	terms: Vec<Rc<RefCell<Term>>> 
 }
 
 #[derive(Debug)]
-pub struct Journal<'b> {
+pub struct Journal {
 	len: i32,
-  logs: Vec<Log<'b>>
+  logs: Vec<Log>
 }
 
 impl List {
@@ -113,14 +115,13 @@ impl List {
 }
 
 
-impl<'a> Term<'a> {
-  fn new() -> Term<'a> {
+impl Term {
+  fn new() -> Term {
     Term{
       name:  String::with_capacity(KEY_BUF_LEN),
       host: String::with_capacity(KEY_BUF_LEN),
       bref: String::with_capacity(STR_BUF_LEN),
       r#type: String::with_capacity(KEY_BUF_LEN),
-      // body: vec![String::with_capacity(STR_BUF_LEN); 750],
       body: vec![],
       body_len: 0,
       link: List::new(),
@@ -129,10 +130,9 @@ impl<'a> Term<'a> {
       filename: String::with_capacity(KEY_BUF_LEN),
       date_from: RefCell::new(String::with_capacity(6)),
       date_last: RefCell::new(String::with_capacity(6)),
-      // parent: Box::new(Term::new()),
-      // children: Box::new(vec![Term::new()]),
+      parent: None,
+      children: vec![],
       children_len: 0,
-      // docs: vec![List::new(); 20],
       docs: vec![],
       docs_len: 0,
       // incoming: Box::new(vec![]),
@@ -144,8 +144,8 @@ impl<'a> Term<'a> {
   fn findterm(){}
 }
 
-impl <'a>Log<'a> {
-  pub fn new() -> Log<'a>{
+impl Log {
+  pub fn new() -> Log{
     Log{
       date: String::with_capacity(6),
       // rune: String::new(),
@@ -153,7 +153,7 @@ impl <'a>Log<'a> {
       host: String::with_capacity(KEY_BUF_LEN),
       pict: 0,
       name: String::with_capacity(LOG_BUF_LEN),
-      term: RefCell::new(None),
+      term: None,
     }
   }
   fn finddiary(){}
@@ -163,8 +163,7 @@ impl Glossary {
   fn new() -> Glossary{
     Glossary{
       len: 0,
-      // lists: RefCell::new(vec![List::new(); 100])
-      lists: vec![List::new()]
+      lists: vec![Rc::new(RefCell::new(List::new()))]
     } 
   }
 
@@ -178,17 +177,17 @@ impl Glossary {
 }
 
 
-impl <'a>Lexicon<'a> {
-  fn new() -> Lexicon<'a> {
+impl Lexicon {
+  fn new() -> Lexicon {
     Lexicon{
       len: 0,
-      terms: vec![Term::new()]
+      terms: vec![Rc::new(RefCell::new(Term::new()))]
     }
   }
 }
 
-impl <'a>Journal<'a> {
-  fn new() -> Journal<'a>{
+impl Journal {
+  fn new() -> Journal{
     Journal{
       len: 0,
       logs: vec![Log::new()]
@@ -254,26 +253,26 @@ fn parse_glossary(path: String, glossary: &mut Glossary) -> Result<(), SkiffErro
     if len > 400 { return Err(SkiffError::ParseError("Glossary Parsing: Line is too long".to_string())); }
     
     if depth == 0 {
-      if l.len > 0 {
-        glossary.lists.insert(glossary.len as usize, List::new());
+      if l.borrow().len > 0 {
+        glossary.lists.insert(glossary.len as usize, Rc::new(RefCell::new(List::new())));
         l = &mut glossary.lists[glossary.len as usize];
       }
-      l.name = scanner.source.into_iter().collect();
-      helpers::slca(&mut l.name.chars().collect::<Vec<char>>()); // string to lowercase (eg. DICTIONARY -> dictionary ).
+      l.borrow_mut().name = scanner.source.into_iter().collect::<String>().to_lowercase();
       glossary.len += 1;
     } else if depth == 2 { // in case of list item( 2 spaces at beginning of line).
-			if l.len >= LIST_ITEMS as i32 {
+			if l.borrow().len >= LIST_ITEMS as i32 {
         return Err(SkiffError::ParseError("Glossary Parsing: Reached LIST_ITEMS limit".to_string()));
       }
       split = helpers::cpos(&scanner.source, ':'); // find index of `:` return -1 if not found. 
+      let l_len = l.borrow().len as usize;
 			if split < 0 { // handle only list which not include `:` in sentence.
         // return normal string.
-        l.vals.insert(l.len as usize, helpers::sstr(&scanner.source, 2, len + 2));
+        l.borrow_mut().vals.insert(l_len, helpers::sstr(&scanner.source, 2, len + 2));
 			} else {
-        l.keys.insert(l.len as usize, helpers::sstr(&scanner.source,2, ( split - 3 ) as usize));// title of list line.
-        l.vals.insert(l.len as usize, helpers::sstr(&scanner.source, ( split + 2 ) as usize, len - split as usize)); // details of list line.
+        l.borrow_mut().keys.insert(l_len, helpers::sstr(&scanner.source,2, ( split - 3 ) as usize));// title of list line.
+        l.borrow_mut().vals.insert(l_len, helpers::sstr(&scanner.source, ( split + 2 ) as usize, len - split as usize)); // details of list line.
 			}
-      l.len += 1;
+      l.borrow_mut().len += 1;
 		}
     
     // clear to reuse the buffer 
@@ -329,50 +328,52 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
     if depth == 0 {
       
       if lexicon.len > 0 {
-        lexicon.terms.insert(lexicon.len as usize, Term::new());
+        lexicon.terms.insert(lexicon.len as usize, Rc::new(RefCell::new(Term::new())));
         t = &mut lexicon.terms[lexicon.len as usize];
       }
-      if !helpers::sans(&scanner.source) != 0 { 
+      if !helpers::sans(&scanner.source) == 0 { 
         println!("Lexicon warning: {}", SkiffError::ParseError("Lexicon key is not alphanum".to_string()));
       } 
-      t.name = helpers::sstr(&scanner.source, 0, len).to_lowercase();
-      t.filename = helpers::sstr(&scanner.source, 0, len).replace(" ", "_").to_lowercase();
+      t.borrow_mut().name = helpers::sstr(&scanner.source, 0, len).to_lowercase();
+      t.borrow_mut().filename = helpers::sstr(&scanner.source, 0, len).replace(" ", "_").to_lowercase();
       lexicon.len += 1;
     } else if depth == 2 {
       t = &mut lexicon.terms[(lexicon.len - 1) as usize];
       if helpers::spos(&scanner.source, "HOST : ") >= 0{
-        t.host = helpers::sstr(&scanner.source, 9, len - 9);
+        t.borrow_mut().host = helpers::sstr(&scanner.source, 9, len - 9);
       }
       if helpers::spos(&scanner.source, "BREF : ") >= 0{
-        t.bref = helpers::sstr(&scanner.source, 9, len - 9);
+        t.borrow_mut().bref = helpers::sstr(&scanner.source, 9, len - 9);
       }
       if helpers::spos(&scanner.source, "TYPE : ") >= 0{
-        t.r#type = helpers::sstr(&scanner.source, 9, len - 9); 
+        t.borrow_mut().r#type = helpers::sstr(&scanner.source, 9, len - 9); 
       }
       catch_body = helpers::spos(&scanner.source, "BODY") >= 0;
       catch_link = helpers::spos(&scanner.source, "LINK") >= 0;
       catch_list = helpers::spos(&scanner.source, "LIST") >= 0;
-    } else if depth == 4 { // BODY item ( 4 indent spaces.)
-        t = &mut lexicon.terms[(lexicon.len - 1) as usize];
-        /* Body */
-        if catch_body {
-          t.body.insert(t.body_len, helpers::sstr(&scanner.source,  4, len - 4));
-          t.body_len += 1;
-        }
-        /* Link */
-        if catch_link {
-          key_len = (helpers::cpos(&scanner.source, ':') - 5 ) as usize;
-          t.link.keys.insert(t.link.len as usize, helpers::sstr(&scanner.source, 4, key_len));
-          val_len = len - key_len - 5;
-          t.link.vals.insert(t.link.len as usize, helpers::sstr(&scanner.source,  key_len + 7, val_len));
-          t.link.len += 1;
-        }
-        /* List */
-        if catch_list {
-          t.list.insert(t.list_len as usize,helpers::sstr(&scanner.source, 4, len - 4));
-          t.list_len += 1;
-        }
-        // t.list_len += 1;
+    } else if depth == 4 { 
+      t = &mut lexicon.terms[(lexicon.len - 1) as usize];
+      /* Body */
+      if catch_body {
+        let _len = t.borrow().body_len;
+        t.borrow_mut().body.insert(_len, helpers::sstr(&scanner.source,  4, len - 4));
+        t.borrow_mut().body_len += 1;
+      }
+      /* Link */
+      if catch_link {
+        key_len = (helpers::cpos(&scanner.source, ':') - 5 ) as usize;
+        let link_len = t.borrow().link.len as usize;
+        t.borrow_mut().link.keys.insert(link_len as usize, helpers::sstr(&scanner.source, 4, key_len));
+        val_len = len - key_len - 5;
+        t.borrow_mut().link.vals.insert(link_len as usize, helpers::sstr(&scanner.source,  key_len + 7, val_len));
+        t.borrow_mut().link.len += 1;
+      }
+      /* List */
+      if catch_list {
+        let list_len = t.borrow().list_len as usize;
+        t.borrow_mut().list.insert(list_len,helpers::sstr(&scanner.source, 4, len - 4));
+        t.borrow_mut().list_len += 1;
+      }
     }
     // count += 1;
     line.clear(); 
@@ -433,7 +434,7 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
       l.name = code_col.to_string().replace("_", " ");
     }
     
-		if !helpers::sans(_host) != 0 {
+		if !helpers::sans(_host) == 0 {
 			println!("Warning: {} is not alphanum", l.host);
     }
 		/* Pict */
@@ -448,68 +449,95 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
   Ok(())
 }
 
-fn link<'a,'b>(glo: &'a mut Glossary, lex: &'b mut Lexicon, jou: &'b mut Journal<'b>) {
+fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), SkiffError>{
 	println!("Linking  | ");
-	for i in 0..jou.len { // iterate through jou list (horaire's table)
-    let l = &mut jou.logs[i as usize];
-    
-    // match HOST in jou to lex.
-    match findterm(lex, &l.host){
-     Some(t) => *l.term.borrow_mut() = Some(t),
-     None =>  *l.term.borrow_mut() = None 
+	for i in 0..jou.len { 
+    let jou_logs = &mut jou.logs[i as usize];
+
+    match findterm(lex, &jou_logs.host){
+     Some(t) => jou_logs.term = Some(t),
+     None =>  jou_logs.term = None 
     } 
 
-    if let Some(_t) = *l.term.borrow_mut() {
-      if _t.date_last.borrow().len() == 0 {
-        _t.date_last.borrow_mut().push_str(&l.date);
-      }
-      _t.date_from.borrow_mut().push_str(&l.date);
+    match &jou_logs.term {
+      Some(_t) => { 
+        let _t_len = _t.borrow().date_last.borrow().len();
+        if _t_len == 0 {
+          _t.borrow().date_last.borrow_mut().push_str(&jou_logs.date);
+        }
+        _t.borrow().date_from.borrow_mut().push_str(&jou_logs.date);
+      },
+      None => {}
     }
-    
-	}
+	};
   println!("lexicon({} entries) ", lex.len);
   
-	// for i in 0..lex.len {
-	// 	let mut t: &Term = &lex.terms[i as usize];
-	// 	for j in 0..t.body_len {
-	// 		// ftemplate(NULL, lex, t, t.body[j]);
-  //   }
-	// 	t.parent = findterm(lex, t.host);
-	// 	if !t.parent {
-  //     return Err(SkiffError::ParseError("Unknown term host = {}, , t->host".to_string())); 
-  //   }
-	// 	t.parent.children[t.parent.children_len] = t;
-	// 	t.parent.children_len += 1;
-	// }
-	// println!("glossary({} entries) ", glo.len); 
-	// find and matching title(name field in glossary.ndtl file) 
-	// to lex terms ( lex->terms.list in lexicon.ndtl file)
-	// for i in 0..lex.len { 
-	// 	let mut t: &Term = &lex.terms[i as usize];
-	// 	for j in 0..t.list_len {
-	// 		let mut l: &List = helpers::findlist(glo, t.list[j]);
-	// 		if(!l) {
-	// 			return Err(SkiffError::ParseError("Unknown list = {}, t->list[j]".to_string())); 
-  //     }
-	// 		t.docs[t.docs_len as usize] = l;
-	// 		t.docs_len += 1;
-	// 		l.routes += 1;
-	// 	}
-  // }
+	for i in 0..lex.len {
+    let lex_terms = &lex.terms[i as usize];
+		// for j in 0..t.body_len {
+      // ftemplate(NULL, lex, t, t.body[j]);
+    // }
+
+    let host_name = lex_terms.borrow().host.to_string();
+
+    match findterm(lex, &host_name) {
+      Some(t) => { 
+        let children_len = lex_terms.borrow().children_len as usize;
+        lex_terms.borrow_mut().parent = Some(Box::new(t.clone())); 
+        lex_terms.borrow_mut().children.insert(children_len, Some(Box::new(t.clone())));
+        lex_terms.borrow_mut().children_len += 1;
+      },
+      None => { 
+        lex_terms.borrow_mut().parent = None;
+        // return Err(SkiffError::ParseError("Unknown term host = {}, , t->host".to_string()))
+      }
+    }
+	};
+  println!("glossary({} entries) ", glo.len); 
+	for i in 0..lex.len { 
+    let mut lext = lex.terms[i as usize].borrow_mut();
+    let lex_terms_list = lext.clone().list;
+    let lext_terms_len = lext.list_len;
+		for j in 0..lext_terms_len {
+      match findlist(glo, &lex_terms_list[j as usize]) {
+        Some(l) => { 
+          let docs_len = lext.docs_len as usize;
+          lext.docs.insert(docs_len as usize, Some(l.clone())); 
+          lext.docs_len += 1;
+          l.borrow_mut().routes += 1;
+        },
+        None => { 
+          lext.parent = None;
+          // return Err(SkiffError::ParseError("Unknown list = {}, t.list[j]".to_string()));
+        }
+      }
+		}
+  }
   
-  println!("log = {:#?}", jou);
+  println!("lex = {:#?}", lex);
+  // println!("jou = {:#?}", jou);
+  Ok(())
 }
 
-fn findterm<'a>(lex: &'a Lexicon, name: &str) -> Option<&'a Term<'a>> {
+fn findterm(lex: &Lexicon, name: &str) -> Option<Rc<RefCell<Term>>> {
   let mut _name = String::with_capacity(name.len());
   _name  = name.to_lowercase().replace("_", " ");
-  
 	for i in 0..lex.len {
-    if &_name == &lex.terms[i as usize].name  {
-      return Some(&lex.terms[i as usize]);
+    if &_name == &lex.terms[i as usize].borrow().name  {
+      return Some(lex.terms[i as usize].clone());
     }
   }
+	return None;
+}
 
+fn findlist(glo: &Glossary, name: &str) -> Option<Rc<RefCell<List>>>{
+  let mut _name = String::with_capacity(name.len());
+  _name  = name.to_lowercase().replace("_", " ");
+	for i in 0..glo.len{
+    if &_name == &glo.lists[i as usize].borrow().name {
+      return Some(glo.lists[i as usize].clone());
+    }
+  }
 	return None;
 }
 
@@ -521,11 +549,11 @@ pub fn scan(content: &str)  {
 
 
 fn main() {
-  let mut all_terms = Lexicon::new();
-  let mut all_lists = Glossary::new();
-  let mut all_logs = Journal::new();
-
-  parse(&mut all_lists, &mut all_terms, &mut all_logs);
-  link(&mut all_lists, &mut all_terms, &mut all_logs);
+  let all_terms = &mut Lexicon::new();
+  let all_lists = &mut Glossary::new();
+  let all_logs = &mut Journal::new();
+  
+  parse(all_lists, all_terms, all_logs);
+  link(all_lists, all_terms, all_logs).unwrap();
   
 }

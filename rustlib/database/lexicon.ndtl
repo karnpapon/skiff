@@ -1,14 +1,14 @@
 ; The lexicon is a collection of terms.
 ; https://wiki.xxiivv.com/site/indental.html
 
-HOME FDFDFDF
-  HOST : home
+HOME
+  HOST : cat
   BREF : &nbsp;
   BODY
     {^img identity/orb.png}
     <p>See {tracker recent changes}.</p>
 
-AUDIO TESTLEXICON
+AUDIO
   HOST : home
   TYPE : portal
   BREF : The Audio portal hosts various soundtrack, records and live projects.
@@ -17,7 +17,6 @@ AUDIO TESTLEXICON
     <p>"I'll make a sound that's so alone that no one can miss it, that whoever hears it will weep in their souls, and hearths will seem warmer, and being inside will seem better to all who hear it in the distant towns. </p>
     <p>I'll make me a sound and an apparatus and they'll call it a Fog Horn and whoever bears it will know the sadness of eternity and the briefness of life."</p>
     <h5>—Ray Bradbury, The Fog Horn</h5>
-
 
 LONGTERMISM
   HOST : lifestyle
@@ -31,3 +30,26 @@ LONGTERMISM
     <p>Sometimes I wonder if we shouldn't re-orient our focus onto things that can run on small low-power open-source single-purpose boards, but I also consider the impact of pushing for the production of more electronics as problematic, perhaps creating software targeting old hardware might be what I'm looking for.</p>
     <p>Despite all this, I dream of a line of simple electronics, each one designed for a single purpose. Or even for things beyond the realm of electronics, like a kit bicyle with all its superfluousities removed — As it becomes increasingly difficult to find simple models with easily serviceable parts.</p>
     <p>My dream sailboat has no diesel engine, no fuel outboard and no lead acid battery storage, but instead a compressed air engine with its compression stored in diving tanks, a bike crank powered compressor, a hydro generator pump, and a dynamo to charge our low-power electronics. The only crucial electronic systems connected to the house tanks would be the AIS transceiver, the VHF radio, a basic chartplotter and habitat lighting. Our work and entertainment electronics, like our laptops and cameras, would run off solar charging a minimal array of standard batteries.</p>
+
+LIFESTYLE
+  HOST : devine lu linvega
+  TYPE : index
+  BREF : The collection of diary entries on Lifestyle.
+  BODY
+    <p>I rarely find myself blogging, but from time to time, I will write a long-form reply to someone on a forum, I've collected these entries here. You can find more collected questions & answers in the {faqs}.</p>
+    <q>Stop buying the unnecessary,<br/>stop doing the non-essential.</q>
+
+LANGUAGE
+  HOST : research
+  TYPE : portal
+  BREF : Various Language notes on natural, synthetic and programming languages.
+  BODY
+    <p>Welcome to the <b>Language Portal</b>, the goal of these pages is to host a few resources, summaries and notes from my own language studies. I've moved all notes about programming languages {programming here}. Additional notes can be found in the {notebook}.</p>
+    {^img refs/bolak.svg 200}
+    <q>Kolik jazyků znáš, <br />tolikrát jsi člověkem.</q>
+    <h5>—Tomáš Garrigue Masaryk</h5>
+  LIST
+    dictionary
+  LINK
+    koseki-091450 : http://glyphwiki.org/wiki/koseki-091450
+    unicode u+21dc9 : https://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=U%2B21DC9

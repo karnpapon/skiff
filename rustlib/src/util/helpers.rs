@@ -142,14 +142,16 @@ pub fn strm(s: &[char]) -> Option<String> {
 }
 
 pub fn spos(a: &[char], b: &str) -> i32 {
-	let alen = a.len();
+	let alen = a.len() - 1;
 	let blen = b.len();
-
+	
 	for i in 0..alen {
 		for j in 0..blen {
 			if a[i + j] == '\0' { return -1; }
 			if a[i + j] != b.chars().nth(j).unwrap() { break; }
-			if j == blen - 1 { return i as i32; }
+			if j == blen - 1 { 
+				return i as i32; 
+			}
 		}
 	}
 	return -1;
