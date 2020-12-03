@@ -474,11 +474,13 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
   
 	for i in 0..lex.len {
     let lex_terms = &lex.terms[i as usize];
-		// for j in 0..t.body_len {
-      // ftemplate(NULL, lex, t, t.body[j]);
-    // }
-
     let host_name = lex_terms.borrow().host.to_string();
+
+		for j in 0..lex_terms.borrow().body_len {
+      let l_term = &lex_terms.borrow();
+      let body = &l_term.body[j];
+      ftemplate(None, lex, l_term, body).unwrap();
+    }
 
     match findterm(lex, &host_name) {
       Some(t) => { 
@@ -514,10 +516,149 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
 		}
   }
   
-  println!("lex = {:#?}", lex);
+  // println!("lex = {:#?}", lex);
   // println!("jou = {:#?}", jou);
   Ok(())
 }
+
+fn ftemplate(f: Option<String>, lex: &Lexicon, t: &Term, s: &str) -> Result<(), SkiffError>{
+  let mut capture = false;
+  let mut buf = vec![];
+  let fp = f.clone();
+  let _s = s.chars().collect::<Vec<char>>();
+  buf.insert(0, '\0');
+  if s.len() > 0 {
+    for i in 0.._s.len() {
+      let c = _s[i];
+      if c == '}' {
+        capture = false;
+        // check if it's module link ( eg, {^bandcamp 163410848} )
+        if buf[0] == '^' && fp.clone().is_some() {
+          fpmodule(fp.clone().unwrap(), &buf);
+        }
+        else if buf[0] != '^' { // or normal link (eg, {methascope}) 
+          // fplink(f, lex, t, buf);
+        }
+      }
+      if capture {
+        if helpers::slen(&buf) < STR_BUF_LEN - 1 {
+        	buf = helpers::ccat(&buf, c);
+        } else {
+        	return Err(SkiffError::ParseError("template too long, s".to_string()));
+        }
+      } else if c != '{' && c != '}' && f.is_some() {
+        // fputc(c, f); native C function.
+      }
+  
+      if c == '{' {
+        capture = true;
+        buf[0] = '\0';
+      }
+    }
+  }
+  
+  Ok(())
+}
+
+// build modules (eg. codeblock, iframe link)
+fn fpmodule(f: String, s: &[char]) {
+
+	// s = link (eg, ^bandcamp 163410848);
+	let split = helpers::cpos(s, ' ');
+  let mut cmd: String;
+  let target: String;
+	cmd = helpers::sstr(s, 1, (split - 1) as usize);
+	println!("s = {:?}", s);
+	target = helpers::sstr(s, (split + 1) as usize, helpers::slen(s) - split as usize);
+
+	if cmd == "itchio" {
+		// printf(f, "<iframe frameborder='0' src='https://itch.io/embed/%s?link_color=000000' width='600' height='167'></iframe>", target);
+  } else if cmd == "bandcamp" {
+		// fprintf(f, "<iframe style='border: 0; width: 600px; height: 274px;' src='https://bandcamp.com/EmbeddedPlayer/album=%s/size=large/bgcol=ffffff/linkcol=333333/artwork=small' seamless></iframe>", target);
+  } else if cmd == "youtube" {
+		// fprintf(f, "<iframe width='600' height='380' src='https://www.youtube.com/embed/%s?rel=0' style='max-width:700px' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>", target);
+	} else if cmd == "redirect" {
+		// fprintf(f, "<meta http-equiv='refresh' content='2; url=%s.html'/><p>In a hurry? Travel to <a href='%s.html'>%s</a>.</p>", target, target, target);
+	} else if cmd == "img" {
+    let target_chars = &target.chars().collect::<Vec<char>>();
+		let split2 = helpers::cpos(target_chars, ' ');
+		if split2 > 0 {
+      let mut param: String;
+      let mut value: String;
+      let _split2 = split2 as usize;
+			param = helpers::sstr(target_chars, 0, _split2);
+			value = helpers::sstr(target_chars, _split2 + 1, target.len() - _split2);
+      // fprintf(f, "<img src='../media/%s' width='%s'/>&nbsp;", param, value);
+      println!("<img src='../media/{}' width='{}'/>", param, value);
+		} else {
+			// fprintf(f, "<img src='../media/%s'/>&nbsp;", target);
+    }
+	} else if cmd == "src" {
+		let lines = 0;
+		// let c: &[char];
+    let mut scanner: Scanner;
+
+		// to build special section (eg. codeblock see `ansi_c.html`) 
+    // by pulling texts from ../archive/src
+    let f = File::open(format!("../archive/src/{}.txt", target)).expect("fpmodule: Missing src include");
+    let mut f_reader = BufReader::new(f);
+    let mut line = String::new();
+		// fputs("<figure>", f);
+		// fputs("<pre>", f);
+
+    while f_reader.read_line(&mut line).unwrap() > 0 {
+      scanner = Scanner::new(&line);
+      for c in scanner.source.iter() {
+        if c == &'<' {
+        	// fputs("&lt;", f);
+        } else if c == &'>' {
+        	// fputs("&gt;", f);
+        } else if c == &'&' {
+        	// fputs("&amp;", f);
+        } else {
+        	// fputc(c, f);
+        }
+        if c == &'\n' {
+        	// lines += 1;
+        }
+      }
+		}
+		// fputs("</pre>", f);
+		// fprintf(f, "<figcaption><a href='../archive/src/%s.txt'>%s</a> %d lines</figcaption>\n", target, target, lines);
+		// fputs("</figure>", f);
+	} else {
+		println!("Warning: Missing template mod: {:?}", s);
+  }
+}
+
+// fn fplink(f: String, lex: &Lexicon, t: &Term, s: &str) {
+// 	int split = cpos(s, ' ');
+// 	char target[256], name[256];
+// 	/* find target and name */
+// 	if(split == -1) {
+// 		sstr(s, target, 0, slen(s));
+// 		scpy(target, name);
+// 	} else {
+// 		sstr(s, target, 0, split);
+// 		sstr(s, name, split + 1, slen(s) - split);
+// 	}
+// 	/* output */
+// 	if(surl(target)) {
+// 		if(f != NULL)
+// 			fprintf(f, "<a href='%s' target='_blank'>%s</a>", target, name);
+// 	} else {
+// 		Term* tt = findterm(lex, target);
+// 		if(!tt)
+// 			error("Unknown link", target);
+// 		if(f != NULL)
+// 			fprintf(f, "<a href='%s.html'>%s</a>", tt->filename, name);
+// 		else {
+// 			tt->incoming[tt->incoming_len] = t;
+// 			tt->incoming_len++;
+// 			t->outgoing_len++;
+// 		}
+// 	}
+// }
 
 fn findterm(lex: &Lexicon, name: &str) -> Option<Rc<RefCell<Term>>> {
   let mut _name = String::with_capacity(name.len());

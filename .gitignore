@@ -1,1 +1,2 @@
 /rustlib/target
+/rustlib/archive/*

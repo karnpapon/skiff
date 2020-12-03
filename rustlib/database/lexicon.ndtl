@@ -53,3 +53,11 @@ LANGUAGE
   LINK
     koseki-091450 : http://glyphwiki.org/wiki/koseki-091450
     unicode u+21dc9 : https://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=U%2B21DC9
+
+MOOGLE
+  HOST : utilities
+  BREF : Moogle is a 3D wireframe toolkit for Plan9.
+  TYPE : album
+  BODY
+    <p>Moogle is a minimal <b>3D wireframe tool</b> designed to be used alongside its companion tool {Noodle}, on {Plan9}. It offers a handful of basic geometry drawing functions, it was written in {plan9_c Plan9 C}, and was inspired by {Graf3DScene}.</p>
+    {^src moogle.c}

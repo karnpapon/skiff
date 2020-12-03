@@ -197,14 +197,13 @@ pub fn sstr<'a>(src: &[char], from: usize, to: usize) -> String {
 // 	return -1;
 // }
 
-// char*
-// ccat(char* dest, char c)
-// {
-// 	int len = slen(dest);
-// 	dest[len] = c;
-// 	dest[len + 1] = '\0';
-// 	return dest;
-// }
+pub fn ccat(dest: &[char], c: char) -> Vec<char> {
+	let len = dest.len() - 1;
+	let mut res = dest.to_vec();
+	res[len] = c;
+	res.insert(len + 1, '\0');
+	return res;
+}
 
 // char*
 // scat(char* dest, const char* src)
