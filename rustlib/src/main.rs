@@ -66,7 +66,7 @@ pub struct Term{
 	children_len: i32,
   docs: Vec<Option<Rc<RefCell<List>>>>,
 	docs_len: i32,
-  // incoming: Box<Vec<Term>>, 
+  incoming: Vec<Box<Rc<RefCell<Term>>>>, 
 	incoming_len: i32,
 	outgoing_len: i32
 }
@@ -89,7 +89,7 @@ pub struct Glossary {
 	lists: Vec<Rc<RefCell<List>>> 
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Lexicon {
 	len: i32,
 	terms: Vec<Rc<RefCell<Term>>> 
@@ -111,7 +111,6 @@ impl List {
       routes: 0 
     }
   }
-  fn findlist(){}
 }
 
 
@@ -135,13 +134,11 @@ impl Term {
       children_len: 0,
       docs: vec![],
       docs_len: 0,
-      // incoming: Box::new(vec![]),
+      incoming: vec![],
       incoming_len: 0,
       outgoing_len: 0,
     }
   }
-
-  fn findterm(){}
 }
 
 impl Log {
@@ -156,7 +153,6 @@ impl Log {
       term: None,
     }
   }
-  fn finddiary(){}
 }
 
 impl Glossary {
@@ -473,29 +469,34 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
   println!("lexicon({} entries) ", lex.len);
   
 	for i in 0..lex.len {
-    let lex_terms = &lex.terms[i as usize];
-    let host_name = lex_terms.borrow().host.to_string();
-
-		for j in 0..lex_terms.borrow().body_len {
-      let l_term = &lex_terms.borrow();
-      let body = &l_term.body[j];
-      ftemplate(None, lex, l_term, body).unwrap();
+    let lex_t = &lex.terms[i as usize];
+    let lext_t_clone = lex_t.clone();
+    
+		// for j in 0..lex_t.borrow().body_len {
+    for (idx, j) in lext_t_clone.borrow_mut().body.iter().enumerate() {
+      // let l_term = &lex_mut.borrow_mut();
+      // let body = &lex_mut.body[j];
+      let clone = lext_t_clone.clone();
+      ftemplate(None, lex.clone(), clone, j).unwrap();
     }
-
+      
+    let host_name = lex_t.borrow().host.to_string();
     match findterm(lex, &host_name) {
       Some(t) => { 
-        let children_len = lex_terms.borrow().children_len as usize;
-        lex_terms.borrow_mut().parent = Some(Box::new(t.clone())); 
-        lex_terms.borrow_mut().children.insert(children_len, Some(Box::new(t.clone())));
-        lex_terms.borrow_mut().children_len += 1;
+        let children_len = lex_t.borrow().children_len as usize;
+        lex_t.borrow_mut().parent = Some(Box::new(t.clone())); 
+        lex_t.borrow_mut().children.insert(children_len, Some(Box::new(t.clone())));
+        lex_t.borrow_mut().children_len += 1;
       },
       None => { 
-        lex_terms.borrow_mut().parent = None;
+        lex_t.borrow_mut().parent = None;
         // return Err(SkiffError::ParseError("Unknown term host = {}, , t->host".to_string()))
       }
     }
-	};
+  };
+  
   println!("glossary({} entries) ", glo.len); 
+
 	for i in 0..lex.len { 
     let mut lext = lex.terms[i as usize].borrow_mut();
     let lex_terms_list = lext.clone().list;
@@ -521,39 +522,42 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
   Ok(())
 }
 
-fn ftemplate(f: Option<String>, lex: &Lexicon, t: &Term, s: &str) -> Result<(), SkiffError>{
+fn ftemplate(f: Option<String>, lex: Lexicon, term: Rc<RefCell<Term>>, string: &str) -> Result<(), SkiffError> {
   let mut capture = false;
   let mut buf = vec![];
   let fp = f.clone();
-  let _s = s.chars().collect::<Vec<char>>();
-  buf.insert(0, '\0');
-  if s.len() > 0 {
-    for i in 0.._s.len() {
-      let c = _s[i];
-      if c == '}' {
-        capture = false;
-        // check if it's module link ( eg, {^bandcamp 163410848} )
-        if buf[0] == '^' && fp.clone().is_some() {
-          fpmodule(fp.clone().unwrap(), &buf);
-        }
-        else if buf[0] != '^' { // or normal link (eg, {methascope}) 
-          // fplink(f, lex, t, buf);
-        }
+  let _s = string.chars().collect::<Vec<char>>();
+  for i in 0.._s.len() {
+    let c = _s[i];
+
+    if c == '}' {
+      capture = false;
+      // check if it's module link ( eg, {^bandcamp 163410848} )
+      if buf[0] == '^' && fp.clone().is_some() {
+        fpmodule(fp.clone().unwrap(), &buf);
       }
-      if capture {
-        if helpers::slen(&buf) < STR_BUF_LEN - 1 {
-        	buf = helpers::ccat(&buf, c);
-        } else {
-        	return Err(SkiffError::ParseError("template too long, s".to_string()));
-        }
-      } else if c != '{' && c != '}' && f.is_some() {
-        // fputc(c, f); native C function.
+      else if buf[0] != '^' { // or normal link (eg, {methascope}) 
+        fplink(fp.clone(), &lex, term.clone(), &buf).unwrap();
       }
-  
-      if c == '{' {
-        capture = true;
-        buf[0] = '\0';
+
+      // handle multiple capture areas in same line.
+      &buf.clear();
+    }
+
+    if capture {
+      if buf.len() < STR_BUF_LEN - 1 {
+        buf.push(c);
+        // helpers::ccat(&mut buf, c);
+      } else {
+        return Err(SkiffError::ParseError("template too long, s".to_string()));
       }
+    } else if c != '{' && c != '}' && f.is_some() {
+      // write to file only not 'link' statement.
+      // fputc(c, f); native C function.
+    }
+
+    if c == '{' {
+      capture = true;
     }
   }
   
@@ -568,7 +572,6 @@ fn fpmodule(f: String, s: &[char]) {
   let mut cmd: String;
   let target: String;
 	cmd = helpers::sstr(s, 1, (split - 1) as usize);
-	println!("s = {:?}", s);
 	target = helpers::sstr(s, (split + 1) as usize, helpers::slen(s) - split as usize);
 
 	if cmd == "itchio" {
@@ -631,34 +634,43 @@ fn fpmodule(f: String, s: &[char]) {
   }
 }
 
-// fn fplink(f: String, lex: &Lexicon, t: &Term, s: &str) {
-// 	int split = cpos(s, ' ');
-// 	char target[256], name[256];
-// 	/* find target and name */
-// 	if(split == -1) {
-// 		sstr(s, target, 0, slen(s));
-// 		scpy(target, name);
-// 	} else {
-// 		sstr(s, target, 0, split);
-// 		sstr(s, name, split + 1, slen(s) - split);
-// 	}
-// 	/* output */
-// 	if(surl(target)) {
-// 		if(f != NULL)
-// 			fprintf(f, "<a href='%s' target='_blank'>%s</a>", target, name);
-// 	} else {
-// 		Term* tt = findterm(lex, target);
-// 		if(!tt)
-// 			error("Unknown link", target);
-// 		if(f != NULL)
-// 			fprintf(f, "<a href='%s.html'>%s</a>", tt->filename, name);
-// 		else {
-// 			tt->incoming[tt->incoming_len] = t;
-// 			tt->incoming_len++;
-// 			t->outgoing_len++;
-// 		}
-// 	}
-// }
+fn fplink(file: Option<String>, lex: &Lexicon, term: Rc<RefCell<Term>>, s: &[char]) -> Result<(), SkiffError>{
+  println!("fplink = {:?}", &s.into_iter().collect::<String>());
+	let split = helpers::cpos(s, ' ');
+  let mut target: String;
+  let mut name: Vec<char> = vec![];
+	/* find target and name */
+	if split == -1 {
+		target = helpers::sstr(s, 0, helpers::slen(s));
+		// name = helpers::scpy(&target.chars().collect::<Vec<char>>(), &name);
+    // name = target.chars().collect::<Vec<char>>();
+	} else {
+		target = helpers::sstr(s, 0, split as usize);
+		// name = helpers::sstr(s, (split + 1) as usize, helpers::slen(s) - ( split as usize)  ).chars().collect::<Vec<char>>();
+	}
+	/* output */
+	if helpers::surl(&target) {
+		if file.is_some() {
+			// fprintf(f, "<a href='%s' target='_blank'>%s</a>", target, name);
+    }
+	} else {
+    // match findterm(&lex, &target){
+    //   Some(tt) => {
+    //     if file.is_some() {
+    //       // fprintf(f, "<a href='%s.html'>%s</a>", tt->filename, name);
+    //     } else {
+    //       // let _tt = tt.borrow_mut();
+    //       tt.borrow_mut().incoming.insert(tt.borrow_mut().incoming_len as usize, Box::new(term.clone()));
+    //       tt.borrow_mut().incoming_len += 1;
+    //       // term.outgoing_len += 1;
+    //     }
+    //   },
+    //   None => return Err(SkiffError::ParseError("Unknown link".to_string()))
+    // }
+  }
+  
+  Ok(())
+}
 
 fn findterm(lex: &Lexicon, name: &str) -> Option<Rc<RefCell<Term>>> {
   let mut _name = String::with_capacity(name.len());

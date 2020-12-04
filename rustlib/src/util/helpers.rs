@@ -54,8 +54,7 @@ pub fn cpad(s: &[char], c: char) -> usize {
 }
 
 pub fn cpos(s: &[char], c: char) -> i32 {
-	let i: usize;
-
+	// println!("cpos = {:?}", &s);
 	for i in 0..s.len() {
 		if s[i] == c { return i as i32; }
 	}
@@ -142,6 +141,7 @@ pub fn strm(s: &[char]) -> Option<String> {
 }
 
 pub fn spos(a: &[char], b: &str) -> i32 {
+	// println!("a = {:?}", &a);
 	let alen = a.len() - 1;
 	let blen = b.len();
 	
@@ -167,18 +167,25 @@ pub fn sint(s: &[char], len: usize) -> usize {
 	return num;
 }
 
-// int
-// surl(char* s)
-// {
-// 	return spos(s, "://") >= 0 || spos(s, "./") >= 0;
-// }
+pub fn surl(s: &str) -> bool {
+	let _s = s.chars().collect::<Vec<char>>();
+	// println!("surl = {:?}", &s);
+	return spos(&_s, "://") >= 0 || spos(&_s, "./") >= 0;
+}
 
-// pub fn scpy(src: &str, dest: &str) {
+// pub fn scpy(src: &[char], dest: &[char]) -> Vec<char> {
 // 	let mut i = 0;
-// 	while (dest[i] = src[i]) != '\0' {
-// 		i += 1;
+// 	let mut _dest = dest.to_vec();
+// 	while _dest.len() == 0 {
+// 		_dest.insert(i, src[i]);
+// 		if _dest[i] != '\0' {
+// 			println!("dest = {:?}", _dest);
+// 			i += 1;
+// 		} else {
+// 			break;
+// 		}
 // 	}
-// 	return dest;
+// 	return _dest;
 // }
 
 pub fn sstr<'a>(src: &[char], from: usize, to: usize) -> String {
@@ -198,11 +205,12 @@ pub fn sstr<'a>(src: &[char], from: usize, to: usize) -> String {
 // }
 
 pub fn ccat(dest: &[char], c: char) -> Vec<char> {
-	let len = dest.len() - 1;
+	let len = dest.len();
 	let mut res = dest.to_vec();
-	res[len] = c;
+	res.insert(len, c);
 	res.insert(len + 1, '\0');
 	return res;
+	
 }
 
 // char*
