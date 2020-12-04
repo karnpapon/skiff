@@ -36,7 +36,7 @@ LIFESTYLE
   TYPE : index
   BREF : The collection of diary entries on Lifestyle.
   BODY
-    <p>I rarely find myself blogging, but from time to time, I will write a long-form reply to someone on a forum, I've collected these entries here. You can find more collected questions & answers in the {faqs}.</p>
+    <p>I rarely find myself blogging, but from time to time, I will write a long-form reply to someone on a forum, I've collected these entries here. You can find more collected questions & answers in the </p>
     <q>Stop buying the unnecessary,<br/>stop doing the non-essential.</q>
 
 LANGUAGE
@@ -44,7 +44,7 @@ LANGUAGE
   TYPE : portal
   BREF : Various Language notes on natural, synthetic and programming languages.
   BODY
-    <p>programming languages {programming here}. Additional notes can be found in the {notebook}.</p>
+    <p>programming languages Additional notes can be found in the.</p>
     {^img refs/bolak.svg 200}
     <q>Kolik jazyků znáš, <br />tolikrát jsi člověkem.</q>
     <h5>—Tomáš Garrigue Masaryk</h5>
@@ -59,5 +59,28 @@ MOOGLE
   BREF : Moogle is a 3D wireframe toolkit for Plan9.
   TYPE : album
   BODY
-    <p>Moogle is a minimal <b>3D wireframe tool</b> designed to be used alongside its companion tool {Noodle}, on {Plan9}. It offers a handful of basic geometry drawing functions, it was written in {plan9_c Plan9 C}, and was inspired by {Graf3DScene}.</p>
+    <p>Moogle is a minimal <b>3D wireframe tool</b> designed to be used alongside its companion tool It offers a handful of basic geometry drawing functions, it was written in and was inspired.</p>
     {^src moogle.c}
+
+TRACKER
+  HOST : meta
+  BREF : The Tracker shows latest changes of the journal.
+  BODY
+    <p>This wiki uses the find today's date and learn more about the time formats to find active projects.</p>
+  LINK
+    rss feed : https://wiki.xxiivv.com/links/rss.xml
+    twtxt feed : https://wiki.xxiivv.com/links/tw.txt
+
+
+PINO
+  HOST : hundred rabbits
+  TYPE : album
+  BREF : Pino is a Yamaha 33 sailboat built in 1982.
+  BODY
+    <q>There's no such thing as bad weather, only inappropriate clothing.</q>
+    <h5>—Linda Geddes, Living without artificial light</h5>
+  LINK
+    details : https://git.sr.ht/~rabbits/pino
+    patreon : https://patreon.com/100
+  LIST
+    pino details

@@ -190,7 +190,7 @@ pub fn surl(s: &str) -> bool {
 
 pub fn sstr<'a>(src: &[char], from: usize, to: usize) -> String {
 	let _a = &src[from..];
-	let s: String  = _a.into_iter().take(to).collect();
+	let s: String  = _a.into_iter().take(to + 1).collect();
 	return s;
 }
 
