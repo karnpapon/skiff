@@ -141,15 +141,14 @@ pub fn strm(s: &[char]) -> Option<String> {
 }
 
 pub fn spos(a: &[char], b: &str) -> i32 {
-	// println!("a = {:?}", &a);
+	let target: Vec<char> = b.chars().collect();
 	let alen = a.len() - 1;
-	let blen = b.len();
-	
+	let blen = b.len() - 1;
 	for i in 0..alen {
 		for j in 0..blen {
 			if a[i + j] == '\0' { return -1; }
-			if a[i + j] != b.chars().nth(j).unwrap() { break; }
-			if j == blen - 1 { 
+			if a[i + j] != target[j] { break; }
+			if j == (blen - 1) { 
 				return i as i32; 
 			}
 		}
@@ -190,7 +189,7 @@ pub fn surl(s: &str) -> bool {
 
 pub fn sstr<'a>(src: &[char], from: usize, to: usize) -> String {
 	let _a = &src[from..];
-	let s: String  = _a.into_iter().take(to + 1).collect();
+	let s: String  = _a.into_iter().take(to).collect();
 	return s;
 }
 
@@ -213,9 +212,7 @@ pub fn ccat(dest: &[char], c: char) -> Vec<char> {
 	
 }
 
-// char*
-// scat(char* dest, const char* src)
-// {
+// pub fn scat(dest: &str, src: &str) {
 // 	char* ptr = dest + slen(dest);
 // 	while(*src != '\0')
 // 		*ptr++ = *src++;

@@ -12,6 +12,7 @@ use std::path::Path;
 
 
 mod util;
+use std::error::Error;
 use util::error::SkiffError;
 use util::helpers;
 use util::scanner::{ Scanner, };
@@ -70,7 +71,6 @@ pub struct Term{
 	incoming_len: i32,
 	outgoing_len: i32
 }
-
 
 #[derive(Debug)]
 pub struct Log {
@@ -139,6 +139,10 @@ impl Term {
       outgoing_len: 0,
     }
   }
+
+  fn get_name(&self) -> String {
+    self.name.to_string()
+  }
 }
 
 impl Log {
@@ -179,6 +183,10 @@ impl Lexicon {
       len: 0,
       terms: vec![Rc::new(RefCell::new(Term::new()))]
     }
+  }
+
+  fn get_term_name(){
+    // 
   }
 }
 
@@ -335,18 +343,19 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
       lexicon.len += 1;
     } else if depth == 2 {
       t = &mut lexicon.terms[(lexicon.len - 1) as usize];
-      if helpers::spos(&scanner.source, "HOST : ") >= 0{
+      let _scanner = &scanner.source;
+      if helpers::spos(&_scanner, "HOST : ") >= 0{
         t.borrow_mut().host = helpers::sstr(&scanner.source, 9, len - 9);
       }
-      if helpers::spos(&scanner.source, "BREF : ") >= 0{
+      if helpers::spos(&_scanner, "BREF : ") >= 0{
         t.borrow_mut().bref = helpers::sstr(&scanner.source, 9, len - 9);
       }
-      if helpers::spos(&scanner.source, "TYPE : ") >= 0{
+      if helpers::spos(&_scanner, "TYPE : ") >= 0{
         t.borrow_mut().r#type = helpers::sstr(&scanner.source, 9, len - 9); 
       }
-      catch_body = helpers::spos(&scanner.source, "BODY") >= 0;
-      catch_link = helpers::spos(&scanner.source, "LINK") >= 0;
-      catch_list = helpers::spos(&scanner.source, "LIST") >= 0;
+      catch_body = helpers::spos(&_scanner, "BODY") >= 0;
+      catch_link = helpers::spos(&_scanner, "LINK") >= 0;
+      catch_list = helpers::spos(&_scanner, "LIST") >= 0;
     } else if depth == 4 { 
       t = &mut lexicon.terms[(lexicon.len - 1) as usize];
       /* Body */
@@ -470,10 +479,9 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
   
 	for i in 0..lex.len {
     let lex_t = &lex.terms[i as usize];
-    let lext_t_clone = lex_t.clone();
+    let lext_t_clone = lex_t.borrow().body.clone();
     
-    for (idx, j) in lex_t.borrow().body.iter().enumerate() {
-      // ftemplate(NULL, lex, t, t->body[j]);
+    for (idx, j) in lext_t_clone.iter().enumerate() {
       ftemplate(None, lex, lex_t.clone(), j).unwrap();
     }
       
@@ -481,15 +489,21 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
     match findterm(lex, &host_name) {
       Some(t) => { 
         let children_len = lex_t.borrow().children_len as usize;
-        lex_t.borrow_mut().parent = Some(Box::new(t.clone())); 
-        lex_t.borrow_mut().children.insert(children_len, Some(Box::new(t.clone())));
+        // lex_t.borrow_mut().parent = Some(Box::new(t.clone())); 
+        // lex_t.borrow_mut().parent
+        // .as_ref()
+        // .unwrap()
+        // .borrow_mut()
+        // .children.insert(children_len, Some(Box::new(lex_t.clone())));
         lex_t.borrow_mut().children_len += 1;
+        // println!("lex_t = {:#?}", &lex_t);
       },
       None => { 
         lex_t.borrow_mut().parent = None;
         // return Err(SkiffError::ParseError("Unknown term host = {}, , t->host".to_string()))
       }
     }
+    
   };
   
   println!("glossary({} entries) ", glo.len); 
@@ -514,7 +528,7 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
 		}
   }
   
-  println!("lex = {:#?}", lex);
+  // println!("lex = {:#?}", lex);
   // println!("jou = {:#?}", jou);
   Ok(())
 }
@@ -637,43 +651,203 @@ fn fplink(file: Option<String>, lex: &Lexicon, term: Rc<RefCell<Term>>, s: &[cha
   let mut name: Vec<char> = vec![];
 	/* find target and name */
 	if split == -1 {
-    target = helpers::sstr(s, 0, helpers::slen(s));
+    target = helpers::sstr(s, 0, helpers::slen(s) + 1);
     name = target.chars().collect::<Vec<char>>();
 	} else {
     target = helpers::sstr(s, 0, split as usize).trim_end().to_string();
-		name = helpers::sstr(s, (split + 1) as usize, helpers::slen(s) - ( split as usize)  ).chars().collect::<Vec<char>>();
+    name = helpers::sstr(s, (split + 1) as usize, helpers::slen(s) - ( split as usize)  ).chars().collect::<Vec<char>>();
 	}
 	/* output */
 	if helpers::surl(&target) {
+    // println!("capture surl = {:?}", &target);
 		if file.is_some() {
 			// fprintf(f, "<a href='%s' target='_blank'>%s</a>", target, name);
     }
 	} else {
-    match findterm(&lex, &target){
-      Some(tt) => {
+    match findterm(lex, &target){
+      Some(t) => {
         if file.is_some() {
           // fprintf(f, "<a href='%s.html'>%s</a>", tt->filename, name);
         } else {
-          let mut _tt = tt.borrow_mut();
-          let _tt_len = _tt.incoming_len as usize;
-          _tt.incoming.insert(_tt_len, Box::new(term.clone()));
-          _tt.incoming_len += 1;
-          // term.outgoing_len += 1;
+          let mut _term = t.borrow_mut();
+          let len = _term.incoming_len as usize;
+          _term.outgoing_len += 1;
+          _term.incoming.insert(len, Box::new(t.clone()));
+          _term.incoming_len += 1;
         }
       },
       None => return Err(SkiffError::ParseError("Unknown link".to_string()))
     }
+
   }
+
+  Ok(())
+}
+
+fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError>{
+  let mut file;
+  let mut file_writer;
+
+	println!("Building | ");
+	println!("{} pages ", lex.len);
+	for i in 0..lex.len {
+  
+    let filepath: String = format!("{}/{}.{}", "../site/", &lex.terms[i as usize].borrow().filename, "html");
+    let path = Path::new(&filepath);
+    let display = path.display();
+    file_writer = match File::create(path) {
+      Err(why) => panic!("couldn't create {}: {}", display, why),
+      Ok(f) => f,
+    };
+  
+    file = LineWriter::new(file_writer);
+		build_page(&mut file, lex, &lex.terms[i as usize].borrow_mut(), jou).unwrap();
+	}
+  // println!("2 feeds ");
+  // file = File::open("../links/rss.xml").expect("build: Could not open file -> rss.xml" );
+  // fprss(f, jou);
+  
+  // file = File::open("../links/tw.txt").expect("build: Could not open file -> tw.txt" );
+  // fptwtxt(f, jou);
   
   Ok(())
 }
 
+fn build_page(file: &mut LineWriter<File>, lex: &Lexicon, term: &Term, jou: &Journal) -> Result<(), std::io::Error> {
+
+  file.write(b"<!DOCTYPE html>")?;
+  file.write(b"<html lang='en'>")?;
+  file.write(b"<head>")?;
+  file.write(b"<meta charset='utf-8'>")?;
+  file.write_fmt(format_args!("<meta name='description' content='{}'/>", term.bref))?;
+  file.write(b"<meta name='thumbnail' content='\" DOMAIN \"media/services/thumbnail.jpg' />")?;
+  file.write(b"<link rel='alternate' type='application/rss+xml' title='RSS Feed' href='../links/rss.xml' />")?;
+  file.write(b"<link rel='stylesheet' type='text/css' href='../links/main.css'>")?;
+  file.write(b"<link rel='shortcut icon' type='image/png' href='../media/services/icon.png'>")?;
+  file.write_fmt(format_args!("<title>\" NAME \" — {}</title>", term.name))?;
+  file.write(b"</head>")?;
+  file.write(b"<body>")?;
+  file.write(b"<header><a href='home.html'><img src='../media/identity/xiv28.gif' alt='\" NAME \"' height='29'></a></header>")?;
+  // build_nav(file, term).unwrap();
+  file.write(b"<main>")?;
+	// build_banner(f, jou, t, 1);
+	// build_body(f, lex, t);
+	// build_include(f, t);
+	// /* templated pages */
+	// if(scmp(t->type, "portal"))
+	// 	build_portal(f, jou, t);
+	// else if(scmp(t->type, "album"))
+	// 	build_album(f, jou, t);
+	// else if(scmp(t->type, "index"))
+	// 	build_index(f, lex, t);
+	// /* special pages */
+	// if(scmp(t->name, "now"))
+	// 	build_special_now(f, lex, jou);
+	// else if(scmp(t->name, "home"))
+	// 	build_special_home(f, jou);
+	// else if(scmp(t->name, "calendar"))
+	// 	build_special_calendar(f, jou);
+	// else if(scmp(t->name, "tracker"))
+	// 	build_special_tracker(f, jou);
+	// else if(scmp(t->name, "journal"))
+	// 	build_special_journal(f, jou);
+	// else if(scmp(t->name, "index"))
+	// 	build_special_index(f, lex);
+	// build_list(f, t);
+	// build_links(f, t);
+	// build_incoming(f, t);
+	// build_horaire(f, jou, t);
+	file.write(b"</main>")?;
+  file.write(b"<footer>")?;
+  file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
+  file.write(b"<a href='http://webring.xxiivv.com/'><img src='../media/icon/rotonde.svg' width='30'/></a>")?;
+  file.write(b"<a href='https://merveilles.town/@neauoire'><img src='../media/icon/merveilles.svg' width='30'/></a>")?;
+  file.write(b"<a href='https://github.com/neauoire'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
+  file.write(b"<span><a href='devine_lu_linvega.html'>Devine Lu Linvega</a> \xA9 2020 \x97 <a href='about.html'>BY-NC-SA 4.0</a></span>")?;
+  file.write(b"</footer>")?;
+  file.write(b"</body></html>")?;
+  
+  Ok(())
+}
+
+fn build_nav(f: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+	// if !&term.parent.is_some() {
+  //   return Err(SkiffError::ParseError("Missing parent , t->name".to_string()));
+  //   return Err();
+  // }
+
+  println!("parent = {:?}", &term.parent);
+
+  &term.parent.as_ref().unwrap();
+
+	// if !&term.parent.as_ref().unwrap().borrow().parent.is_some() {
+  //   return Err(SkiffError::ParseError("Missing parent , t->parent->name".to_string()));
+  // } 
+
+  f.write(b"<nav>")?;
+
+	// if &term.parent.as_ref().unwrap().borrow().parent.as_ref().unwrap().borrow().name == &term.parent.as_ref().unwrap().borrow().name {
+	// 	// build_nav_part(f, &t.parent.unwrap().borrow_mut().parent.unwrap().borrow_mut(), t);
+  // } else {
+	// 	// build_nav_part(f, t.parent.parent, t.parent);
+  // }
+
+	// if t.parent.parent.name != t.parent.name {
+	// 	build_nav_part(f, t.parent, t);
+  // }
+
+	// if t.parent.name != t.name {
+	// 	build_nav_part(f, t, t);
+  // }
+
+  f.write(b"</nav>")?;
+  
+  Ok(())
+}
+
+fn build_nav_part(f: &mut LineWriter<File>, term: &Term, target: &Term) -> Result<(), SkiffError> {
+  f.write(b"<ul>").expect_err("build_nav_part error: <ul>");
+	for i in 0..term.children_len {
+		if &term.children[i as usize].as_ref().unwrap().borrow().name == &term.name {
+			continue; /* Paradox */
+    }
+
+    // add symbol "/" at the end as a current actived (eg. `about/` ).
+		if &term.children[i as usize].as_ref().unwrap().borrow().name == &target.name {
+			// fprintf(f, "<li><a href='%s.html'>%s/</a></li>", t.children[i as usize].filename, t.children[i as usize].name);
+    } else {
+			// fprintf(f, "<li><a href='%s.html'>%s</a></li>", t.children[i as usize].filename, t.children[i as usize].name);
+    }
+  }
+  f.write(b"</ul>").expect_err("build_nav_part error: </ul>");
+  Ok(())
+}
+
+
+// fn file_prompt<'a>(dir: &str, filename: &str, ext: &str, writer: &'a LineWriter<&'a File>, file: &'a File ) 
+//   -> Result<&'a File, std::io::Error> {
+//   // let mut filepath: vec![];
+//   let filepath: String = format!("{}/{}.{}", dir, filename, ext);
+//   let path = Path::new(&filepath);
+//   let display = path.display();
+//   file = match File::create(path) {
+//     Err(why) => panic!("couldn't create {}: {}", display, why),
+//     Ok(f) => &f,
+//   };
+
+//   // writer = LineWriter::new(file);
+
+//   return Ok(&file);
+// }
+
+
 fn findterm(lex: &Lexicon, name: &str) -> Option<Rc<RefCell<Term>>> {
   let mut _name = String::with_capacity(name.len());
   _name  = name.to_lowercase().replace("_", " ");
-	for i in 0..lex.len {
-    if &_name == &lex.terms[i as usize].borrow().name  {
-      return Some(lex.terms[i as usize].clone());
+  for (i, term) in lex.terms.iter().enumerate() {
+    let mut_s = &*term.borrow(); 
+    if _name == mut_s.name  {
+      return Some(term.clone());
     }
   }
 	return None;
@@ -704,5 +878,5 @@ fn main() {
   
   parse(all_lists, all_terms, all_logs);
   link(all_lists, all_terms, all_logs).unwrap();
-  
+  build(all_terms, all_logs).unwrap();  
 }
