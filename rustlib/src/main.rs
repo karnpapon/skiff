@@ -794,7 +794,7 @@ fn build_nav(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Err
 
         if t_parent_parent_name != t_parent_name {
           let t_parent_parent_clone = t_parent_parent.clone();
-          build_nav_part(file, &t_parent_parent_clone.borrow(), &term)?;
+          build_nav_part(file, &t_parent.borrow(), &term)?;
         } 
 
         if t_parent_name != term.name.to_string() {
@@ -825,18 +825,16 @@ fn build_nav(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Err
 fn build_nav_part(file: &mut LineWriter<File>, term: &Term, target: &Term) -> Result<(),  Box<dyn Error>> {
   file.write(b"<ul>")?;
 	for i in 0..term.children_len {
-    let term_clone = term.children[i as usize].as_ref().unwrap().borrow().clone();
-    println!("&term.name = {}", &term.name);
-		if &term_clone.name == &term.name {
+    let term_children = term.children[i as usize].as_ref().unwrap().borrow().clone();
+		if &term_children.name == &term.name {
 			continue; /* Paradox */
     }
 
-    // add symbol "/" at the end as a current actived (eg. `about/` ).
-    let _t = &term.children[i as usize].as_ref().unwrap().borrow();
-    let filename = _t.filename.to_string();
-    let name = _t.name.to_string();
-
-		if &_t.name == &target.name.to_string() {
+    let filename = term_children.filename.to_string();
+    let name = term_children.name.to_string();
+    
+		if &term_children.name == &target.name.to_string() {
+      // add symbol "/" at the end as a current actived (eg. `about/` ).
       file.write_fmt(format_args!("<li><a href='{}.html'>{}/</a></li>", filename, name))?;
     } else {
       file.write_fmt(format_args!("<li><a href='{}.html'>{}</a></li>", filename, name))?;
