@@ -3,6 +3,9 @@
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust"
+  },
   "editor.formatOnSave": true,
   "editor.tabSize": 2
 }
