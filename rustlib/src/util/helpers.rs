@@ -31,15 +31,14 @@ fn cans(c: &char) -> bool {
 // 	return c >= 'a' && c <= 'z' ? c - ('a' - 'A') : c;
 // }
 
-
 /// check length of string (until encounter null-terminator) and return total len.
-/// 
+///
 /// TODO: handle passing empty string.
 pub fn slen(s: &[char]) -> usize {
 	let mut n: usize = 0;
-	while s[n] != '\0' && s.get(n+1).is_some() { 
+	while s[n] != '\0' && s.get(n + 1).is_some() {
 		n += 1;
-	};
+	}
 	return n;
 }
 
@@ -56,9 +55,10 @@ pub fn cpad(s: &[char], c: char) -> usize {
 pub fn cpos(s: &[char], c: char) -> i32 {
 	// println!("cpos = {:?}", &s);
 	for i in 0..s.len() {
-		if s[i] == c { return i as i32; }
+		if s[i] == c {
+			return i as i32;
+		}
 	}
-	
 	return -1;
 }
 
@@ -86,7 +86,7 @@ pub fn cpos(s: &[char], c: char) -> i32 {
 
 pub fn slca(s: &mut [char]) -> String {
 	let mut _s = vec![];
-	for i in 0..slen(s){
+	for i in 0..slen(s) {
 		_s.push(clca(s[i]));
 	}
 
@@ -108,14 +108,17 @@ pub fn scsw<'a>(s: &'a str, a: &str, b: &str) -> String {
 	return result;
 }
 
-
 pub fn scmp(a: &str, b: &str) -> bool {
 	let l = a.len();
+	let _a = a.chars().collect::<Vec<char>>();
+	let _b = b.chars().collect::<Vec<char>>();
 	if l != b.len() {
 		return false;
 	}
 	for i in 0..l {
-		if a.chars().nth(i).unwrap() != b.chars().nth(i).unwrap() { return false;}
+		if _a[i] != _b[i] {
+			return false;
+		}
 	}
 	return true;
 }
@@ -129,15 +132,16 @@ pub fn sans(s: &[char]) -> usize {
 	return 1;
 }
 
-
 /// return only title (indent = 0).
 pub fn strm(s: &[char]) -> Option<String> {
 	let mut i: usize = 0;
-	if s.len() == 0 { return None }
-	while cisp(&s[i]) { i += 1 };
-	return Some(s.into_iter()
-					.map(|i| i.to_string())
-					.collect::<String>());
+	if s.len() == 0 {
+		return None;
+	}
+	while cisp(&s[i]) {
+		i += 1
+	}
+	return Some(s.into_iter().map(|i| i.to_string()).collect::<String>());
 }
 
 pub fn spos(a: &[char], b: &str) -> i32 {
@@ -146,10 +150,14 @@ pub fn spos(a: &[char], b: &str) -> i32 {
 	let blen = b.len() - 1;
 	for i in 0..alen {
 		for j in 0..blen {
-			if a[i + j] == '\0' { return -1; }
-			if a[i + j] != target[j] { break; }
-			if j == (blen - 1) { 
-				return i as i32; 
+			if a[i + j] == '\0' {
+				return -1;
+			}
+			if a[i + j] != target[j] {
+				break;
+			}
+			if j == (blen - 1) {
+				return i as i32;
 			}
 		}
 	}
@@ -189,19 +197,20 @@ pub fn surl(s: &str) -> bool {
 
 pub fn sstr<'a>(src: &[char], from: usize, to: usize) -> String {
 	let _a = &src[from..];
-	let s: String  = _a.into_iter().take(to).collect();
+	let s: String = _a.into_iter().take(to).collect();
 	return s;
 }
 
-// int
-// afnd(char* src[], int len, char* val)
-// {
-// 	int i;
-// 	for(i = 0; i < len; i++)
-// 		if(scmp(src[i], val))
-// 			return i;
-// 	return -1;
-// }
+pub fn afnd(src: &Vec<String>, len: usize, val: &str) -> i32 {
+	println!("src = {:#?}", src);
+	let _len = len as i32;
+	for i in 0.._len {
+		if scmp(&src[i as usize], val) {
+			return i as i32;
+		}
+	}
+	return -1;
+}
 
 pub fn ccat(dest: &[char], c: char) -> Vec<char> {
 	let len = dest.len();
@@ -209,7 +218,6 @@ pub fn ccat(dest: &[char], c: char) -> Vec<char> {
 	res.insert(len, c);
 	res.insert(len + 1, '\0');
 	return res;
-	
 }
 
 // pub fn scat(dest: &str, src: &str) {
@@ -221,7 +229,6 @@ pub fn ccat(dest: &[char], c: char) -> Vec<char> {
 // }
 
 // /* old */
-
 // void
 // swapstr(char* src, char* dest, char* a, char* b)
 // {

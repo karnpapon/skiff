@@ -16,6 +16,7 @@ use std::io::LineWriter;
 use std::io::{self, BufReader, Read, Write};
 use std::path::Path;
 use std::rc::Rc;
+use std::time::{Duration, SystemTime};
 
 mod util;
 use std::error::Error;
@@ -80,7 +81,7 @@ pub struct Term {
 #[derive(Clone, Debug)]
 pub struct Log {
   date: String,
-  // rune: String,
+  rune: String,
   code: i32,
   host: String,
   pict: i32,
@@ -153,7 +154,7 @@ impl Log {
   pub fn new() -> Log {
     Log {
       date: String::with_capacity(6),
-      // rune: String::new(),
+      rune: String::new(),
       code: 0,
       host: String::with_capacity(KEY_BUF_LEN),
       pict: 0,
@@ -812,22 +813,19 @@ fn build_page(
     _ => {}
   };
   /* special pages */
-  // if(scmp(t->name, "now"))
-  // 	build_special_now(f, lex, jou);
-  // else if(scmp(t->name, "home"))
-  // 	build_special_home(f, jou);
-  // else if(scmp(t->name, "calendar"))
-  // 	build_special_calendar(f, jou);
-  // else if(scmp(t->name, "tracker"))
-  // 	build_special_tracker(f, jou);
-  // else if(scmp(t->name, "journal"))
-  // 	build_special_journal(f, jou);
-  // else if(scmp(t->name, "index"))
-  // 	build_special_index(f, lex);
-  // build_list(f, t);
-  // build_links(f, t);
-  // build_incoming(f, t);
-  // build_horaire(f, jou, t);
+  match term.name.as_ref() {
+    // "now" => build_special_now(file, lex, jou).unwrap(),
+    "home" => build_special_home(file, jou).unwrap(),
+    "calendar" => build_special_calendar(file, jou).unwrap(),
+    "tracker" => build_special_tracker(file, jou).unwrap(),
+    "journal" => build_special_journal(file, jou).unwrap(),
+    "index" => build_special_index(file, lex).unwrap(),
+    _ => {}
+  };
+  build_list(file, term).unwrap();
+  build_links(file, term).unwrap();
+  build_incoming(file, term).unwrap();
+  // build_horaire(file, jou, term).unwrap();
   file.write(b"</main>")?;
   file.write(b"<footer>")?;
   file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
@@ -950,6 +948,124 @@ fn build_include(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn
   Ok(())
 }
 
+fn build_list(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+  for (i, doc) in term.docs.iter().enumerate() {
+    if let Some(d) = doc {
+      let _doc = d.as_ref().borrow().clone();
+      file.write_fmt(format_args!("<h3>{}</h3>", _doc.name))?;
+      file.write(b"<ul>")?;
+      for j in 0.._doc.len {
+        let _j = j as usize;
+        if _doc.keys[_j].chars().nth(0).unwrap() == '\0' {
+          file.write_fmt(format_args!("<li>{}</li>", _doc.vals[_j]))?;
+        } else if helpers::surl(&_doc.vals[_j]) {
+          file.write_fmt(format_args!(
+            "<li><a href='{}'>{}</a></li>",
+            _doc.vals[_j], _doc.keys[_j]
+          ))?;
+        } else {
+          file.write_fmt(format_args!(
+            "<li><b>{}</b>: {}</li>",
+            _doc.keys[_j], _doc.vals[_j]
+          ))?;
+        }
+      }
+      file.write(b"</ul>")?;
+    }
+  }
+  Ok(())
+}
+
+fn build_links(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+  if term.link.len < 1 {
+    return Ok(());
+  }
+  file.write(b"<ul>")?;
+  for i in 0..term.link.len {
+    file.write_fmt(format_args!(
+      "<li><a href='{}' target='_blank'>{}</a></li>",
+      term.link.vals[i as usize], term.link.keys[i as usize]
+    ))?
+  }
+  file.write(b"</ul>")?;
+  Ok(())
+}
+
+fn build_incoming(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+  if term.incoming_len < 1 {
+    return Ok(());
+  }
+  file.write(b"<p>")?;
+  file.write_fmt(format_args!("<i>incoming({})</i>: ", term.incoming_len))?;
+  for i in 0..term.incoming_len {
+    let incoming = &term.incoming[i as usize].borrow();
+    file.write_fmt(format_args!(
+      "<a href='{}.html'>{}</a> ",
+      incoming.filename, incoming.name
+    ))?;
+  }
+  file.write(b"</p>")?;
+  Ok(())
+}
+
+// fn build_horaire(
+//   file: &mut LineWriter<File>,
+//   jou: &Journal,
+//   term: &Term,
+// ) -> Result<(), Box<dyn Error>> {
+//   let mut len = 0;
+//   let mut events_len = 0;
+//   let mut ch = 0;
+//   let mut fh = 0;
+
+//   for l in jou.logs.iter() {
+//     let log = l.as_ref().borrow().clone();
+//     let log_term = log.term.as_ref().unwrap().borrow().clone();
+//     if log_term.name != term.name && log.term.parent != term {
+//       continue;
+//     }
+//     if log.rune == '+'.to_string() {
+//       events_len += 1;
+//     }
+//     ch += (log.code / 10) % 10;
+//     fh += log.code % 10;
+//     len += 1;
+//   }
+//   /* Updated */
+//   // if len < 2 || helpers::slen(&term.date_last.borrow()) == 0 {
+//   if len < 2 || term.date_last.borrow().len() == 0 {
+//     return Ok(());
+//   }
+//   file.write(b"<p>")?;
+//   file.write_fmt(format_args!(
+//     "<i>Last update on <a href='tracker.html'>{}</a>, edited {} times. +{}/{}fh</i>",
+//     term.date_last.borrow().to_string(),
+//     len,
+//     ch,
+//     fh
+//   ))?;
+//   // build_lifeline(f, t);
+//   file.write(b"</p>")?;
+//   /* Events */
+//   if events_len < 1 {
+//     return Ok(());
+//   }
+//   file.write(b"<ul>")?;
+//   for l in jou.logs.iter() {
+//     let log = l.as_ref().borrow().clone();
+//     let log_term = log.term.as_ref().unwrap().borrow().clone();
+//     if log.rune != '+'.to_string() {
+//       continue;
+//     }
+//     if log_term.name != term.name && log_term.parent.unwrap().borrow().name != term.name {
+//       continue;
+//     }
+//     file.write_fmt(format_args!("<li>{} — {}</li>", log.date, log.name))?;
+//   }
+//   file.write(b"</ul>")?;
+//   Ok(())
+// }
+
 fn build_portal(
   file: &mut LineWriter<File>,
   jou: &Journal,
@@ -1008,6 +1124,194 @@ fn build_index(
   Ok(())
 }
 
+fn build_special_home(
+  file: &mut LineWriter<File>,
+  journal: &Journal,
+) -> Result<(), Box<dyn Error>> {
+  let mut events = 0;
+  for i in 0..5 {
+    if journal.logs[i].borrow().rune == '+'.to_string() {
+      events = 1;
+      break;
+    }
+  }
+  if events > 0 {
+    return Ok(());
+  }
+  file.write(b"<h2>Events</h2>")?;
+  file.write(b"<ul>")?;
+  for i in 0..5 {
+    let jou_log = journal.logs[i].as_ref().borrow().clone();
+    if jou_log.rune != '+'.to_string() {
+      continue;
+    }
+    file.write_fmt(format_args!(
+      "<li><a href='{}.html'>{}</a>{}</li>",
+      jou_log.term.unwrap().borrow().filename,
+      jou_log.date,
+      jou_log.name
+    ))?;
+  }
+  file.write(b"</ul>")?;
+
+  Ok(())
+}
+
+fn build_special_calendar(
+  file: &mut LineWriter<File>,
+  journal: &Journal,
+) -> Result<(), Box<dyn Error>> {
+  let mut last_year = 0;
+  file.write(b"<ul>")?;
+  for log in journal.logs.iter() {
+    let journal_log = log.as_ref().borrow().clone();
+    if log.borrow().rune != '+'.to_string() {
+      continue;
+    }
+
+    let date = journal_log.date.chars().collect::<Vec<char>>();
+    if last_year != helpers::sint(&date, 2) {
+      file.write(b"</ul><ul>")?;
+    }
+
+    file.write_fmt(format_args!(
+      "<li><a href='{}.html'>{}</a> {}</li>",
+      journal_log.term.unwrap().borrow().filename,
+      journal_log.date,
+      journal_log.name
+    ))?;
+    last_year = helpers::sint(&date, 2);
+  }
+  file.write(b"</ul>")?;
+  Ok(())
+}
+
+fn build_special_tracker(
+  file: &mut LineWriter<File>,
+  journal: &Journal,
+) -> Result<(), Box<dyn Error>> {
+  let mut known_id: usize = 0;
+  let mut last_year = 20;
+  file.write(b"<ul>")?;
+  let mut known = Vec::with_capacity(LEXICON_BUFFER);
+  for log in journal.logs.iter() {
+    let journal_log = log.as_ref().borrow().clone();
+    let term = journal_log.term.as_ref().unwrap().borrow().clone();
+    let date = journal_log.date.chars().collect::<Vec<char>>();
+    if known.len() > 0 {
+      if helpers::afnd(&known, known_id, &term.name) > -1 {
+        continue;
+      }
+    }
+    if known_id >= LEXICON_BUFFER {
+      println!("Warning: Reached tracker buffer\n");
+      break;
+    }
+    if last_year != helpers::sint(&date, 2) {
+      file.write(b"</ul><ul>")?;
+    }
+    file.write(b"<li>")?;
+    file.write_fmt(format_args!(
+      "<a href='{}.html'>{}</a> — last update {}",
+      &term.filename, &term.name, &journal_log.date
+    ))?;
+
+    // build_lifeline(f, journal_log.term);
+    file.write(b"</li>")?;
+    last_year = helpers::sint(&date, 2);
+    &known.push(term.name.to_string());
+    known_id += 1;
+  }
+  file.write(b"</ul>")?;
+  Ok(())
+}
+
+fn build_special_journal(
+  file: &mut LineWriter<File>,
+  journal: &Journal,
+) -> Result<(), Box<dyn Error>> {
+  let mut count = 0;
+  for log in journal.logs.iter() {
+    let journal_log = log.as_ref().borrow().clone();
+    if count > 20 {
+      break;
+    }
+    if journal_log.pict == 0 {
+      continue;
+    }
+    build_log_pict(file, &journal_log, 1)?;
+    count += 1;
+  }
+  Ok(())
+}
+
+fn build_special_index(file: &mut LineWriter<File>, lex: &Lexicon) -> Result<(), Box<dyn Error>> {
+  file.write(b"<ul>")?;
+  print_term_details(file, &lex.terms[0].as_ref().borrow().clone(), &mut 0)?;
+  file.write(b"</ul>")?;
+  Ok(())
+}
+
+// fn build_special_now(file: &mut LineWriter<File>, lex: &Lexicon, jou: &Journal) -> Result<(), Box<dyn Error>> {
+//   let mut projects_len = 0;
+//   let mut pname = vec![];
+//   let mut pfname = vec![];
+//   let sum_value = 0;
+//   let pval = vec![];
+//   let pmaxval = 0;
+//   let mut epoch = SystemTime::now();
+
+// 	for i in 0..LOGS_RANGE {
+// 		let index = 0;
+// 		let l = jou.logs[i];
+// 		if epoch - arvelie_to_epoch(l.date) > LOGS_RANGE {
+// 			break;
+//     }
+// 		index = afnd(pname, projects_len, l.term.name);
+// 		if index < 0 {
+// 			index = projects_len;
+// 			pname[index] = l.term.name;
+// 			pfname[index] = l.term.filename;
+// 			pval[index] = 0;
+// 			projects_len += 1;
+// 		}
+// 		pval[index] += l.code % 10;
+// 		sum_value += l.code % 10;
+// 	}
+// 	/* find most active with a photo */
+// 	for i in 0..projects_len {
+// 		if finddiary(jou, findterm(lex, pname[i])) && pval[i] > pmaxval {
+// 			pmaxval = pval[i];
+//     }
+// 	}
+// 	for i in 0..projects_len {
+// 		if pval[i] != pmaxval {
+// 			continue;
+//     }
+// 		build_log_pict(f, finddiary(jou, findterm(lex, pname[i])), 1);
+// 	}
+// 	fprintf(
+// 	    f,
+// 	    "<p>This data shows the distribution of <b>%.0f hours over %d projects</b>, "
+// 	    "recorded during the last %d days, for an average of %.1f work hours per day "
+// 	    "and %.1f work hours per project.</p>",
+// 	    sum_value, projects_len,
+// 	    LOGS_RANGE, sum_value / LOGS_RANGE,
+// 	    sum_value / projects_len);
+// 	fputs("<ul style='columns:2'>", f);
+// 	for i in 0..projects_len {
+// 		fputs("<li>", f);
+// 		fprintf(f, "<a href='%s.html'>%s</a> %.2f&#37; ",
+// 		        pfname[i],
+// 		        pname[i],
+// 		        pval[i] / sum_value * 100);
+// 		fputs("</li>", f);
+// 	}
+// 	fputs("</ul>", f);
+//   fprintf(f, "<p>Last generated on %s(" LOCATION ").</p>", nowstr());
+//   Ok(())
+// }
+
 fn build_log_pict(
   file: &mut LineWriter<File>,
   log: &Log,
@@ -1032,7 +1336,6 @@ fn build_pict(
   if caption > 0 {
     file.write(b"<figcaption>")?;
     if let Some(_link) = link {
-      println!("name = {}", &name);
       file.write_fmt(format_args!(
         "<a href='{}.html'>{}</a> — {}",
         _link, host, name
@@ -1043,6 +1346,31 @@ fn build_pict(
     file.write(b"</figcaption>")?;
   }
   file.write(b"</figure>")?;
+  Ok(())
+}
+
+fn print_term_details(
+  file: &mut LineWriter<File>,
+  term: &Term,
+  depth: &mut i32,
+) -> Result<(), Box<dyn Error>> {
+  *depth += 1;
+  file.write_fmt(format_args!(
+    "<li><a href='{}.html'>{}</a></li>",
+    term.filename, term.name
+  ))?;
+  if term.children_len < 1 {
+    return Ok(());
+  }
+  file.write(b"<ul>")?;
+  for child in term.children.iter() {
+    if let Some(_child) = child {
+      if !helpers::scmp(&_child.borrow().name, &term.name) {
+        print_term_details(file, &_child.as_ref().borrow().clone(), depth)?;
+      }
+    }
+  }
+  file.write(b"</ul>")?;
   Ok(())
 }
 
