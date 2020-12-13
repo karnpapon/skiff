@@ -1,0 +1,111 @@
+<h3>IO</h3>
+
+<p>
+  One way to get input into a program or to display output from a program is to
+  use standard input and standard output, respectively. The following two
+  programs can be used with the unix pipe <code>./o | ./i</code>
+</p>
+
+<h4>o.c</h4>
+<pre>
+#include &lt;stdio.h&gt;
+
+int
+main()
+{
+  printf("(output hello)");
+  return 0;
+}
+</pre>
+
+<h4>i.c</h4>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int
+main()
+{
+  char line[256];
+  if(fgets(line, 256, stdin) != NULL) {
+    printf("(input: %s)\n", line);
+  }
+  return 0;
+}
+</pre>
+
+<h3>SDL</h3>
+
+<pre>cc demo.c -I/usr/local/include -L/usr/local/lib -lSDL2 -o demo</pre>
+
+<p>
+  To compile the following example, place a <code>graphic.bmp</code> file in the
+  same location as the c file, or remove the image block.
+</p>
+
+<pre>
+#include &lt;SDL2/SDL.h&gt;
+#include &lt;stdio.h&gt;
+
+int
+error(char* msg, const char* err)
+{
+  printf("Error %s: %s\n", msg, err);
+  return 1;
+}
+
+int
+main()
+{
+  SDL_Window* window = NULL;
+  SDL_Surface* surface = NULL;
+  SDL_Surface* image = NULL;
+
+  if(SDL_Init(SDL_INIT_VIDEO) < 0)
+    return error("init", SDL_GetError());
+
+  window = SDL_CreateWindow("Blank Window",
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            640,
+                            480,
+                            SDL_WINDOW_SHOWN);
+
+  if(window == NULL)
+    return error("window", SDL_GetError());
+
+  surface = SDL_GetWindowSurface(window);
+  SDL_FillRect(surface, NULL,
+               SDL_MapRGB(surface->format, 0x72, 0xDE, 0xC2));
+
+  /* Display an image */
+  image = SDL_LoadBMP("graphic.bmp");
+
+  if(image == NULL)
+    return error("image", SDL_GetError());
+
+  SDL_BlitSurface(image, NULL, surface, NULL);
+
+  /* Draw canvas */
+  SDL_UpdateWindowSurface(window);
+  SDL_Delay(2000);
+
+  /* close */
+  SDL_FreeSurface(surface);
+  surface = NULL;
+  SDL_DestroyWindow(window);
+  window = NULL;
+  SDL_Quit();
+
+  return 0;
+}
+
+</pre>
+
+<h3>Misc</h3>
+
+<p>String padding: <code>|Hello |</code></p>
+
+<pre>
+printf("|%-10s|", "Hello");
+</pre>

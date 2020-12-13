@@ -8,6 +8,7 @@
 
 use std::cell::{RefCell, RefMut};
 use std::env;
+use std::fs;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
@@ -764,7 +765,6 @@ fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
       Ok(f) => f,
     };
     file = LineWriter::new(file_writer);
-    println!("lex_term = {:#?}", &lex_term.name);
     build_page(&mut file, lex, &lex_term, jou).unwrap();
   }
   println!("2 feeds ");
@@ -801,17 +801,17 @@ fn build_page(
   file.write(b"<header><a href='home.html'><img src='../media/identity/xiv28.gif' alt='\" NAME \"' height='29'></a></header>")?;
   build_nav(file, &term).unwrap();
   file.write(b"<main>")?;
-  build_banner(file, jou, &term, 1).unwrap();
-  build_body(file, lex, &term).unwrap();
-  // build_include(f, t);
-  // /* templated pages */
-  // if(scmp(t->type, "portal"))
-  // 	build_portal(f, jou, t);
-  // else if(scmp(t->type, "album"))
-  // 	build_album(f, jou, t);
-  // else if(scmp(t->type, "index"))
-  // 	build_index(f, lex, t);
-  // /* special pages */
+  build_banner(file, jou, term, 1).unwrap();
+  build_body(file, lex, term).unwrap();
+  build_include(file, term).unwrap();
+  /* templated pages */
+  match term.r#type.as_ref() {
+    "portal" => build_portal(file, jou, term).unwrap(),
+    "album" => build_album(file, jou, term).unwrap(),
+    "index" => build_index(file, lex, term).unwrap(),
+    _ => {}
+  };
+  /* special pages */
   // if(scmp(t->name, "now"))
   // 	build_special_now(f, lex, jou);
   // else if(scmp(t->name, "home"))
@@ -934,6 +934,80 @@ fn build_body_part(file: &mut LineWriter<File>, lex: &Lexicon, term: &Term) {
   }
 }
 
+fn build_include(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+  let filepath: String = format!("{}/{}.{}", "../inc", term.filename, "htm");
+  let path = Path::new(&filepath);
+  let mut buff;
+  match fs::read_to_string(path) {
+    Ok(c) => buff = c,
+    _ => return Ok(()),
+  }
+
+  file
+    .write_all(buff.as_bytes())
+    .expect("error: cannot write /inc file");
+  file.write_fmt(format_args!("<p>Found a mistake? Submit an <a href='\" REPOPATH \"{}.htm' target='_blank'>edit</a> to {}.</p>", term.filename, term.name))?;
+  Ok(())
+}
+
+fn build_portal(
+  file: &mut LineWriter<File>,
+  jou: &Journal,
+  term: &Term,
+) -> Result<(), Box<dyn Error>> {
+  for term_children in term.children.iter() {
+    if let Some(_t) = term_children {
+      let mut _term = _t.as_ref().borrow().clone();
+      if let Some(l) = finddiary(jou, &_term) {
+        build_pict(
+          file,
+          l.borrow().pict,
+          &_term.name,
+          &_term.bref,
+          1,
+          Some(&_term.filename),
+        )?;
+      }
+    }
+  }
+  Ok(())
+}
+
+fn build_album(
+  file: &mut LineWriter<File>,
+  jou: &Journal,
+  term: &Term,
+) -> Result<(), Box<dyn Error>> {
+  // for l in jou.logs.iter() {
+  // 	if l.term != term || l.pict < 1 || l.pict == finddiary(jou, t)->pict {
+  // 		continue;
+  //   }
+  // 	build_log_pict(file, &l, 1);
+  // }
+  Ok(())
+}
+
+fn build_index(
+  file: &mut LineWriter<File>,
+  lex: &Lexicon,
+  term: &Term,
+) -> Result<(), Box<dyn Error>> {
+  println!("build_index");
+  for child in term.children.iter() {
+    if let Some(c) = child {
+      let mut _c = c.as_ref().borrow().clone();
+      file.write_fmt(format_args!(
+        "<h3><a href='{}.html'>{}</a></h3>",
+        _c.filename, _c.name,
+      ))?;
+      build_body_part(file, lex, &_c);
+      // build_list(f, child);
+    }
+  }
+
+  Ok(())
+}
+
 fn build_log_pict(
   file: &mut LineWriter<File>,
   log: &Log,
@@ -958,6 +1032,7 @@ fn build_pict(
   if caption > 0 {
     file.write(b"<figcaption>")?;
     if let Some(_link) = link {
+      println!("name = {}", &name);
       file.write_fmt(format_args!(
         "<a href='{}.html'>{}</a> — {}",
         _link, host, name
