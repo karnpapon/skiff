@@ -428,13 +428,10 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
   let mut len;
   let mut line = String::new();
   let mut scanner: Scanner;
-  let mut l = &mut journal.logs[journal.len as usize];
-  // let mut count = 0;
-  // let mut depth: usize;
+  let mut log = &mut journal.logs[journal.len as usize];
 
   while f_reader.read_line(&mut line).unwrap() > 0 {
     scanner = Scanner::new(&line.trim_end());
-    // depth = helpers::cpad(&scanner.source, ' ');
 
     match helpers::strm(&scanner.source) {
       Some(string) => len = string.len(),
@@ -453,38 +450,38 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
       journal
         .logs
         .insert(journal.len as usize, Rc::new(RefCell::new(Log::new())));
-      l = &mut journal.logs[journal.len as usize];
+      log = &mut journal.logs[journal.len as usize];
     }
     /* Date */
-    l.borrow_mut().date = helpers::sstr(&scanner.source, 0, 5);
+    log.borrow_mut().date = helpers::sstr(&scanner.source, 0, 5);
     /* Rune */
     // l.rune = &scanner.source[6];
     /* Code */
-    l.borrow_mut().code = helpers::sint(&scanner.source[7..], 3) as i32;
+    log.borrow_mut().code = helpers::sint(&scanner.source[7..], 3) as i32;
     /* Term */
     // extract only `host` type.
     let mut split_line = line.split_whitespace().into_iter();
-    let host_len = &split_line.nth(2).unwrap().len();
-    l.borrow_mut().host = helpers::sstr(&scanner.source, 11, *host_len);
-    let _host = &l.borrow_mut().host.chars().collect::<Vec<char>>();
+    log.borrow_mut().host = split_line.nth(2).unwrap().to_string();
+    let _host = &log.borrow_mut().host.chars().collect::<Vec<char>>();
 
-    /* Name */
-    if let Some(code_col) = split_line.nth(1) {
-      l.borrow_mut().name = code_col.to_string().replace("_", " ");
-    }
-
-    if !helpers::sans(_host) == 0 {
-      println!("Warning: {} is not alphanum", l.borrow().host);
-    }
+    // TODO: find better way to split without consume nth.
     /* Pict */
-    if len >= 35 {
-      l.borrow_mut().pict = helpers::sint(&scanner.source[32..], 3) as i32;
+    let picture_id = split_line.nth(0).unwrap();
+    if picture_id != "-" {
+      log.borrow_mut().pict = picture_id.parse().unwrap();
+    }
+    /* Name */
+    if let Some(code_col) = split_line.nth(0) {
+      log.borrow_mut().name = code_col.to_string().replace("_", " ");
+    }
+    if !helpers::sans(_host) == 0 {
+      println!("Warning: {} is not alphanum", log.borrow().host);
     }
     journal.len += 1;
     line.clear();
   }
 
-  // println!("journal = {:#?}", &journal);
+  // println!("journal = {:#?}", &journal.logs[5].borrow().date);
   Ok(())
 }
 
@@ -517,7 +514,7 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
     let lex_term = &lex.terms[i as usize];
     let lext_t_clone = lex_term.borrow().body.clone();
     for (idx, j) in lext_t_clone.iter().enumerate() {
-      ftemplate(None, lex, lex_term.clone(), j).unwrap();
+      ftemplate(None, lex, &lex_term.clone().borrow(), j).unwrap();
     }
     let host_name = lex_term.borrow().host.to_string();
     let mut ch_len = 0;
@@ -572,26 +569,35 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
 }
 
 fn ftemplate(
-  f: Option<String>,
+  file: Option<&mut LineWriter<File>>,
   lex: &Lexicon,
-  term: Rc<RefCell<Term>>,
+  term: &Term,
   string: &str,
 ) -> Result<(), SkiffError> {
   let mut capture = false;
   let mut buf = vec![];
-  let fp = f.clone();
+  let mut body_buf = vec![];
+
+  let mut has_file = false;
+  // let mut fp;
+  if let Some(f) = &file {
+    has_file = true;
+    // fp = f;
+  }
+
   let _s = string.chars().collect::<Vec<char>>();
+
   for i in 0.._s.len() {
     let c = _s[i];
 
     if c == '}' {
       capture = false;
       // check if it's module link ( eg, {^bandcamp 163410848} )
-      if buf[0] == '^' && fp.clone().is_some() {
-        fpmodule(fp.clone().unwrap(), &buf);
+      if buf[0] == '^' && has_file {
+        // fpmodule(file.unwrap(), &buf);
       } else if buf[0] != '^' {
         // or normal link (eg, {methascope})
-        fplink(fp.clone(), &lex, term.clone(), &buf).unwrap();
+        // fplink(file.clone(), &lex, term.clone(), &buf).unwrap();
       }
 
       // handle multiple capture areas in same line.
@@ -601,19 +607,26 @@ fn ftemplate(
     if capture {
       if buf.len() < STR_BUF_LEN - 1 {
         buf.push(c);
-        // helpers::ccat(&mut buf, c);
       } else {
         return Err(SkiffError::ParseError("template too long, s".to_string()));
       }
-    } else if c != '{' && c != '}' && f.is_some() {
-      // write to file except for 'capture(link)' statement.
-      // fputc(c, f); native C function.
+    } else if c != '{' && c != '}' && has_file {
+      // write `BODY : `'s list to file except for 'capture(link)' statement.
+      body_buf.push(c);
     }
-
     if c == '{' {
       capture = true;
     }
   }
+
+  if body_buf.len() > 0 {
+    file
+      .unwrap()
+      .write_fmt(format_args!("{}", &body_buf.iter().collect::<String>()))
+      .unwrap();
+    &body_buf.clear();
+  }
+
   Ok(())
 }
 
@@ -751,6 +764,7 @@ fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
       Ok(f) => f,
     };
     file = LineWriter::new(file_writer);
+    println!("lex_term = {:#?}", &lex_term.name);
     build_page(&mut file, lex, &lex_term, jou).unwrap();
   }
   println!("2 feeds ");
@@ -785,10 +799,10 @@ fn build_page(
   file.write(b"</head>")?;
   file.write(b"<body>")?;
   file.write(b"<header><a href='home.html'><img src='../media/identity/xiv28.gif' alt='\" NAME \"' height='29'></a></header>")?;
-  build_nav(file, term).unwrap();
+  build_nav(file, &term).unwrap();
   file.write(b"<main>")?;
-  build_banner(file, jou, term, 1);
-  // build_body(f, lex, t);
+  build_banner(file, jou, &term, 1).unwrap();
+  build_body(file, lex, &term).unwrap();
   // build_include(f, t);
   // /* templated pages */
   // if(scmp(t->type, "portal"))
@@ -897,12 +911,27 @@ fn build_banner(
   caption: i32,
 ) -> Result<(), Box<dyn Error>> {
   let log = finddiary(jou, term);
-  println!("build_banner");
   if let Some(_log) = log {
     build_log_pict(file, &_log.borrow(), caption).unwrap();
   }
 
   Ok(())
+}
+
+fn build_body(
+  file: &mut LineWriter<File>,
+  lex: &Lexicon,
+  term: &Term,
+) -> Result<(), Box<dyn Error>> {
+  file.write_fmt(format_args!("<h2>{}</h2>", &term.bref))?;
+  build_body_part(file, lex, &term);
+  Ok(())
+}
+
+fn build_body_part(file: &mut LineWriter<File>, lex: &Lexicon, term: &Term) {
+  for term_body in term.body.iter() {
+    ftemplate(Some(file), lex, term, term_body).unwrap();
+  }
 }
 
 fn build_log_pict(
@@ -923,7 +952,7 @@ fn build_pict(
 ) -> Result<(), Box<dyn Error>> {
   file.write(b"<figure>")?;
   file.write_fmt(format_args!(
-    "<img src='../media/diary/{}.jpg' alt='{} picture' width='900'/>",
+    "<img src='../media/images/{}.jpg' alt='{} picture' width='900'/>",
     pict, name
   ))?;
   if caption > 0 {
@@ -959,9 +988,9 @@ fn build_pict(
 // }
 
 fn finddiary(jou: &Journal, term: &Term) -> Option<Rc<RefCell<Log>>> {
-  for (i, log) in jou.logs.iter().enumerate() {
-    let mut_s = &*log.borrow();
-    let log_term = mut_s.term.as_ref();
+  for log in jou.logs.iter() {
+    let jou_log = &log.borrow();
+    let log_term = jou_log.term.as_ref();
     if log_term.unwrap().borrow().name != term.name || log.borrow().pict < 1 {
       continue;
     }
@@ -973,8 +1002,8 @@ fn finddiary(jou: &Journal, term: &Term) -> Option<Rc<RefCell<Log>>> {
 fn findterm(lex: &Lexicon, name: &str) -> Option<Rc<RefCell<Term>>> {
   let mut _name = String::with_capacity(name.len());
   _name = name.to_lowercase().replace("_", " ");
-  for (i, term) in lex.terms.iter().enumerate() {
-    let mut_s = &*term.borrow();
+  for term in lex.terms.iter() {
+    let mut_s = &term.borrow();
     if _name == mut_s.name {
       return Some(term.clone());
     }

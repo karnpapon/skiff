@@ -1,3 +1,4 @@
 /rustlib/target
 /rustlib/archive/*
 /site
+/media
