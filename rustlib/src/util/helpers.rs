@@ -202,7 +202,6 @@ pub fn sstr<'a>(src: &[char], from: usize, to: usize) -> String {
 }
 
 pub fn afnd(src: &Vec<String>, len: usize, val: &str) -> i32 {
-	println!("src = {:#?}", src);
 	let _len = len as i32;
 	for i in 0.._len {
 		if scmp(&src[i as usize], val) {

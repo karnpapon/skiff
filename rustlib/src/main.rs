@@ -175,10 +175,6 @@ impl Glossary {
   fn update_len(&mut self) {
     self.len += 1;
   }
-
-  // fn get_lists(&self) -> &List {
-  //   self.lists.borrow();
-  // }
 }
 
 impl Lexicon {
@@ -187,10 +183,6 @@ impl Lexicon {
       len: 0,
       terms: vec![Rc::new(RefCell::new(Term::new()))],
     }
-  }
-
-  fn get_term_name() {
-    //
   }
 }
 
@@ -207,21 +199,173 @@ fn scan_glossary(content: &str) {
   let mut tokens: Vec<Token> = Vec::new();
   let mut scanner = Scanner::new(&content);
   tokens = scanner.scan_tokens();
-  // let mut parser = Parser::new(tokens);
-  // let mut expression = parser.parse().unwrap();
-  // Ok(())
 }
 
-// ------------------methods-----------------------
+// ------------------MAIN-----------------------
 
-pub fn parse(all_lists: &mut Glossary, all_terms: &mut Lexicon, all_logs: &mut Journal) {
+fn parse(all_lists: &mut Glossary, all_terms: &mut Lexicon, all_logs: &mut Journal) {
   println!("Parsing  | ");
   parse_glossary(String::from("./database/glossary.ndtl"), all_lists).unwrap();
   parse_lexicon(String::from("./database/lexicon.ndtl"), all_terms).unwrap();
   parse_horaire(String::from("./database/horaire.ndtl"), all_logs).unwrap();
 }
 
-// ------------------main-----------------------
+fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), SkiffError> {
+  println!("Linking  | ");
+  for i in 0..jou.len {
+    let jou_logs = &mut jou.logs[i as usize];
+    let host_name = jou_logs.borrow().host.to_string();
+    let jou_log_date = jou_logs.borrow().date.to_string();
+
+    match findterm(lex, &host_name) {
+      Some(t) => jou_logs.borrow_mut().term = Some(t),
+      None => jou_logs.borrow_mut().term = None,
+    }
+
+    match &jou_logs.borrow_mut().term {
+      Some(_t) => {
+        let _t_len = _t.borrow().date_last.borrow().len();
+        if _t_len == 0 {
+          _t.borrow().date_last.borrow_mut().push_str(&jou_log_date);
+        }
+        _t.borrow().date_from.borrow_mut().push_str(&jou_log_date);
+      }
+      None => {}
+    }
+  }
+  println!("Linking: lexicon({} entries) ", lex.len);
+
+  for i in 0..lex.len {
+    let lex_term = &lex.terms[i as usize];
+    let lext_t_clone = lex_term.borrow().body.clone();
+    for (idx, j) in lext_t_clone.iter().enumerate() {
+      ftemplate(None, lex, &lex_term.clone().borrow(), j).unwrap();
+    }
+    let host_name = lex_term.borrow().host.to_string();
+    let mut ch_len = 0;
+    if let Some(len) = *&lex_term.borrow_mut().parent.as_ref() {
+      ch_len = len.borrow().children_len as usize;
+    }
+
+    match findterm(lex, &host_name) {
+      Some(t) => {
+        lex_term.borrow_mut().parent = Some(Box::new(t));
+        let mut parent_term = lex_term.borrow().parent.as_ref().unwrap().clone();
+        parent_term
+          .borrow_mut()
+          .children
+          .insert(ch_len, Some(Box::new(lex_term.clone())));
+        parent_term.borrow_mut().children_len += 1;
+      }
+      None => {
+        lex_term.borrow_mut().parent = None;
+        println!("Linking: Unknown term host = {}", &host_name.to_string());
+      }
+    }
+  }
+
+  println!("Linking: glossary({} entries) ", glo.len);
+
+  for i in 0..lex.len {
+    let mut lext = lex.terms[i as usize].borrow_mut();
+    let lex_terms_list = lext.clone().list;
+    let lext_terms_len = lext.list_len;
+    for j in 0..lext_terms_len {
+      match findlist(glo, &lex_terms_list[j as usize]) {
+        Some(l) => {
+          let docs_len = lext.docs_len as usize;
+          lext.docs.insert(docs_len as usize, Some(l.clone()));
+          lext.docs_len += 1;
+          l.borrow_mut().routes += 1;
+        }
+        None => {
+          lext.parent = None;
+          println!(
+            "Linking: Unknown list = {}",
+            &lex_terms_list[j as usize].to_string()
+          );
+        }
+      }
+    }
+  }
+  Ok(())
+}
+
+fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
+  let mut file;
+  let mut file_writer;
+
+  println!("Building | ");
+  println!("{} pages ", lex.len);
+  for i in 0..lex.len {
+    let lex_term = lex.terms[i as usize].as_ref().borrow_mut().clone();
+    let filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
+    let path = Path::new(&filepath);
+    let display = path.display();
+    file_writer = match File::create(path) {
+      Err(why) => panic!("couldn't create {}: {}", display, why),
+      Ok(f) => f,
+    };
+    file = LineWriter::new(file_writer);
+    build_page(&mut file, lex, &lex_term, jou).unwrap();
+  }
+  println!("2 feeds ");
+  // file = File::open("../links/rss.xml").expect("build: Could not open file -> rss.xml" );
+  // fprss(f, jou);
+  // file = File::open("../links/tw.txt").expect("build: Could not open file -> tw.txt" );
+  // fptwtxt(f, jou);
+  Ok(())
+}
+
+fn check(lex: &Lexicon, glo: &Glossary, jou: &Journal) -> Result<(), Box<dyn Error>> {
+  let mut found = 0;
+  let mut sends = 0;
+  println!("Checking | ");
+  /* Find invalid logs */
+  for log in jou.logs.iter() {
+    if log.borrow().code < 1 {
+      println!("Warning: Empty code {}\n", log.borrow().date);
+    }
+  }
+  /* Find unlinked lists */
+  for list in glo.lists.iter() {
+    if list.borrow().routes < 1 {
+      println!(
+        "Warning: Unused (glossary)list \"{}\"\n",
+        list.borrow().name
+      );
+    }
+  }
+  /* Find next available diary id */
+  for i in 1..999 {
+    found = 0;
+    for j_log in jou.logs.iter() {
+      if j_log.borrow().pict == i || found > 0 {
+        found = 1;
+      }
+    }
+    if found > 0 {
+      println!("Available(#{}) ", i);
+      break;
+    }
+  }
+  /* Find unlinked pages */
+  for term in lex.terms.iter() {
+    sends += term.borrow().incoming_len;
+    if term.borrow().incoming_len < 1 && term.borrow().outgoing_len < 1 {
+      println!("Warning: \"{}\" unlinked", term.borrow().name);
+    } else if term.borrow().incoming_len < 1 {
+      println!("Warning: \"{}\" orphaned", term.borrow().name);
+    } else if term.borrow().outgoing_len < 1 {
+      println!("Warning: \"{}\" dead-end", term.borrow().name);
+    }
+  }
+  println!("sends({} incomings) ", sends);
+
+  Ok(())
+}
+
+// ------------------METHODS-----------------------
 
 fn parse_glossary(path: String, glossary: &mut Glossary) -> Result<(), SkiffError> {
   let mut f = File::open(path).expect("Glossary Parsing: file not found");
@@ -305,7 +449,6 @@ fn parse_glossary(path: String, glossary: &mut Glossary) -> Result<(), SkiffErro
     // without cancating with prev line.
     line.clear();
   }
-  // println!("glossary = {:#?}", &glossary);
   Ok(())
 }
 
@@ -420,7 +563,6 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
     // count += 1;
     line.clear();
   }
-  // println!("lexicon = {:#?}", &lexicon);
   Ok(())
 }
 
@@ -457,7 +599,7 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
     /* Date */
     log.borrow_mut().date = helpers::sstr(&scanner.source, 0, 5);
     /* Rune */
-    // l.rune = &scanner.source[6];
+    // log.borrow_mut().rune = &scanner.source[6];
     /* Code */
     log.borrow_mut().code = helpers::sint(&scanner.source[7..], 3) as i32;
     /* Term */
@@ -483,90 +625,6 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
     line.clear();
   }
 
-  // println!("journal = {:#?}", &journal.logs[5].borrow().date);
-  Ok(())
-}
-
-fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), SkiffError> {
-  println!("Linking  | ");
-  for i in 0..jou.len {
-    let jou_logs = &mut jou.logs[i as usize];
-    let host_name = jou_logs.borrow().host.to_string();
-    let jou_log_date = jou_logs.borrow().date.to_string();
-
-    match findterm(lex, &host_name) {
-      Some(t) => jou_logs.borrow_mut().term = Some(t),
-      None => jou_logs.borrow_mut().term = None,
-    }
-
-    match &jou_logs.borrow_mut().term {
-      Some(_t) => {
-        let _t_len = _t.borrow().date_last.borrow().len();
-        if _t_len == 0 {
-          _t.borrow().date_last.borrow_mut().push_str(&jou_log_date);
-        }
-        _t.borrow().date_from.borrow_mut().push_str(&jou_log_date);
-      }
-      None => {}
-    }
-  }
-  println!("Linking: lexicon({} entries) ", lex.len);
-
-  for i in 0..lex.len {
-    let lex_term = &lex.terms[i as usize];
-    let lext_t_clone = lex_term.borrow().body.clone();
-    for (idx, j) in lext_t_clone.iter().enumerate() {
-      ftemplate(None, lex, &lex_term.clone().borrow(), j).unwrap();
-    }
-    let host_name = lex_term.borrow().host.to_string();
-    let mut ch_len = 0;
-    if let Some(len) = *&lex_term.borrow_mut().parent.as_ref() {
-      ch_len = len.borrow().children_len as usize;
-    }
-
-    match findterm(lex, &host_name) {
-      Some(t) => {
-        lex_term.borrow_mut().parent = Some(Box::new(t));
-        let mut parent_term = lex_term.borrow().parent.as_ref().unwrap().clone();
-        parent_term
-          .borrow_mut()
-          .children
-          .insert(ch_len, Some(Box::new(lex_term.clone())));
-        parent_term.borrow_mut().children_len += 1;
-      }
-      None => {
-        lex_term.borrow_mut().parent = None;
-        println!("Linking: Unknown term host = {}", &host_name.to_string());
-      }
-    }
-  }
-
-  println!("Linking: glossary({} entries) ", glo.len);
-
-  for i in 0..lex.len {
-    let mut lext = lex.terms[i as usize].borrow_mut();
-    let lex_terms_list = lext.clone().list;
-    let lext_terms_len = lext.list_len;
-    for j in 0..lext_terms_len {
-      match findlist(glo, &lex_terms_list[j as usize]) {
-        Some(l) => {
-          let docs_len = lext.docs_len as usize;
-          lext.docs.insert(docs_len as usize, Some(l.clone()));
-          lext.docs_len += 1;
-          l.borrow_mut().routes += 1;
-        }
-        None => {
-          lext.parent = None;
-          println!(
-            "Linking: Unknown list = {}",
-            &lex_terms_list[j as usize].to_string()
-          );
-        }
-      }
-    }
-  }
-  // println!("lex = {:#?}", lex);
-  // println!("parent = {:#?}", &lex.terms[0].borrow_mut().parent.as_ref().unwrap().borrow().name);
   Ok(())
 }
 
@@ -578,13 +636,11 @@ fn ftemplate(
 ) -> Result<(), SkiffError> {
   let mut capture = false;
   let mut buf = vec![];
-  let mut body_buf = vec![];
-
   let mut has_file = false;
-  // let mut fp;
-  if let Some(f) = &file {
+  let mut _file = None;
+  if let Some(f) = file {
     has_file = true;
-    // fp = f;
+    _file = Some(f);
   }
 
   let _s = string.chars().collect::<Vec<char>>();
@@ -596,10 +652,10 @@ fn ftemplate(
       capture = false;
       // check if it's module link ( eg, {^bandcamp 163410848} )
       if buf[0] == '^' && has_file {
-        // fpmodule(file.unwrap(), &buf);
+        fpmodule(&mut _file, &buf);
       } else if buf[0] != '^' {
         // or normal link (eg, {methascope})
-        // fplink(file.clone(), &lex, term.clone(), &buf).unwrap();
+        fplink(&mut _file, &lex, &term, &buf).unwrap();
       }
 
       // handle multiple capture areas in same line.
@@ -614,27 +670,23 @@ fn ftemplate(
       }
     } else if c != '{' && c != '}' && has_file {
       // write `BODY : `'s list to file except for 'capture(link)' statement.
-      body_buf.push(c);
+      &mut _file
+        .as_mut()
+        .unwrap()
+        .write_fmt(format_args!("{}", &c))
+        .unwrap();
     }
     if c == '{' {
       capture = true;
     }
   }
 
-  if body_buf.len() > 0 {
-    file
-      .unwrap()
-      .write_fmt(format_args!("{}", &body_buf.iter().collect::<String>()))
-      .unwrap();
-    &body_buf.clear();
-  }
-
   Ok(())
 }
 
 // build modules (eg. codeblock, iframe link)
-fn fpmodule(f: String, s: &[char]) {
-  // s = link (eg, ^bandcamp 163410848);
+fn fpmodule(f: &mut Option<&mut LineWriter<File>>, s: &[char]) {
+  let file = f.as_mut().unwrap();
   let split = helpers::cpos(s, ' ');
   let mut cmd: String;
   let target: String;
@@ -642,13 +694,13 @@ fn fpmodule(f: String, s: &[char]) {
   target = helpers::sstr(s, (split + 1) as usize, helpers::slen(s) - split as usize);
 
   if cmd == "itchio" {
-    // printf(f, "<iframe frameborder='0' src='https://itch.io/embed/%s?link_color=000000' width='600' height='167'></iframe>", target);
+    file.write_fmt(format_args!("<iframe frameborder='0' src='https://itch.io/embed/{}?link_color=000000' width='600' height='167'></iframe>", target)).unwrap();
   } else if cmd == "bandcamp" {
-    // fprintf(f, "<iframe style='border: 0; width: 600px; height: 274px;' src='https://bandcamp.com/EmbeddedPlayer/album=%s/size=large/bgcol=ffffff/linkcol=333333/artwork=small' seamless></iframe>", target);
+    file.write_fmt(format_args!("<iframe style='border: 0; width: 600px; height: 274px;' src='https://bandcamp.com/EmbeddedPlayer/album={}/size=large/bgcol=ffffff/linkcol=333333/artwork=small' seamless></iframe>", target)).unwrap();
   } else if cmd == "youtube" {
-    // fprintf(f, "<iframe width='600' height='380' src='https://www.youtube.com/embed/%s?rel=0' style='max-width:700px' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>", target);
+    file.write_fmt(format_args!("<iframe width='600' height='380' src='https://www.youtube.com/embed/{}?rel=0' style='max-width:700px' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>", target)).unwrap();
   } else if cmd == "redirect" {
-    // fprintf(f, "<meta http-equiv='refresh' content='2; url=%s.html'/><p>In a hurry? Travel to <a href='%s.html'>%s</a>.</p>", target, target, target);
+    file.write_fmt(format_args!("<meta http-equiv='refresh' content='2; url={}.html'/><p>In a hurry? Travel to <a href='{}.html'>{}</a>.</p>", target, target, target)).unwrap();
   } else if cmd == "img" {
     let target_chars = &target.chars().collect::<Vec<char>>();
     let split2 = helpers::cpos(target_chars, ' ');
@@ -658,54 +710,71 @@ fn fpmodule(f: String, s: &[char]) {
       let _split2 = split2 as usize;
       param = helpers::sstr(target_chars, 0, _split2);
       value = helpers::sstr(target_chars, _split2 + 1, target.len() - _split2);
-      // fprintf(f, "<img src='../media/%s' width='%s'/>&nbsp;", param, value);
-      println!("<img src='../media/{}' width='{}'/>", param, value);
+      file
+        .write_fmt(format_args!(
+          "<img src='../media/{}' width='{}'/>&nbsp;",
+          param, value
+        ))
+        .unwrap();
+      file
+        .write_fmt(format_args!(
+          "<img src='../media/{}' width='{}'/>",
+          param, value
+        ))
+        .unwrap();
     } else {
-      // fprintf(f, "<img src='../media/%s'/>&nbsp;", target);
+      file
+        .write_fmt(format_args!("<img src='../media/{}'/>&nbsp;", target))
+        .unwrap();
     }
   } else if cmd == "src" {
-    let lines = 0;
-    // let c: &[char];
+    let mut lines = 0;
     let mut scanner: Scanner;
 
     // to build special section (eg. codeblock see `ansi_c.html`)
     // by pulling texts from ../archive/src
+    println!("target = {}", target);
     let f =
       File::open(format!("../archive/src/{}.txt", target)).expect("fpmodule: Missing src include");
     let mut f_reader = BufReader::new(f);
     let mut line = String::new();
-    // fputs("<figure>", f);
-    // fputs("<pre>", f);
+    file.write(b"<figure>").unwrap();
+    file.write(b"<pre>").unwrap();
 
     while f_reader.read_line(&mut line).unwrap() > 0 {
       scanner = Scanner::new(&line);
       for c in scanner.source.iter() {
         if c == &'<' {
-          // fputs("&lt;", f);
+          file.write(b"&lt;").unwrap();
         } else if c == &'>' {
-          // fputs("&gt;", f);
+          file.write(b"&gt;").unwrap();
         } else if c == &'&' {
-          // fputs("&amp;", f);
+          file.write(b"&amp;").unwrap();
         } else {
-          // fputc(c, f);
+          file.write_fmt(format_args!("{}", c)).unwrap();
         }
         if c == &'\n' {
-          // lines += 1;
+          lines += 1;
         }
       }
     }
-  // fputs("</pre>", f);
-  // fprintf(f, "<figcaption><a href='../archive/src/%s.txt'>%s</a> %d lines</figcaption>\n", target, target, lines);
-  // fputs("</figure>", f);
+    file.write(b"</pre>").unwrap();
+    file
+      .write_fmt(format_args!(
+        "<figcaption><a href='../archive/src/{}.txt'>{}</a> {} lines</figcaption>\n",
+        target, target, lines
+      ))
+      .unwrap();
+    file.write(b"</figure>").unwrap();
   } else {
     println!("Warning: Missing template mod: {:?}", s);
   }
 }
 
 fn fplink(
-  file: Option<String>,
+  file: &mut Option<&mut LineWriter<File>>,
   lex: &Lexicon,
-  term: Rc<RefCell<Term>>,
+  term: &Term,
   s: &[char],
 ) -> Result<(), SkiffError> {
   let split = helpers::cpos(s, ' ');
@@ -722,57 +791,49 @@ fn fplink(
       .collect::<Vec<char>>();
   }
   /* output */
-  // println!("capture surl = {:?}", &target);
   if helpers::surl(&target) {
     if file.is_some() {
-      // fprintf(f, "<a href='%s' target='_blank'>%s</a>", target, name);
+      file
+        .as_mut()
+        .unwrap()
+        .write_fmt(format_args!(
+          "<a href='{}' target='_blank'>{}</a>",
+          target,
+          name.iter().collect::<String>()
+        ))
+        .unwrap();
     }
   } else {
     match findterm(lex, &target) {
-      Some(t) => {
+      Some(_t) => {
         if file.is_some() {
-          // fprintf(f, "<a href='%s.html'>%s</a>", tt->filename, name);
+          file
+            .as_mut()
+            .unwrap()
+            .write_fmt(format_args!(
+              "<a href='{}.html'>{}</a>",
+              _t.borrow().filename,
+              name.iter().collect::<String>()
+            ))
+            .unwrap();
         } else {
-          let mut _term = t.borrow_mut();
-          let len = _term.incoming_len as usize;
-          _term.outgoing_len += 1;
-          _term.incoming.insert(len, Box::new(t.clone()));
-          _term.incoming_len += 1;
+          let mut _term = _t.as_ref().clone();
+          let len = _term.borrow().incoming_len as usize;
+          _term.borrow_mut().outgoing_len += 1;
+          _term
+            .borrow_mut()
+            .incoming
+            .insert(len, Box::new(_t.clone()));
+          _term.borrow_mut().incoming_len += 1;
         }
       }
       None => {
-        println!("Unknown link = {:?}", &target);
-        // return Err(SkiffError::ParseError("Unknown link".to_string()))
+        // println!("Unknown link = {:?}", &target);
+        return Err(SkiffError::ParseError("Unknown link".to_string()));
       }
     }
   }
 
-  Ok(())
-}
-
-fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
-  let mut file;
-  let mut file_writer;
-
-  println!("Building | ");
-  println!("{} pages ", lex.len);
-  for i in 0..lex.len {
-    let lex_term = lex.terms[i as usize].as_ref().borrow_mut().clone();
-    let filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
-    let path = Path::new(&filepath);
-    let display = path.display();
-    file_writer = match File::create(path) {
-      Err(why) => panic!("couldn't create {}: {}", display, why),
-      Ok(f) => f,
-    };
-    file = LineWriter::new(file_writer);
-    build_page(&mut file, lex, &lex_term, jou).unwrap();
-  }
-  println!("2 feeds ");
-  // file = File::open("../links/rss.xml").expect("build: Could not open file -> rss.xml" );
-  // fprss(f, jou);
-  // file = File::open("../links/tw.txt").expect("build: Could not open file -> tw.txt" );
-  // fptwtxt(f, jou);
   Ok(())
 }
 
@@ -790,16 +851,23 @@ fn build_page(
     "<meta name='description' content='{}'/>",
     term.bref
   ))?;
-  file.write(b"<meta name='thumbnail' content='\" DOMAIN \"media/services/thumbnail.jpg' />")?;
+  file.write_fmt(format_args!(
+    "<meta name='thumbnail' content='{}media/services/thumbnail.jpg' />",
+    DOMAIN
+  ))?;
   file.write(
     b"<link rel='alternate' type='application/rss+xml' title='RSS Feed' href='../links/rss.xml' />",
   )?;
   file.write(b"<link rel='stylesheet' type='text/css' href='../links/main.css'>")?;
   file.write(b"<link rel='shortcut icon' type='image/png' href='../media/services/icon.png'>")?;
-  file.write_fmt(format_args!("<title>\" NAME \" — {}</title>", term.name))?;
+  file.write_fmt(format_args!(
+    "<title>{} — {}</title>",
+    term.name.to_uppercase(),
+    term.name
+  ))?;
   file.write(b"</head>")?;
   file.write(b"<body>")?;
-  file.write(b"<header><a href='home.html'><img src='../media/identity/xiv28.gif' alt='\" NAME \"' height='29'></a></header>")?;
+  file.write_fmt(format_args!("<header><a href='home.html'><img src='../media/identity/xiv28.gif' alt='{}' height='29'></a></header>", term.name.to_uppercase()))?;
   build_nav(file, &term).unwrap();
   file.write(b"<main>")?;
   build_banner(file, jou, term, 1).unwrap();
@@ -956,7 +1024,7 @@ fn build_list(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Er
       file.write(b"<ul>")?;
       for j in 0.._doc.len {
         let _j = j as usize;
-        if _doc.keys[_j].chars().nth(0).unwrap() == '\0' {
+        if _doc.keys.len() == 0 {
           file.write_fmt(format_args!("<li>{}</li>", _doc.vals[_j]))?;
         } else if helpers::surl(&_doc.vals[_j]) {
           file.write_fmt(format_args!(
@@ -1094,12 +1162,16 @@ fn build_album(
   jou: &Journal,
   term: &Term,
 ) -> Result<(), Box<dyn Error>> {
-  // for l in jou.logs.iter() {
-  // 	if l.term != term || l.pict < 1 || l.pict == finddiary(jou, t)->pict {
-  // 		continue;
-  //   }
-  // 	build_log_pict(file, &l, 1);
-  // }
+  for log in jou.logs.iter() {
+    let journal_log = log.as_ref().borrow().clone();
+    if journal_log.term.unwrap().borrow().name != term.name
+      || journal_log.pict < 1
+      || journal_log.pict == finddiary(jou, term).unwrap().borrow().pict
+    {
+      continue;
+    }
+    build_log_pict(file, &log.borrow(), 1).unwrap();
+  }
   Ok(())
 }
 
@@ -1117,7 +1189,7 @@ fn build_index(
         _c.filename, _c.name,
       ))?;
       build_body_part(file, lex, &_c);
-      // build_list(f, child);
+      build_list(file, &_c).unwrap();
     }
   }
 
@@ -1374,21 +1446,7 @@ fn print_term_details(
   Ok(())
 }
 
-// fn file_prompt<'a>(dir: &str, filename: &str, ext: &str, writer: &'a LineWriter<&'a File>, file: &'a File )
-//   -> Result<&'a File, std::io::Error> {
-//   // let mut filepath: vec![];
-//   let filepath: String = format!("{}/{}.{}", dir, filename, ext);
-//   let path = Path::new(&filepath);
-//   let display = path.display();
-//   file = match File::create(path) {
-//     Err(why) => panic!("couldn't create {}: {}", display, why),
-//     Ok(f) => &f,
-//   };
-
-//   // writer = LineWriter::new(file);
-
-//   return Ok(&file);
-// }
+// ------------------HELPERS-----------------------
 
 fn finddiary(jou: &Journal, term: &Term) -> Option<Rc<RefCell<Log>>> {
   for log in jou.logs.iter() {
@@ -1437,4 +1495,5 @@ fn main() {
   parse(all_lists, all_terms, all_logs);
   link(all_lists, all_terms, all_logs).unwrap();
   build(all_terms, all_logs).unwrap();
+  check(all_terms, all_lists, all_logs).unwrap();
 }
