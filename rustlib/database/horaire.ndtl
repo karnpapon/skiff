@@ -2,10 +2,7 @@
 ; https://wiki.xxiivv.com/site/tablatal.html
 ;     CODE HOST                 PIC NAME
 ;     7    12                   33  37
-20X09 +300 tracker               - Talk_at_Speakers_Series,_SNSYC
 20S12 -254 home                 725 Brass_Faucet
 20S11 -237 home                 719 Sinclair_Scientific
-20S10 -337 tracker                -
-20S09 -337 efli                 719 efli_name_journal
-20S08 -334 supervisitor           -
-19L12 +189 azolla               617 Azolla Release
+20S08 -334 alicef                 -
+19L12 +189 aliceffekt           617 Azolla Release

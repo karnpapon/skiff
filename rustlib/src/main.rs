@@ -599,7 +599,7 @@ fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> 
     /* Date */
     log.borrow_mut().date = helpers::sstr(&scanner.source, 0, 5);
     /* Rune */
-    // log.borrow_mut().rune = &scanner.source[6];
+    log.borrow_mut().rune = scanner.source[6].to_string();
     /* Code */
     log.borrow_mut().code = helpers::sint(&scanner.source[7..], 3) as i32;
     /* Term */
@@ -829,7 +829,10 @@ fn fplink(
       }
       None => {
         // println!("Unknown link = {:?}", &target);
-        return Err(SkiffError::ParseError("Unknown link".to_string()));
+        return Err(SkiffError::ParseError(format!(
+          "Unknown link {:?}",
+          &target
+        )));
       }
     }
   }
@@ -855,10 +858,10 @@ fn build_page(
     "<meta name='thumbnail' content='{}media/services/thumbnail.jpg' />",
     DOMAIN
   ))?;
-  file.write(
-    b"<link rel='alternate' type='application/rss+xml' title='RSS Feed' href='../links/rss.xml' />",
-  )?;
-  file.write(b"<link rel='stylesheet' type='text/css' href='../links/main.css'>")?;
+  // file.write(
+  //   b"<link rel='alternate' type='application/rss+xml' title='RSS Feed' href='../links/rss.xml' />",
+  // )?;
+  file.write(b"<link rel='stylesheet' type='text/css' href='../styles/main.css'>")?;
   file.write(b"<link rel='shortcut icon' type='image/png' href='../media/services/icon.png'>")?;
   file.write_fmt(format_args!(
     "<title>{} — {}</title>",
@@ -867,12 +870,20 @@ fn build_page(
   ))?;
   file.write(b"</head>")?;
   file.write(b"<body>")?;
-  file.write_fmt(format_args!("<header><a href='home.html'><img src='../media/identity/xiv28.gif' alt='{}' height='29'></a></header>", term.name.to_uppercase()))?;
-  build_nav(file, &term).unwrap();
-  file.write(b"<main>")?;
-  build_banner(file, jou, term, 1).unwrap();
-  build_body(file, lex, term).unwrap();
-  build_include(file, term).unwrap();
+  // file.write_fmt(format_args!("<header><a href='home.html'><img src='../media/identity/xiv28.gif' alt='{}' height='29'></a></header>", term.name.to_uppercase()))?;
+
+  // build_nav(file, &term).unwrap();
+  file.write(b"<main class=\"container-ctrl scroll-wrapper\">")?;
+
+  build_section_header(file, term).unwrap();
+  build_section_details(file, term).unwrap();
+  // build_section_suggest(file, term).unwrap();
+  // build_banner(file, jou, term, 1).unwrap();
+  // build_body(file, lex, term).unwrap();
+
+  // section: suggest work.
+  // build_include(file, term).unwrap();
+
   /* templated pages */
   match term.r#type.as_ref() {
     "portal" => build_portal(file, jou, term).unwrap(),
@@ -896,13 +907,14 @@ fn build_page(
   // build_horaire(file, jou, term).unwrap();
   file.write(b"</main>")?;
   file.write(b"<footer>")?;
-  file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
-  file.write(
-    b"<a href='http://webring.xxiivv.com/'><img src='../media/icon/rotonde.svg' width='30'/></a>",
-  )?;
-  file.write(b"<a href='https://merveilles.town/@neauoire'><img src='../media/icon/merveilles.svg' width='30'/></a>")?;
-  file.write(b"<a href='https://github.com/neauoire'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
-  file.write(b"<span><a href='devine_lu_linvega.html'>Devine Lu Linvega</a> \xA9 2020 \x97 <a href='about.html'>BY-NC-SA 4.0</a></span>")?;
+  build_footer(file).unwrap();
+  // file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
+  // file.write(
+  // b"<a href='http://webring.xxiivv.com/'><img src='../media/icon/rotonde.svg' width='30'/></a>",
+  // )?;
+  // file.write(b"<a href='https://merveilles.town/@neauoire'><img src='../media/icon/merveilles.svg' width='30'/></a>")?;
+  // file.write(b"<a href='https://github.com/neauoire'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
+  // file.write(b"<span><a href='devine_lu_linvega.html'>Devine Lu Linvega</a> \xA9 2020 \x97 <a href='about.html'>BY-NC-SA 4.0</a></span>")?;
   file.write(b"</footer>")?;
   file.write(b"</body></html>")?;
   Ok(())
@@ -967,6 +979,107 @@ fn build_nav_part(
     }
   }
   file.write(b"</ul>")?;
+  Ok(())
+}
+
+fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+  file.write(b"<section class=\"s0\">")?;
+  file.write(b"<div>")?;
+  file.write(b"<h1>")?;
+  file.write(b"<a class=\"link-default\" href=\"/index.html\"><span>..</span></a>/patithin")?;
+  file.write(b"</h1>")?;
+
+  file.write(b"<px>")?;
+  file.write_fmt(format_args!("<p>{}</p>", "calendrical sequence"))?;
+  file.write_fmt(format_args!(
+    "<p>{}</p>",
+    "based-on Github's contribution calendar."
+  ))?;
+  file.write(b"</px>")?;
+  file.write_fmt(format_args!("<p>{}</p>", "2020"))?;
+  file.write_fmt(format_args!("<p>{}</p>", "coding"))?;
+  file.write(b"</div>")?;
+  file.write(b"<div><a href=\"/index.html\"><i class=\"icon-arr-back\">~</i></a></div>")?;
+  file.write(b"</section>")?;
+  Ok(())
+}
+
+fn build_section_details(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+  file.write(b"<section class=\"s1\">")?;
+  file.write(b"<div>")?;
+  // <!-- <Left-Col/> -->
+  file.write(b"<div>")?;
+  file.write_fmt(format_args!(
+    "<img src=\"../media/images/{}.jpg\" />",
+    "patithin-detail-00"
+  ))?;
+  file.write_fmt(format_args!(
+    "<px>{}</px>",
+    "calendrical sequencer based on Github's contribution history.
+  where velocity of the note is determined by commit's frequency.
+  total 53 weeks, the only way to assign trigger is just commit!."
+  ))?;
+  file.write_fmt(format_args!(
+    "<iframe
+    width=\"540\"
+    height=\"315\"
+    src=\"{}\"
+  >
+  </iframe>",
+    "https://www.youtube.com/embed/0MEqRyrv7BA"
+  ))?;
+  file.write_fmt(format_args!("<h3>{}</h3>", "features"))?;
+  file.write_fmt(format_args!("<li>{}</li>", "MIDI protocol (out only)"))?;
+  file.write(b"</div>")?;
+
+  // <!-- <Right-Col/> -->
+  file.write(b"<div>")?;
+  file.write(b"<div class=\"position-sticky\">")?;
+  file.write_fmt(format_args!(
+    "<a target=\"blank\" href=\"{}\"><url>{}</url></a>",
+    "https://github.com/karnpapon/patithin",
+    "see this on github : https://github.com/karnpapon/patithin"
+  ))?;
+  file.write_fmt(format_args!(
+    "<px><p>{}</p><p>{}</p><p>{}</p></px>",
+    "React", "Redux", "TypeScript"
+  ))?;
+  file.write_fmt(format_args!(
+    "<px><tag>{}</tag><tag>{}</tag></px>",
+    "Development", "Design"
+  ))?;
+  file.write(b"</div>")?;
+  file.write(b"</div>")?;
+  // end right-col.
+  file.write(b"</div>")?;
+  file.write(b"<div class=\"scroll-spacing\"></div>")?;
+  build_section_suggest(file, term).unwrap();
+  file.write(b"</section>")?;
+  Ok(())
+}
+
+fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+  file.write(b"<div class=\"s2\">")?;
+  file.write(b"<lc>")?;
+  file.write_fmt(format_args!("<fb>{}</fb>", "Projects"))?;
+  file.write(b"</lc>")?;
+  file.write(b"<rc class=\"flex-col\">")?;
+  file.write_fmt(format_args!(
+    "<div class=\"box\"><fm>{}</fm><p>{}</p><p>{}</p></div>",
+    "works:01", "description01", "description02"
+  ))?;
+  file.write_fmt(format_args!(
+    "<div class=\"box\"><fm>{}</fm></div>",
+    "works:02"
+  ))?;
+  file.write(b"</rc>")?;
+  file.write(b"</div>")?;
+  Ok(())
+}
+
+fn build_footer(file: &mut LineWriter<File>) -> Result<(), Box<dyn Error>> {
+  file.write(b"<div class=\"footer\">")?;
+  file.write(b"</div>")?;
   Ok(())
 }
 
@@ -1449,6 +1562,7 @@ fn print_term_details(
 // ------------------HELPERS-----------------------
 
 fn finddiary(jou: &Journal, term: &Term) -> Option<Rc<RefCell<Log>>> {
+  println!("finddiary = {}", term.name);
   for log in jou.logs.iter() {
     let jou_log = &log.borrow();
     let log_term = jou_log.term.as_ref();
