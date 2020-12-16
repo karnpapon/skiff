@@ -1061,7 +1061,7 @@ fn build_section_details(file: &mut LineWriter<File>, term: &Term) -> Result<(),
 fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
   file.write(b"<div class=\"s2\">")?;
   file.write(b"<lc>")?;
-  file.write_fmt(format_args!("<fb>{}</fb>", "Projects"))?;
+  file.write_fmt(format_args!("<fb class=\"pad2\">{}</fb>", "Projects"))?;
   file.write(b"</lc>")?;
   file.write(b"<rc class=\"flex-col\">")?;
   file.write_fmt(format_args!(
@@ -1079,6 +1079,16 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
 
 fn build_footer(file: &mut LineWriter<File>) -> Result<(), Box<dyn Error>> {
   file.write(b"<div class=\"footer\">")?;
+  file.write(b"<div>")?;
+  file.write_fmt(format_args!(
+    "<lc><div><input type=\"checkbox\"/><label>{}</label><div class=\"works-list\"></div></div></lc>",
+    "index"
+  ))?;
+  file.write_fmt(format_args!(
+    "<rc><div>{}</div></rc>",
+    "karnpapon - BY-NC-SA 4.0 - date 2020"
+  ))?;
+  file.write(b"</div>")?;
   file.write(b"</div>")?;
   Ok(())
 }
