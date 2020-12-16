@@ -18,17 +18,22 @@
   --mobile-screen: 767px;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; text-decoration: none; color: black; }
+a { color: rgb(0, 38, 255); }
+a:hover,a:hover i { background-color: rgb(0, 38, 255); color:white; }
 body { font-family: serif; font-weight: lighter; font-size: 16px; }
 body > * { margin-bottom: 30px; }
-h1 { font-weight: lighter;font-size: 3rem;color: rgb(0, 38, 255); text-decoration: underline;} h2 { font-size: 1rem;}
+h1 { font-weight: lighter;font-size: 3rem;color: rgb(0, 38, 255); text-decoration: underline;} 
+h2 { font-size: 1.5rem; margin: 1rem 0;}
 p { margin: 0}
 img { width: 100%;}
+iframe { margin: 2rem 0;}
+ul{ display: flex; flex-direction: column;}
 
 px { margin: 1rem 0; display: flex; flex-direction: column; }
 fb { font-size: 2.5rem; }
 fm { font-size: 1.5rem; }
 tag { margin: 0.25rem 0; padding: 0.5rem; border: 0.5px solid; width: 10rem;}
-url { color: rgb(0, 38, 255);font-style: italic;text-decoration: underline;}
+url { color: rgb(0, 38, 255);text-decoration: underline;}
 lc { display: flex; flex: 1}
 rc { display: flex; flex: 1}
 

@@ -55,18 +55,20 @@ pub struct List {
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
 pub struct Term {
-  name: String, // title
-  host: String, // HOST, nothing fancy.
+  name: String,
+  host: String,
   bref: String,
   r#type: String,
-  body: Vec<String>, // BODY list item (no linking in parsing process ).
-  body_len: usize,   // BODY list item counter.
-  link: List,        // LINK item ( empty `.name` field eg. link.name = "" )
-  list: Vec<String>, // LIST field.
+  tag: Vec<String>,
+  stack: Vec<String>,
+  body: Vec<String>,
+  body_len: usize,
+  link: List,
+  list: Vec<String>,
   list_len: i32,
   /* generated */
-  filename: String,           // generate from name field.
-  date_from: RefCell<String>, // use RefCell, since this field shared mutability.
+  filename: String,
+  date_from: RefCell<String>,
   date_last: RefCell<String>,
   parent: Option<Box<Rc<RefCell<Term>>>>,
   children: Vec<Option<Box<Rc<RefCell<Term>>>>>,
@@ -125,6 +127,8 @@ impl Term {
       name: String::with_capacity(KEY_BUF_LEN),
       host: String::with_capacity(KEY_BUF_LEN),
       bref: String::with_capacity(STR_BUF_LEN),
+      tag: vec![],
+      stack: vec![],
       r#type: String::with_capacity(KEY_BUF_LEN),
       body: vec![],
       body_len: 0,
@@ -463,6 +467,8 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
   let mut catch_body = false;
   let mut catch_link = false;
   let mut catch_list = false;
+  let mut catch_tag = false;
+  let mut catch_stack = false;
   let mut t = &mut lexicon.terms[lexicon.len as usize];
   let mut line = String::new();
   let mut scanner: Scanner;
@@ -523,9 +529,11 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
       if helpers::spos(&_scanner, "TYPE : ") >= 0 {
         t.borrow_mut().r#type = helpers::sstr(&scanner.source, 9, len - 9);
       }
-      catch_body = helpers::spos(&_scanner, "BODY") >= 0;
-      catch_link = helpers::spos(&_scanner, "LINK") >= 0;
-      catch_list = helpers::spos(&_scanner, "LIST") >= 0;
+      catch_body = helpers::spos(&scanner.source, "BODY") >= 0;
+      catch_link = helpers::spos(&scanner.source, "LINK") >= 0;
+      catch_list = helpers::spos(&scanner.source, "LIST") >= 0;
+      catch_tag = helpers::spos(&scanner.source, "TAGS") >= 0;
+      catch_stack = helpers::spos(&_scanner, "STACK") >= 0;
     } else if depth == 4 {
       t = &mut lexicon.terms[(lexicon.len - 1) as usize];
       /* Body */
@@ -559,8 +567,23 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
           .insert(list_len, helpers::sstr(&scanner.source, 4, len - 4));
         t.borrow_mut().list_len += 1;
       }
+
+      // Tag
+      if catch_tag {
+        let tag_len = t.borrow().tag.len() as usize;
+        t.borrow_mut()
+          .tag
+          .insert(tag_len, helpers::sstr(&scanner.source, 4, len - 4));
+      }
+
+      // stack
+      if catch_stack {
+        let stack_len = t.borrow().stack.len() as usize;
+        t.borrow_mut()
+          .stack
+          .insert(stack_len, helpers::sstr(&scanner.source, 4, len - 4));
+      }
     }
-    // count += 1;
     line.clear();
   }
   Ok(())
@@ -858,9 +881,6 @@ fn build_page(
     "<meta name='thumbnail' content='{}media/services/thumbnail.jpg' />",
     DOMAIN
   ))?;
-  // file.write(
-  //   b"<link rel='alternate' type='application/rss+xml' title='RSS Feed' href='../links/rss.xml' />",
-  // )?;
   file.write(b"<link rel='stylesheet' type='text/css' href='../styles/main.css'>")?;
   file.write(b"<link rel='shortcut icon' type='image/png' href='../media/services/icon.png'>")?;
   file.write_fmt(format_args!(
@@ -870,16 +890,12 @@ fn build_page(
   ))?;
   file.write(b"</head>")?;
   file.write(b"<body>")?;
-  // file.write_fmt(format_args!("<header><a href='home.html'><img src='../media/identity/xiv28.gif' alt='{}' height='29'></a></header>", term.name.to_uppercase()))?;
 
   // build_nav(file, &term).unwrap();
   file.write(b"<main class=\"container-ctrl scroll-wrapper\">")?;
 
   build_section_header(file, term).unwrap();
-  build_section_details(file, term).unwrap();
-  // build_section_suggest(file, term).unwrap();
-  // build_banner(file, jou, term, 1).unwrap();
-  // build_body(file, lex, term).unwrap();
+  build_section_details(file, term, jou, lex).unwrap();
 
   // section: suggest work.
   // build_include(file, term).unwrap();
@@ -902,19 +918,11 @@ fn build_page(
     _ => {}
   };
   build_list(file, term).unwrap();
-  build_links(file, term).unwrap();
   build_incoming(file, term).unwrap();
   // build_horaire(file, jou, term).unwrap();
   file.write(b"</main>")?;
   file.write(b"<footer>")?;
   build_footer(file).unwrap();
-  // file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
-  // file.write(
-  // b"<a href='http://webring.xxiivv.com/'><img src='../media/icon/rotonde.svg' width='30'/></a>",
-  // )?;
-  // file.write(b"<a href='https://merveilles.town/@neauoire'><img src='../media/icon/merveilles.svg' width='30'/></a>")?;
-  // file.write(b"<a href='https://github.com/neauoire'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
-  // file.write(b"<span><a href='devine_lu_linvega.html'>Devine Lu Linvega</a> \xA9 2020 \x97 <a href='about.html'>BY-NC-SA 4.0</a></span>")?;
   file.write(b"</footer>")?;
   file.write(b"</body></html>")?;
   Ok(())
@@ -986,15 +994,14 @@ fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), 
   file.write(b"<section class=\"s0\">")?;
   file.write(b"<div>")?;
   file.write(b"<h1>")?;
-  file.write(b"<a class=\"link-default\" href=\"/index.html\"><span>..</span></a>/patithin")?;
+  file.write_fmt(format_args!(
+    "<a class=\"link-default\" href=\"/index.html\"><span>..</span></a>/{}",
+    term.name
+  ))?;
   file.write(b"</h1>")?;
 
   file.write(b"<px>")?;
-  file.write_fmt(format_args!("<p>{}</p>", "calendrical sequence"))?;
-  file.write_fmt(format_args!(
-    "<p>{}</p>",
-    "based-on Github's contribution calendar."
-  ))?;
+  file.write_fmt(format_args!("<p>{}</p>", term.bref))?;
   file.write(b"</px>")?;
   file.write_fmt(format_args!("<p>{}</p>", "2020"))?;
   file.write_fmt(format_args!("<p>{}</p>", "coding"))?;
@@ -1004,30 +1011,20 @@ fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), 
   Ok(())
 }
 
-fn build_section_details(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+fn build_section_details(
+  file: &mut LineWriter<File>,
+  term: &Term,
+  jou: &Journal,
+  lex: &Lexicon,
+) -> Result<(), Box<dyn Error>> {
   file.write(b"<section class=\"s1\">")?;
   file.write(b"<div>")?;
   // <!-- <Left-Col/> -->
   file.write(b"<div>")?;
-  file.write_fmt(format_args!(
-    "<img src=\"../media/images/{}.jpg\" />",
-    "patithin-detail-00"
-  ))?;
-  file.write_fmt(format_args!(
-    "<px>{}</px>",
-    "calendrical sequencer based on Github's contribution history.
-  where velocity of the note is determined by commit's frequency.
-  total 53 weeks, the only way to assign trigger is just commit!."
-  ))?;
-  file.write_fmt(format_args!(
-    "<iframe
-    width=\"540\"
-    height=\"315\"
-    src=\"{}\"
-  >
-  </iframe>",
-    "https://www.youtube.com/embed/0MEqRyrv7BA"
-  ))?;
+  build_banner(file, jou, term, 1).unwrap();
+  file.write(b"<px>")?;
+  build_body(file, lex, term).unwrap();
+  file.write(b"</px>")?;
   file.write_fmt(format_args!("<h3>{}</h3>", "features"))?;
   file.write_fmt(format_args!("<li>{}</li>", "MIDI protocol (out only)"))?;
   file.write(b"</div>")?;
@@ -1035,22 +1032,24 @@ fn build_section_details(file: &mut LineWriter<File>, term: &Term) -> Result<(),
   // <!-- <Right-Col/> -->
   file.write(b"<div>")?;
   file.write(b"<div class=\"position-sticky\">")?;
-  file.write_fmt(format_args!(
-    "<a target=\"blank\" href=\"{}\"><url>{}</url></a>",
-    "https://github.com/karnpapon/patithin",
-    "see this on github : https://github.com/karnpapon/patithin"
-  ))?;
-  file.write_fmt(format_args!(
-    "<px><p>{}</p><p>{}</p><p>{}</p></px>",
-    "React", "Redux", "TypeScript"
-  ))?;
-  file.write_fmt(format_args!(
-    "<px><tag>{}</tag><tag>{}</tag></px>",
-    "Development", "Design"
-  ))?;
+  build_links(file, term).unwrap();
+  file.write(b"<px>")?;
+  if term.stack.len() > 0 {
+    for _stack in term.stack.iter() {
+      file.write_fmt(format_args!("<p>{}</p>", _stack))?;
+    }
+  }
+  file.write(b"</px>")?;
+  file.write(b"<px>")?;
+  if term.tag.len() > 0 {
+    for _term in term.tag.iter() {
+      file.write_fmt(format_args!("<tag>{}</tag>", _term))?;
+    }
+  }
+  file.write(b"</px>")?;
   file.write(b"</div>")?;
   file.write(b"</div>")?;
-  // end right-col.
+
   file.write(b"</div>")?;
   file.write(b"<div class=\"scroll-spacing\"></div>")?;
   build_section_suggest(file, term).unwrap();
@@ -1088,6 +1087,13 @@ fn build_footer(file: &mut LineWriter<File>) -> Result<(), Box<dyn Error>> {
     "<rc><div>{}</div></rc>",
     "karnpapon - BY-NC-SA 4.0 - date 2020"
   ))?;
+  // file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
+  // file.write(
+  // b"<a href='http://webring.xxiivv.com/'><img src='../media/icon/rotonde.svg' width='30'/></a>",
+  // )?;
+  // file.write(b"<a href='https://merveilles.town/@neauoire'><img src='../media/icon/merveilles.svg' width='30'/></a>")?;
+  // file.write(b"<a href='https://github.com/neauoire'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
+  // file.write(b"<span><a href='devine_lu_linvega.html'>Devine Lu Linvega</a> \xA9 2020 \x97 <a href='about.html'>BY-NC-SA 4.0</a></span>")?;
   file.write(b"</div>")?;
   file.write(b"</div>")?;
   Ok(())
@@ -1174,7 +1180,7 @@ fn build_links(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn E
   file.write(b"<ul>")?;
   for i in 0..term.link.len {
     file.write_fmt(format_args!(
-      "<li><a href='{}' target='_blank'>{}</a></li>",
+      "<url><a href='{}' target='_blank'>\u{15D2} {}</a></url>",
       term.link.vals[i as usize], term.link.keys[i as usize]
     ))?
   }

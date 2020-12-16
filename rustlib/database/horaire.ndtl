@@ -2,7 +2,9 @@
 ; https://wiki.xxiivv.com/site/tablatal.html
 ;     CODE HOST                 PIC NAME
 ;     7    12                   33  37
+19L12 +189 songkranizer          01 songkran_festival_simulator
+19L12 +189 patithin              02 custom_sequencer
+19L12 +189 patithin              03 pict_02
 20S12 -254 home                 725 Brass_Faucet
-20S11 -237 home                 719 Sinclair_Scientific
+20S11 -237 home                   - Sinclair_Scientific
 20S08 -334 alicef                 -
-19L12 +189 aliceffekt           617 Azolla Release

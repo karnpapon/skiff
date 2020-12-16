@@ -4,6 +4,13 @@
 HOME
   HOST : home
   BREF : &nbsp;
+  TAGS
+    Development
+    Design
+  STACK
+    React
+    Redux
+    TypeScript
   BODY
     {^img identity/orb.png}
     <p>See.</p>
@@ -12,6 +19,13 @@ AUDIO
   HOST : home
   TYPE : portal
   BREF : The Audio portal hosts various soundtrack, records and live projects.
+  TAGS
+    Development
+    Design
+  STACK
+    React
+    Redux
+    TypeScript
   BODY
     <p>One day many years ago a man walked along and stood in the sound of the ocean on a cold sunless shore and said:</p>
     <p>"We need a voice to call across the water, to warn ships; I'll make one. I'll make a voice like all of time and all of the fog that ever was; I'll make a voice that is like an empty bed beside you all night long, and like an empty house when you open the door, and like trees in autumn with no leaves. A sound like the birds flying south, crying, and a sound like November wind and the sea on the hard, cold shore."</p>
@@ -23,16 +37,37 @@ VISUAL
   HOST : home
   TYPE : portal
   BREF : The Visual hosts design and interaction projects.
+  TAGS
+    Development
+    Design
+  STACK
+    React
+    Redux
+    TypeScript
 
 RESEARCH
   HOST : home
   TYPE : portal
   BREF : The Research hosts philosophy and linguistics projects.
+  TAGS
+    Development
+    Design
+  STACK
+    React
+    Redux
+    TypeScript
 
 ABOUT
   HOST : home
   TYPE : album
   BREF : This wiki is a digital playground and personal logging system.
+  TAGS
+    Development
+    Design
+  STACK
+    React
+    Redux
+    TypeScript
   BODY
     <p>The aim of this wiki is to build a form of <b>personal assistant</b> to help with the management of a vast repository of recorded statistics which includes notes on and .</p>
     <p>is written in portable to be compiled on the operating system, and maintained from It is built to adapt to my needs as they change, and to  The databases are in thehuman-readable plaintext formats.</p>
@@ -57,15 +92,27 @@ ALICEF
   HOST : audio
   TYPE : portal
   BREF : Alicef, is an livecoding audio and visual project built around Orca.
+  TAGS
+    Development
+    Design
+  STACK
+    React
+    Redux
+    TypeScript
   BODY
     <p><b>Alicef</b> is a fragment of 's diary, exploring but focusing on the aesthetics of pattern & repetition.</p>
     <p>This livecoding project uses a combination of and is created to be mostly a performance project, there are currently no releases available for the <b>Alicef</b> project, only a handful of {https://www.youtube.com/watch?v=hQXa6TkSeH0 demos}.</p>
     {^youtube hQXa6TkSeH0}
     
-ALICEFFEKT
-  HOST : audio
+SONGKRANIZER
+  HOST : home
   TYPE : index
-  BREF : Aliceffekt, is an audio project following the adventures of Neonev across Dinaisth.
+  BREF : Songkranizer, is a Songkran festival simulator on Chrome extension.
+  TAGS
+    Development
+  STACK
+    Chrome
+    JavaScript
   BODY
     <p>A travel across the fictional worlds of the where every album is a sort of travel diary across the landscape.</p>
   LINK
@@ -76,7 +123,17 @@ PATITHIN
   HOST : home
   TYPE : index
   BREF : calendrical sequencer, based-on Github contribution calendar.
+  TAGS
+    Development
+    Design
   BODY 
-    <p>A travel across the fictional worlds of the where every album is a sort of travel diary across the landscape.</p>
-    <p>This livecoding project uses a combination of and is created to be mostly a performance project, there are currently no releases available for the <b>Alicef</b> project, only a handful of {https://www.youtube.com/watch?v=hQXa6TkSeH0 demos}.</p>
-    {^youtube hQXa6TkSeH0}
+    <p>where velocity of the note is determined by commit's frequency.</p>
+    <p>total 53 weeks, the only way to assign trigger is just commit!.</p>
+    {^youtube 0MEqRyrv7BA}
+  LINK
+    source files : https://github.com/karnpapon/patithin
+    playground : https://tender-banach-703feb.netlify.app/
+  STACK
+    React
+    Redux
+    TypeScript
