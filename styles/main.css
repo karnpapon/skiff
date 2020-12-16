@@ -1,22 +1,13 @@
 :root {
   --main-color: white;
-  --secondary-color: #a1a1a1;
-  --third-color: #cccccc;
+  --secondary-color: #efefef;
   --color-black: black;
-  --hover-color: #c4c4c4;
-  --hover-light-color: #e7e7e7;
-  --main-colorize-color: #4f00ff;
-  --main-margin: 1.5rem;
-  --main-padding: 1rem;
-  --medium-padding: 0.5rem;
-  --small-padding: 0.25rem;
-  --font-input-mono: 'input_mono_regular';
-  --font-input-mono-bold: 'input_mono_bold';
+  --main-padding: 2rem;
   --scroll-space-height: 20rem;
   --home-scroll-space-height: 65vh;
-  --small-font-size: 0.9rem;
   --mobile-screen: 767px;
 }
+
 * { margin: 0; padding: 0; box-sizing: border-box; text-decoration: none; color: black; }
 a { color: rgb(0, 38, 255); }
 a:hover,a:hover i { background-color: rgb(0, 38, 255); color:white; }
@@ -26,8 +17,9 @@ h1 { font-weight: lighter;font-size: 3rem;color: rgb(0, 38, 255); text-decoratio
 h2 { font-size: 1.5rem; margin: 1rem 0;}
 p { margin: 0}
 img { width: 100%;}
-iframe { margin: 2rem 0;}
+iframe { margin: var(--main-padding) 0;}
 ul{ display: flex; flex-direction: column;}
+main pre { overflow: auto; background: var(--secondary-color); padding: 10px; font-size: 80%; margin-bottom: 30px;white-space: pre-wrap;}
 
 px { margin: 1rem 0; display: flex; flex-direction: column; }
 fb { font-size: 2.5rem; }
@@ -38,19 +30,19 @@ lc { display: flex; flex: 1}
 rc { display: flex; flex: 1}
 
 .s0 { position: relative; display: flex;z-index: 1; background: white;}
-.s0 > div { padding: 2rem;  }
+.s0 > div { padding: var(--main-padding);  }
 .s0 > div:nth-child(1) { flex: 3 }
 .s0 > div:nth-child(2) { flex: 1; justify-content: flex-end; display: flex; font-size: 3rem; align-items: flex-end; }
 .s1 { position: relative; display: flex;z-index: 1;flex-direction: column;}
-.s1 > div:nth-child(1), .s1 > div:nth-child(2) { padding: 2rem; z-index: 1; display: flex; background: white;}
-.s1 > div > div:nth-child(1) { flex: 2; display: flex; padding-right: 2rem;flex-direction: column;}
+.s1 > div:nth-child(1), .s1 > div:nth-child(2) { padding: var(--main-padding); z-index: 1; display: flex; background: white;}
+.s1 > div > div:nth-child(1) { flex: 2; display: flex; padding-right: var(--main-padding);flex-direction: column;}
 .s1 > div > div:nth-child(2) { flex: 1; height: auto;}
-.s2 { display: flex; position: fixed; bottom: 0;margin-bottom: 60px;z-index: 0; z-index: 0 !important;width: 100%;height: var(--scroll-space-height); background-color: white;}
+.s2 { display: flex; position: fixed; bottom: 0;margin-bottom: 60px;z-index: 0; z-index: 0 !important;width: 100%;height: var(--scroll-space-height); background-color: var(--secondary-color);}
 
-.pad2{ padding: 2rem;}
+.pad2{ padding: var(--main-padding);}
 .flex-col { display: flex;flex-direction: column;}
 .position-sticky{ position: sticky; top: 1rem;}
-.box { height: 100%; cursor: pointer;flex-direction: column;display: flex;}
+.box {padding: var(--main-padding); height: 100%; cursor: pointer;flex-direction: column;justify-content: center;display: flex;}
 .box:hover, .box:hover fm,.box:hover p{ background: black; color: white;}
 
 .scroll-spacing { background: none !important; height: var(--scroll-space-height); margin-bottom: 30px; width: 100%; visibility: hidden; pointer-events: none; display: flex; }
@@ -59,11 +51,14 @@ input:checked ~ .works-list { display: block; cursor: default; }
 
 
 .footer{width: 100%; height: 60px; position: fixed; bottom: 0; z-index: 5; background: white; }
+.footer > div > rc > div > a > img { width: var(--main-padding); height: var(--main-padding);}
+.footer > div > rc > div > a { justify-content: center; align-items: center; display: flex;margin: 0 0.5rem;}
+.footer > div > rc > div { display: flex;}
 .footer > div { display: flex;height: 100%;}
 .footer lc{  flex: 1;width: 100%;height: 100%; }
 .footer lc:hover{ background: black;color:white; }
-.footer rc{ flex: 10;width: 100%;height: 100%; }
+.footer rc{ flex: 10;width: 100%;height: 100%;justify-content: space-between;}
 .footer lc > div { height: 100%; width: 100%; justify-content: center; align-items: center; display: flex; }
 .footer lc > div > label { height: 100%; width: 100%; justify-content: center; align-items: center; display: flex; }
 .footer lc > div > input { cursor: pointer;opacity: 0;height: 100%; width: 5rem;position: absolute; }
-.footer rc > div { height: 100%; margin-left: 2rem;align-items: center; display: flex;}
+.footer rc > div { height: 100%; margin-left: var(--main-padding);margin-right: var(--main-padding);align-items: center; display: flex;}

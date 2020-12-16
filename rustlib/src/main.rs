@@ -58,6 +58,7 @@ pub struct Term {
   name: String,
   host: String,
   bref: String,
+  year: String,
   r#type: String,
   tag: Vec<String>,
   stack: Vec<String>,
@@ -71,6 +72,8 @@ pub struct Term {
   date_from: RefCell<String>,
   date_last: RefCell<String>,
   parent: Option<Box<Rc<RefCell<Term>>>>,
+  next: Option<Box<Rc<RefCell<Term>>>>,
+  prev: Option<Box<Rc<RefCell<Term>>>>,
   children: Vec<Option<Box<Rc<RefCell<Term>>>>>,
   children_len: i32,
   docs: Vec<Option<Rc<RefCell<List>>>>,
@@ -127,6 +130,7 @@ impl Term {
       name: String::with_capacity(KEY_BUF_LEN),
       host: String::with_capacity(KEY_BUF_LEN),
       bref: String::with_capacity(STR_BUF_LEN),
+      year: String::with_capacity(STR_BUF_LEN),
       tag: vec![],
       stack: vec![],
       r#type: String::with_capacity(KEY_BUF_LEN),
@@ -139,6 +143,8 @@ impl Term {
       date_from: RefCell::new(String::with_capacity(6)),
       date_last: RefCell::new(String::with_capacity(6)),
       parent: None,
+      next: None,
+      prev: None,
       children: vec![],
       children_len: 0,
       docs: vec![],
@@ -147,10 +153,6 @@ impl Term {
       incoming_len: 0,
       outgoing_len: 0,
     }
-  }
-
-  fn get_name(&self) -> String {
-    self.name.to_string()
   }
 }
 
@@ -174,10 +176,6 @@ impl Glossary {
       len: 0,
       lists: vec![Rc::new(RefCell::new(List::new()))],
     }
-  }
-
-  fn update_len(&mut self) {
-    self.len += 1;
   }
 }
 
@@ -211,7 +209,7 @@ fn parse(all_lists: &mut Glossary, all_terms: &mut Lexicon, all_logs: &mut Journ
   println!("Parsing  | ");
   parse_glossary(String::from("./database/glossary.ndtl"), all_lists).unwrap();
   parse_lexicon(String::from("./database/lexicon.ndtl"), all_terms).unwrap();
-  parse_horaire(String::from("./database/horaire.ndtl"), all_logs).unwrap();
+  parse_journals(String::from("./database/journals.ndtl"), all_logs).unwrap();
 }
 
 fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), SkiffError> {
@@ -247,7 +245,7 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
     }
     let host_name = lex_term.borrow().host.to_string();
     let mut ch_len = 0;
-    if let Some(len) = *&lex_term.borrow_mut().parent.as_ref() {
+    if let Some(len) = &lex_term.borrow_mut().parent.as_ref() {
       ch_len = len.borrow().children_len as usize;
     }
 
@@ -300,7 +298,6 @@ fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
   let mut file_writer;
 
   println!("Building | ");
-  println!("{} pages ", lex.len);
   for i in 0..lex.len {
     let lex_term = lex.terms[i as usize].as_ref().borrow_mut().clone();
     let filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
@@ -313,11 +310,6 @@ fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
     file = LineWriter::new(file_writer);
     build_page(&mut file, lex, &lex_term, jou).unwrap();
   }
-  println!("2 feeds ");
-  // file = File::open("../links/rss.xml").expect("build: Could not open file -> rss.xml" );
-  // fprss(f, jou);
-  // file = File::open("../links/tw.txt").expect("build: Could not open file -> tw.txt" );
-  // fptwtxt(f, jou);
   Ok(())
 }
 
@@ -529,6 +521,10 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
       if helpers::spos(&_scanner, "TYPE : ") >= 0 {
         t.borrow_mut().r#type = helpers::sstr(&scanner.source, 9, len - 9);
       }
+
+      if helpers::spos(&_scanner, "YEAR : ") >= 0 {
+        t.borrow_mut().year = helpers::sstr(&scanner.source, 9, len - 9);
+      }
       catch_body = helpers::spos(&scanner.source, "BODY") >= 0;
       catch_link = helpers::spos(&scanner.source, "LINK") >= 0;
       catch_list = helpers::spos(&scanner.source, "LIST") >= 0;
@@ -589,7 +585,7 @@ fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> 
   Ok(())
 }
 
-fn parse_horaire(path: String, journal: &mut Journal) -> Result<(), SkiffError> {
+fn parse_journals(path: String, journal: &mut Journal) -> Result<(), SkiffError> {
   let f = File::open(path).expect("journal parsing: file not found");
   let mut f_reader = BufReader::new(f);
   let mut len;
@@ -754,7 +750,7 @@ fn fpmodule(f: &mut Option<&mut LineWriter<File>>, s: &[char]) {
     let mut lines = 0;
     let mut scanner: Scanner;
 
-    // to build special section (eg. codeblock see `ansi_c.html`)
+    // to build special section
     // by pulling texts from ../archive/src
     println!("target = {}", target);
     let f =
@@ -851,7 +847,6 @@ fn fplink(
         }
       }
       None => {
-        // println!("Unknown link = {:?}", &target);
         return Err(SkiffError::ParseError(format!(
           "Unknown link {:?}",
           &target
@@ -883,22 +878,13 @@ fn build_page(
   ))?;
   file.write(b"<link rel='stylesheet' type='text/css' href='../styles/main.css'>")?;
   file.write(b"<link rel='shortcut icon' type='image/png' href='../media/services/icon.png'>")?;
-  file.write_fmt(format_args!(
-    "<title>{} — {}</title>",
-    term.name.to_uppercase(),
-    term.name
-  ))?;
+  file.write_fmt(format_args!("<title>KARNPAPON — {}</title>", term.name))?;
   file.write(b"</head>")?;
   file.write(b"<body>")?;
-
-  // build_nav(file, &term).unwrap();
   file.write(b"<main class=\"container-ctrl scroll-wrapper\">")?;
 
   build_section_header(file, term).unwrap();
   build_section_details(file, term, jou, lex).unwrap();
-
-  // section: suggest work.
-  // build_include(file, term).unwrap();
 
   /* templated pages */
   match term.r#type.as_ref() {
@@ -1003,8 +989,7 @@ fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), 
   file.write(b"<px>")?;
   file.write_fmt(format_args!("<p>{}</p>", term.bref))?;
   file.write(b"</px>")?;
-  file.write_fmt(format_args!("<p>{}</p>", "2020"))?;
-  file.write_fmt(format_args!("<p>{}</p>", "coding"))?;
+  file.write_fmt(format_args!("<p>({})</p>", term.year))?;
   file.write(b"</div>")?;
   file.write(b"<div><a href=\"/index.html\"><i class=\"icon-arr-back\">~</i></a></div>")?;
   file.write(b"</section>")?;
@@ -1025,8 +1010,7 @@ fn build_section_details(
   file.write(b"<px>")?;
   build_body(file, lex, term).unwrap();
   file.write(b"</px>")?;
-  file.write_fmt(format_args!("<h3>{}</h3>", "features"))?;
-  file.write_fmt(format_args!("<li>{}</li>", "MIDI protocol (out only)"))?;
+  build_include(file, term).unwrap();
   file.write(b"</div>")?;
 
   // <!-- <Right-Col/> -->
@@ -1063,6 +1047,7 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
   file.write_fmt(format_args!("<fb class=\"pad2\">{}</fb>", "Projects"))?;
   file.write(b"</lc>")?;
   file.write(b"<rc class=\"flex-col\">")?;
+
   file.write_fmt(format_args!(
     "<div class=\"box\"><fm>{}</fm><p>{}</p><p>{}</p></div>",
     "works:01", "description01", "description02"
@@ -1071,6 +1056,7 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
     "<div class=\"box\"><fm>{}</fm></div>",
     "works:02"
   ))?;
+
   file.write(b"</rc>")?;
   file.write(b"</div>")?;
   Ok(())
@@ -1083,17 +1069,16 @@ fn build_footer(file: &mut LineWriter<File>) -> Result<(), Box<dyn Error>> {
     "<lc><div><input type=\"checkbox\"/><label>{}</label><div class=\"works-list\"></div></div></lc>",
     "index"
   ))?;
+  file.write(b"<rc>")?;
   file.write_fmt(format_args!(
-    "<rc><div>{}</div></rc>",
+    "<div>{}</div>",
     "karnpapon - BY-NC-SA 4.0 - date 2020"
   ))?;
-  // file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
-  // file.write(
-  // b"<a href='http://webring.xxiivv.com/'><img src='../media/icon/rotonde.svg' width='30'/></a>",
-  // )?;
-  // file.write(b"<a href='https://merveilles.town/@neauoire'><img src='../media/icon/merveilles.svg' width='30'/></a>")?;
-  // file.write(b"<a href='https://github.com/neauoire'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
-  // file.write(b"<span><a href='devine_lu_linvega.html'>Devine Lu Linvega</a> \xA9 2020 \x97 <a href='about.html'>BY-NC-SA 4.0</a></span>")?;
+  file.write(b"<div>")?;
+  file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
+  file.write(b"<a href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
+  file.write(b"</div>")?;
+  file.write(b"</rc>")?;
   file.write(b"</div>")?;
   file.write(b"</div>")?;
   Ok(())
@@ -1141,7 +1126,6 @@ fn build_include(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn
   file
     .write_all(buff.as_bytes())
     .expect("error: cannot write /inc file");
-  file.write_fmt(format_args!("<p>Found a mistake? Submit an <a href='\" REPOPATH \"{}.htm' target='_blank'>edit</a> to {}.</p>", term.filename, term.name))?;
   Ok(())
 }
 
@@ -1180,7 +1164,7 @@ fn build_links(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn E
   file.write(b"<ul>")?;
   for i in 0..term.link.len {
     file.write_fmt(format_args!(
-      "<url><a href='{}' target='_blank'>\u{15D2} {}</a></url>",
+      "<url><a href='{}' target='_blank'>\u{1F855} {}</a></url>",
       term.link.vals[i as usize], term.link.keys[i as usize]
     ))?
   }
@@ -1578,7 +1562,6 @@ fn print_term_details(
 // ------------------HELPERS-----------------------
 
 fn finddiary(jou: &Journal, term: &Term) -> Option<Rc<RefCell<Log>>> {
-  println!("finddiary = {}", term.name);
   for log in jou.logs.iter() {
     let jou_log = &log.borrow();
     let log_term = jou_log.term.as_ref();
@@ -1613,10 +1596,7 @@ fn findlist(glo: &Glossary, name: &str) -> Option<Rc<RefCell<List>>> {
   return None;
 }
 
-pub fn scan(content: &str) {
-  println!("Scanner  | ");
-  scan_glossary(&content);
-}
+// ------------------MAIN-----------------------
 
 fn main() {
   let all_terms = &mut Lexicon::new();
