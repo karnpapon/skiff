@@ -5,7 +5,6 @@ pub fn cisp(c: &char) -> bool {
 
 /// check is alphabet.
 fn cial(c: &char) -> bool {
-	// return (c >= &"a" && c <= &"z") || (c >= &"A" && c <= &"Z");
 	return c.is_digit(16);
 }
 
@@ -53,7 +52,6 @@ pub fn cpad(s: &[char], c: char) -> usize {
 }
 
 pub fn cpos(s: &[char], c: char) -> i32 {
-	// println!("cpos = {:?}", &s);
 	for i in 0..s.len() {
 		if s[i] == c {
 			return i as i32;

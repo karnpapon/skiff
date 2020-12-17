@@ -22,9 +22,7 @@ mod util;
 use std::error::Error;
 use util::error::SkiffError;
 use util::helpers;
-use util::parser::Parser;
 use util::scanner::Scanner;
-use util::token::Token;
 
 const KEY_BUF_LEN: usize = 32;
 const STR_BUF_LEN: usize = 255;
@@ -42,7 +40,7 @@ const DOMAIN: &str = "https://karnpapon.com/";
 const LOCATION: &str = "Bangkok, Thailand";
 const REPOPATH: &str = "https://github.com/karnpapon/skiff/";
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 #[allow(dead_code)]
 pub struct List {
   name: String,
@@ -52,7 +50,7 @@ pub struct List {
   routes: i32,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 #[allow(dead_code)]
 pub struct Term {
   name: String,
@@ -198,12 +196,10 @@ impl Journal {
 }
 
 fn scan_glossary(content: &str) {
-  let mut tokens: Vec<Token> = Vec::new();
   let mut scanner = Scanner::new(&content);
-  tokens = scanner.scan_tokens();
 }
 
-// ------------------MAIN-----------------------
+// ------------------PARSE/LINK/BUILD-----------------------
 
 fn parse(all_lists: &mut Glossary, all_terms: &mut Lexicon, all_logs: &mut Journal) {
   println!("Parsing  | ");
@@ -290,6 +286,41 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
       }
     }
   }
+  Ok(())
+}
+
+fn link_next_prev(lex: &mut Lexicon) -> Result<(), Box<dyn Error>> {
+  let mut idx_next = 0;
+  let mut idx_prev = 0;
+  lex.terms.sort_by(|a, b| {
+    b.borrow()
+      .year
+      .parse::<i32>()
+      .unwrap()
+      .cmp(&a.borrow().year.parse::<i32>().unwrap())
+  });
+
+  // link to `next` and `prev` term
+  // but skip only `home`(purposely for building suggested works).
+  for (i, term) in lex.terms.iter().enumerate() {
+    if term.borrow().name != "home" {
+      if i + 1 > (lex.terms.len() - 1) {
+        idx_next = 1;
+      } else {
+        idx_next = i + 1;
+      }
+
+      if i - 1 == 0 {
+        idx_prev = lex.terms.len() - 1;
+      } else {
+        idx_prev = i - 1;
+      }
+
+      term.borrow_mut().next = Some(Box::new(lex.terms[idx_next].clone()));
+      term.borrow_mut().prev = Some(Box::new(lex.terms[idx_prev].clone()));
+    }
+  }
+
   Ok(())
 }
 
@@ -1036,12 +1067,16 @@ fn build_section_details(
 
   file.write(b"</div>")?;
   file.write(b"<div class=\"scroll-spacing\"></div>")?;
-  build_section_suggest(file, term).unwrap();
+  if term.name != "home" {
+    build_section_suggest(file, term).unwrap();
+  }
   file.write(b"</section>")?;
   Ok(())
 }
 
 fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+  let term_next = term.next.as_ref().unwrap().borrow();
+  let term_prev = term.prev.as_ref().unwrap().borrow();
   file.write(b"<div class=\"s2\">")?;
   file.write(b"<lc>")?;
   file.write_fmt(format_args!("<fb class=\"pad2\">{}</fb>", "Projects"))?;
@@ -1049,12 +1084,12 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
   file.write(b"<rc class=\"flex-col\">")?;
 
   file.write_fmt(format_args!(
-    "<div class=\"box\"><fm>{}</fm><p>{}</p><p>{}</p></div>",
-    "works:01", "description01", "description02"
+    "<div class=\"box\"><fm>{}</fm><p>{}</p></div>",
+    term_next.name, term_next.bref
   ))?;
   file.write_fmt(format_args!(
-    "<div class=\"box\"><fm>{}</fm></div>",
-    "works:02"
+    "<div class=\"box\"><fm>{}</fm><p>{}</p></div>",
+    term_prev.name, term_prev.bref
   ))?;
 
   file.write(b"</rc>")?;
@@ -1604,6 +1639,7 @@ fn main() {
   let all_logs = &mut Journal::new();
   parse(all_lists, all_terms, all_logs);
   link(all_lists, all_terms, all_logs).unwrap();
+  link_next_prev(all_terms).unwrap();
   build(all_terms, all_logs).unwrap();
   check(all_terms, all_lists, all_logs).unwrap();
 }

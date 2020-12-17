@@ -4,7 +4,7 @@
 HOME
   HOST : home
   BREF : &nbsp;
-  YEAR : &nbsp;
+  YEAR : 9999
   TAGS
     Development
     Design
@@ -20,7 +20,7 @@ AUDIO
   HOST : home
   TYPE : portal
   BREF : The Audio portal hosts various soundtrack, records and live projects.
-  YEAR : 2020
+  YEAR : 2019
   TAGS
     Development
     Design
@@ -52,7 +52,7 @@ RESEARCH
   HOST : home
   TYPE : portal
   BREF : The Research hosts philosophy and linguistics projects.
-  YEAR : 2020
+  YEAR : 2018
   TAGS
     Development
     Design
@@ -65,7 +65,7 @@ ABOUT
   HOST : home
   TYPE : album
   BREF : This wiki is a digital playground and personal logging system.
-  YEAR : 2020
+  YEAR : 2019
   TAGS
     Development
     Design
