@@ -1,6 +1,7 @@
 :root {
   --main-color: white;
   --secondary-color: #efefef;
+  --md-gray-color: #656565;
   --color-black: black;
   --main-padding: 2rem;
   --scroll-space-height: 20rem;
@@ -21,10 +22,20 @@ iframe { margin: var(--main-padding) 0;}
 ul{ display: flex; flex-direction: column;}
 main pre { overflow: auto; background: var(--secondary-color); padding: 10px; font-size: 80%; margin-bottom: 30px;white-space: pre-wrap;}
 input:checked ~ .works-list {display: flex; flex: 1; flex-direction: row; padding: var(--main-padding); } 
+ul{ margin: 0px 0px 0px 20px; list-style: none; line-height: 1.5em; }
+ul li{ font-size: 16px; position: relative; }
+ul li:before {  position: absolute; left: -15px; top: 0px; content: ''; display: block; border-left: 1px solid #ddd; height: 1em; border-bottom: 1px solid #ddd; width: 10px;}
+ul li:after { position: absolute; left: -15px; bottom: -7px; content: ''; display: block; border-left: 1px solid #ddd; height: 100%; }
+ul li:last-child:after { display: none }
+ul li.root { margin: 0px 0px 0px -20px;}
+ul li.root:before, ul li.root:after {  display: none;}
 
 px { margin: 1rem 0; display: flex; flex-direction: column; }
+pxy { padding: 2rem; display: flex; }
+/* pxy > div a { color: black;} */
 fb { font-size: 2.5rem; }
 fm { font-size: 1.5rem; }
+fdt { font-family: system-ui; font-style: italic; color: var(--md-gray-color); font-size: 0.8rem; font-weight: lighter; } 
 tag { margin: 0.25rem 0; padding: 0.5rem; border: 0.5px solid; width: 10rem;}
 url { color: rgb(0, 38, 255);text-decoration: underline;}
 lc { display: flex; flex: 1}
@@ -49,6 +60,7 @@ ic a:hover{  background-color: unset; opacity: 0.5;}
 .s2 rc > div:hover, .s2 rc > div:hover fm, .s2 rc > div:hover a , .s2 rc > div:hover p  { background-color: black; color: white;}
 
 .pad2{ padding: var(--main-padding);}
+.px2 { padding: 0 var(--main-padding);}
 .flex-col { display: flex;flex-direction: column;}
 .position-sticky{ position: sticky; top: 1rem;}
 .box {padding: var(--main-padding); height: 100%; cursor: pointer;flex-direction: column;justify-content: center;display: flex;}

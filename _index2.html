@@ -7,134 +7,124 @@
     <title>karnpapon site</title>
   </head>
   <body>
-    <h1>Index of</h1>
-    <h1>2020</h1>
-    <ul>
-      <li><a href="/patithin.html">patithin</a></li>
-      <li><a href="/">seeq</a></li>
-      <li><a href="/">tsiangt</a></li>
-      <li><a href="/">etctecect</a></li>
-      <li><a href="/">songkranizer</a></li>
-    </ul>
-    <h1>2019</h1>
-    <ul>
-      <li><a href="/">patithin</a></li>
-      <li><a href="/">seeq</a></li>
-      <li><a href="/">tsiangt</a></li>
-      <li><a href="/">etctecect</a></li>
-      <li><a href="/">songkranizer</a></li>
-    </ul>
+    <pxy>
+      <div>
+        <ul>
+          <li class="root"><h2>Journey&nbsp;&nbsp;</h2></li>
+          <li>
+            <strong>2020</strong>
+            <ul>
+              <li><a href="/patithin.html">patithin</a></li>
+              <li>
+                <a href="/"
+                  >skiff —
+                  <fdt>static site generator, purely written in Rust.</fdt></a
+                >
+                <ul>
+                  <li><a>indental</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="/"
+                  >seeq — <fdt>custom sequencer, written in JavaScript.</fdt></a
+                >
+              </li>
+              <li>
+                <a href="/"
+                  >tsiangt —
+                  <fdt>calendrical sequencer, from GitHub commit history.</fdt>
+                </a>
+              </li>
+              <li>
+                <a href="/"
+                  >etctecect —
+                  <fdt
+                    >lorem ipsum, is simply dummy text of the printing.</fdt
+                  ></a
+                >
+              </li>
+              <li>
+                <a href="/"
+                  >songkranizer —
+                  <fdt
+                    >Contrary to popular belief, Lorem Ipsum is not simply
+                    random text.</fdt
+                  ></a
+                >
+              </li>
+            </ul>
+          </li>
 
-    <!-- footer -->
-    <!-- footer -->
+          <li>
+            <strong>2019</strong>
+            <ul>
+              <li><a href="/">seeq</a></li>
+              <li><a href="/">tsiangt</a></li>
+              <li><a href="/">songkranizer</a></li>
+            </ul>
+          </li>
+
+          <li>
+            <strong>2018</strong>
+            <ul>
+              <li><a href="/">patithin</a></li>
+              <li><a href="/">songkranizer</a></li>
+            </ul>
+          </li>
+          <li>
+            <strong>2017</strong>
+            <ul>
+              <li><a href="/">patithin</a></li>
+              <li><a href="/">songkranizer</a></li>
+              <li><a href="/">patithin</a></li>
+              <li><a href="/">patithin</a></li>
+              <li><a href="/">patithin</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </pxy>
+
     <footer>
-      <div class="column is-full footer-container">
-        <div class="footer-wrapper">
-          <div class="footer footer-ctl-toggle column is-1 footer-overview">
-            <input id="css-toggle-switch" type="checkbox" />
-            <label for="css-toggle-switch" class="toggle-switch">index </label>
-            <div class="column is-full overview-wrapper toggle">
-              <div class="overview-container">
-                <div class="columns is-full overview-lists">
-                  <!-- each -->
-                  <div
-                    class="column with-padding"
-                    :class="['is-' + list.widthRatio]"
+      <div class="footer">
+        <div>
+          <lc
+            ><div>
+              <input type="checkbox" /><label>index</label>
+              <div class="works-list">
+                <div class="works">
+                  <h2>2021</h2>
+                  <a href="patithin.html"
+                    ><p class="work-actived">patithin</p></a
                   >
-                    <p class="title is-6 padding-top-small">2020</p>
-                    <div
-                      v-for="(itemlist , itemindex) of list.works"
-                      :key="itemindex"
-                      class="list-overview"
-                      v-on:click="selectWork(itemlist)"
-                    >
-                      <p class="is-6">{{ itemlist.name }}</p>
-                      <p class="is-6">{{ itemlist.name }}</p>
-                      <p class="is-6">{{ itemlist.name }}</p>
-                      <p class="is-6">{{ itemlist.name }}</p>
-                      <p class="is-6">{{ itemlist.name }}</p>
-                      <p class="is-6">{{ itemlist.name }}</p>
-                      <p class="is-6">{{ itemlist.name }}</p>
-                      <p class="is-6">{{ itemlist.name }}</p>
-                    </div>
-                  </div>
-
-                  <div
-                    class="column with-padding"
-                    :class="['is-' + list.widthRatio]"
-                  >
-                    <p class="title is-6 padding-top-small">2019</p>
-                    <div
-                      v-for="(itemlist , itemindex) of list.works"
-                      :key="itemindex"
-                      class="list-overview"
-                      v-on:click="selectWork(itemlist)"
-                    >
-                      <router-link
-                        :to="{ path: `/work/${itemlist.year}/${itemlist.slug}`}"
-                        active-class="active"
-                        exact
-                      >
-                        <p class="subtitle is-6">{{ itemlist.name }}</p>
-                      </router-link>
-                    </div>
-                  </div>
-
-                  <div
-                    class="column with-padding"
-                    :class="['is-' + list.widthRatio]"
-                  >
-                    <p class="title is-6 padding-top-small">2018</p>
-                    <div
-                      v-for="(itemlist , itemindex) of list.works"
-                      :key="itemindex"
-                      class="list-overview"
-                      v-on:click="selectWork(itemlist)"
-                    >
-                      <router-link
-                        :to="{ path: `/work/${itemlist.year}/${itemlist.slug}`}"
-                        active-class="active"
-                        exact
-                      >
-                        <p class="subtitle is-6">{{ itemlist.name }}</p>
-                      </router-link>
-                    </div>
-                  </div>
-                  <!-- end each -->
+                </div>
+                <div class="works">
+                  <h2>2020</h2>
+                  <a href="songkranizer.html"><p>songkranizer</p></a
+                  ><a href="visual.html"><p>visual</p></a>
+                </div>
+                <div class="works">
+                  <h2>2019</h2>
+                  <a href="about.html"><p>about</p></a
+                  ><a href="audio.html"><p>audio</p></a>
+                </div>
+                <div class="works">
+                  <h2>2018</h2>
+                  <a href="research.html"><p>research</p></a>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div class="footer footer-ctl column is-11">
-            <div class="level">
-              <div
-                @click="handleClick(undefined,'about')"
-                class="level-left left-col"
-              >
-                <div class="go-about">
-                  <p><strong> Karnpapon </strong></p>
-                </div>
-                <span class="icon-cc">
-                  <img src="./media/icon/cc-logo.svg" alt="github" width="30" />
-                </span>
-                <p class="w-medium cc-details">BY-NC-SA 4.0</p>
-              </div>
-              <div class="level-right right-col">
-                <span class="icon icon-social">
-                  <a target="blank" href="https://twitter.com/snuffvideo1">
-                    <img src="./media/icon/twitter-logo.svg" alt="github" />
-                  </a>
-                </span>
-
-                <span class="icon icon-social">
-                  <a target="blank" href="https://twitter.com/snuffvideo1">
-                    <img src="./media/icon/github-logo.svg" alt="github" />
-                  </a>
-                </span>
-              </div>
-            </div>
-          </div>
+            </div></lc
+          ><rc
+            ><div>karnpapon - BY-NC-SA 4.0 - date 2020</div>
+            <ic
+              ><a href="https://creativecommons.org/licenses/by-nc-sa/4.0"
+                ><img src="../media/icon/cc.svg" width="30" /></a
+              ><a href="https://github.com/karnpapon"
+                ><img
+                  src="../media/icon/github.png"
+                  alt="github"
+                  width="30" /></a></ic
+          ></rc>
         </div>
       </div>
     </footer>
