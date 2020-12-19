@@ -1126,9 +1126,17 @@ fn build_footer(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn
       let name = term.as_ref().unwrap().borrow().name.clone();
       if year.0.parse::<i32>() == term.as_ref().unwrap().borrow().year.parse::<i32>() {
         if name == terms.name {
-          file.write_fmt(format_args!("<strong>{}</strong>", name))?;
+          file.write_fmt(format_args!(
+            "<a href='{}.html'><p class=\"work-actived\">{}</p></a>",
+            term.as_ref().unwrap().borrow().filename.clone(),
+            name
+          ))?;
         } else {
-          file.write_fmt(format_args!("<p>{}</p>", name))?;
+          file.write_fmt(format_args!(
+            "<a href='{}.html'><p>{}</p></a>",
+            term.as_ref().unwrap().borrow().filename,
+            name
+          ))?;
         }
       }
     }
