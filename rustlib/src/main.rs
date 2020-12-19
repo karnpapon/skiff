@@ -7,6 +7,7 @@
 )]
 
 use std::cell::{RefCell, RefMut};
+use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::fs::File;
@@ -909,7 +910,7 @@ fn build_page(
   ))?;
   file.write(b"<link rel='stylesheet' type='text/css' href='../styles/main.css'>")?;
   file.write(b"<link rel='shortcut icon' type='image/png' href='../media/services/icon.png'>")?;
-  file.write_fmt(format_args!("<title>KARNPAPON — {}</title>", term.name))?;
+  file.write_fmt(format_args!("<title>{} — karnpapon</title>", term.name))?;
   file.write(b"</head>")?;
   file.write(b"<body>")?;
   file.write(b"<main class=\"container-ctrl scroll-wrapper\">")?;
@@ -939,7 +940,7 @@ fn build_page(
   // build_horaire(file, jou, term).unwrap();
   file.write(b"</main>")?;
   file.write(b"<footer>")?;
-  build_footer(file).unwrap();
+  build_footer(file, term).unwrap();
   file.write(b"</footer>")?;
   file.write(b"</body></html>")?;
   Ok(())
@@ -1084,12 +1085,12 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
   file.write(b"<rc class=\"flex-col\">")?;
 
   file.write_fmt(format_args!(
-    "<div class=\"box\"><fm>{}</fm><p>{}</p></div>",
-    term_next.name, term_next.bref
+    "<div class=\"box\"><a href={}.html><fm>{}</fm><p>{}</p></a></div>",
+    term_next.filename, term_next.name, term_next.bref
   ))?;
   file.write_fmt(format_args!(
-    "<div class=\"box\"><fm>{}</fm><p>{}</p></div>",
-    term_prev.name, term_prev.bref
+    "<div class=\"box\"><a href={}.html><fm>{}</fm><p>{}</p></a></div>",
+    term_prev.filename, term_prev.name, term_prev.bref
   ))?;
 
   file.write(b"</rc>")?;
@@ -1097,22 +1098,54 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
   Ok(())
 }
 
-fn build_footer(file: &mut LineWriter<File>) -> Result<(), Box<dyn Error>> {
+fn build_footer(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn Error>> {
+  let mut years: HashMap<String, String> = HashMap::new();
+  for _term in terms.parent.as_ref().unwrap().borrow().children.iter() {
+    let y = _term.as_ref().unwrap().borrow().year.to_string();
+    if years.contains_key(&y) == false && &_term.as_ref().unwrap().borrow().name != "home" {
+      years.insert(y.clone(), y.clone());
+    }
+  }
+
+  let mut sorted_years: Vec<_> = years.into_iter().collect();
+  sorted_years.sort_by(|x, y| y.0.cmp(&x.0));
+
   file.write(b"<div class=\"footer\">")?;
   file.write(b"<div>")?;
+  file.write(b"<lc><div>")?;
   file.write_fmt(format_args!(
-    "<lc><div><input type=\"checkbox\"/><label>{}</label><div class=\"works-list\"></div></div></lc>",
+    "<input type=\"checkbox\"/><label>{}</label>",
     "index"
   ))?;
+  file.write(b"<div class=\"works-list\">")?;
+
+  for year in sorted_years.iter() {
+    file.write(b"<div class=\"works\">")?;
+    file.write_fmt(format_args!("<h2>{}</h2>", year.0))?;
+    for term in terms.parent.as_ref().unwrap().borrow().children.iter() {
+      let name = term.as_ref().unwrap().borrow().name.clone();
+      if year.0.parse::<i32>() == term.as_ref().unwrap().borrow().year.parse::<i32>() {
+        if name == terms.name {
+          file.write_fmt(format_args!("<strong>{}</strong>", name))?;
+        } else {
+          file.write_fmt(format_args!("<p>{}</p>", name))?;
+        }
+      }
+    }
+    file.write(b"</div>")?;
+  }
+
+  file.write(b"</div>")?;
+  file.write(b"</div></lc>")?;
   file.write(b"<rc>")?;
   file.write_fmt(format_args!(
     "<div>{}</div>",
     "karnpapon - BY-NC-SA 4.0 - date 2020"
   ))?;
-  file.write(b"<div>")?;
+  file.write(b"<ic>")?;
   file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
   file.write(b"<a href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
-  file.write(b"</div>")?;
+  file.write(b"</ic>")?;
   file.write(b"</rc>")?;
   file.write(b"</div>")?;
   file.write(b"</div>")?;
