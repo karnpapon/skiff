@@ -915,8 +915,12 @@ fn build_page(
   file.write(b"<body>")?;
   file.write(b"<main class=\"container-ctrl scroll-wrapper\">")?;
 
-  build_section_header(file, term).unwrap();
-  build_section_details(file, term, jou, lex).unwrap();
+  if term.name != "home" {
+    build_section_header(file, term).unwrap();
+    build_section_details(file, term, jou, lex).unwrap();
+  } else {
+    build_home(file, term).unwrap();
+  }
 
   /* templated pages */
   match term.r#type.as_ref() {
@@ -926,15 +930,15 @@ fn build_page(
     _ => {}
   };
   /* special pages */
-  match term.name.as_ref() {
-    // "now" => build_special_now(file, lex, jou).unwrap(),
-    "home" => build_special_home(file, jou).unwrap(),
-    "calendar" => build_special_calendar(file, jou).unwrap(),
-    "tracker" => build_special_tracker(file, jou).unwrap(),
-    "journal" => build_special_journal(file, jou).unwrap(),
-    "index" => build_special_index(file, lex).unwrap(),
-    _ => {}
-  };
+  // match term.name.as_ref() {
+  // "now" => build_special_now(file, lex, jou).unwrap(),
+  // "home" => build_special_home(file, jou).unwrap(),
+  // "calendar" => build_special_calendar(file, jou).unwrap(),
+  // "tracker" => build_special_tracker(file, jou).unwrap(),
+  // "journal" => build_special_journal(file, jou).unwrap(),
+  // "index" => build_special_index(file, lex).unwrap(),
+  // _ => {}
+  // };
   build_list(file, term).unwrap();
   build_incoming(file, term).unwrap();
   // build_horaire(file, jou, term).unwrap();
@@ -1005,6 +1009,35 @@ fn build_nav_part(
     }
   }
   file.write(b"</ul>")?;
+  Ok(())
+}
+
+// TODO: handle sub-category if term has children (see: `_index2.html` ).
+fn build_home(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn Error>> {
+  let mut sorted_years: Vec<_> = get_sorted_years(&terms);
+  file.write(b"<pxy><div><ul>")?;
+  file.write(b"<li class=\"root\"><h2>Journey&nbsp;&nbsp;</h2></li>")?;
+  file.write(b"<li>")?;
+
+  for year in sorted_years.iter() {
+    file.write_fmt(format_args!("<strong>{}</strong>", year.0))?;
+    file.write(b"<ul>")?;
+    for term in terms.parent.as_ref().unwrap().borrow().children.iter() {
+      let name = term.as_ref().unwrap().borrow().name.clone();
+      let bref = term.as_ref().unwrap().borrow().bref.clone();
+      if year.0.parse::<i32>() == term.as_ref().unwrap().borrow().year.parse::<i32>() {
+        file.write_fmt(format_args!(
+          "<li><a href='/site/{}.html'>{}</a> — <fdt>{}</fdt></li>",
+          term.as_ref().unwrap().borrow().filename.clone(),
+          name,
+          bref
+        ))?;
+      }
+    }
+    file.write(b"</ul>")?;
+  }
+  file.write(b"</li>")?;
+  file.write(b"</ul></div></pxy>")?;
   Ok(())
 }
 
@@ -1099,16 +1132,7 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
 }
 
 fn build_footer(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn Error>> {
-  let mut years: HashMap<String, String> = HashMap::new();
-  for _term in terms.parent.as_ref().unwrap().borrow().children.iter() {
-    let y = _term.as_ref().unwrap().borrow().year.to_string();
-    if years.contains_key(&y) == false && &_term.as_ref().unwrap().borrow().name != "home" {
-      years.insert(y.clone(), y.clone());
-    }
-  }
-
-  let mut sorted_years: Vec<_> = years.into_iter().collect();
-  sorted_years.sort_by(|x, y| y.0.cmp(&x.0));
+  let mut sorted_years: Vec<_> = get_sorted_years(&terms);
 
   file.write(b"<div class=\"footer\">")?;
   file.write(b"<div>")?;
@@ -1670,6 +1694,20 @@ fn findlist(glo: &Glossary, name: &str) -> Option<Rc<RefCell<List>>> {
     }
   }
   return None;
+}
+
+fn get_sorted_years(terms: &Term) -> Vec<(String, String)> {
+  let mut years: HashMap<String, String> = HashMap::new();
+  for _term in terms.parent.as_ref().unwrap().borrow().children.iter() {
+    let y = _term.as_ref().unwrap().borrow().year.to_string();
+    if years.contains_key(&y) == false && &_term.as_ref().unwrap().borrow().name != "home" {
+      years.insert(y.clone(), y.clone());
+    }
+  }
+
+  let mut sorted_years: Vec<_> = years.into_iter().collect();
+  sorted_years.sort_by(|x, y| y.0.cmp(&x.0));
+  return sorted_years;
 }
 
 // ------------------MAIN-----------------------
