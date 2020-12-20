@@ -1,5 +1,6 @@
 /rustlib/target
 /rustlib/archive/*
 /site
-/inc
-/archive
+/inc/*
+/archive/docs/*
+/archive/src/*
