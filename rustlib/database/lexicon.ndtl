@@ -1,4 +1,4 @@
-; The lexicon is a collection of terms.
+; based on indental.
 ; https://wiki.xxiivv.com/site/indental.html
 
 HOME
@@ -121,6 +121,25 @@ PATITHIN
     React
     Redux
     TypeScript
+  BODY 
+    <p>where velocity of the note is determined by commit's frequency.</p>
+    <p>total 53 weeks, the only way to assign trigger is just commit!.</p>
+    {^youtube 0MEqRyrv7BA}
+  LINK
+    source files : https://github.com/karnpapon/patithin
+    playground : https://tender-banach-703feb.netlify.app/
+
+
+SKIFF
+  HOST : home
+  TYPE : index
+  BREF : static site generator, purely written in Rust.
+  YEAR : 2021
+  TAGS
+    Development
+    Design
+  STACK
+    Rust
   BODY 
     <p>where velocity of the note is determined by commit's frequency.</p>
     <p>total 53 weeks, the only way to assign trigger is just commit!.</p>
