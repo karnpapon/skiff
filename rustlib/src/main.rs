@@ -332,15 +332,17 @@ fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
   println!("Building | ");
   for i in 0..lex.len {
     let lex_term = lex.terms[i as usize].as_ref().borrow_mut().clone();
-    let filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
-    let path = Path::new(&filepath);
-    let display = path.display();
-    file_writer = match File::create(path) {
-      Err(why) => panic!("couldn't create {}: {}", display, why),
-      Ok(f) => f,
-    };
-    file = LineWriter::new(file_writer);
-    build_page(&mut file, lex, &lex_term, jou).unwrap();
+    if &lex_term.r#type != "category" {
+      let filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
+      let path = Path::new(&filepath);
+      let display = path.display();
+      file_writer = match File::create(path) {
+        Err(why) => panic!("couldn't create {}: {}", display, why),
+        Ok(f) => f,
+      };
+      file = LineWriter::new(file_writer);
+      build_page(&mut file, lex, &lex_term, jou).unwrap();
+    }
   }
   Ok(())
 }
@@ -748,6 +750,8 @@ fn fpmodule(f: &mut Option<&mut LineWriter<File>>, s: &[char]) {
     file.write_fmt(format_args!("<iframe frameborder='0' src='https://itch.io/embed/{}?link_color=000000' width='600' height='167'></iframe>", target)).unwrap();
   } else if cmd == "bandcamp" {
     file.write_fmt(format_args!("<iframe style='border: 0; width: 600px; height: 274px;' src='https://bandcamp.com/EmbeddedPlayer/album={}/size=large/bgcol=ffffff/linkcol=333333/artwork=small' seamless></iframe>", target)).unwrap();
+  } else if cmd == "vimeo" {
+    file.write_fmt(format_args!("<iframe width='600' height='380' src='https://player.vimeo.com/video/{}'  style='max-width:700px' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>", target)).unwrap();
   } else if cmd == "youtube" {
     file.write_fmt(format_args!("<iframe width='600' height='380' src='https://www.youtube.com/embed/{}?rel=0' style='max-width:700px' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>", target)).unwrap();
   } else if cmd == "redirect" {
@@ -1012,20 +1016,43 @@ fn build_nav_part(
   Ok(())
 }
 
-// TODO: handle sub-category if term has children (see: `_index2.html` ).
 fn build_home(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn Error>> {
   let mut sorted_years: Vec<_> = get_sorted_years(&terms);
   file.write(b"<pxy><div><ul>")?;
-  file.write(b"<li class=\"root\"><h2>Journey&nbsp;&nbsp;</h2></li>")?;
-  file.write(b"<li>")?;
-
+  file.write(b"<li class=\"root\"><h2>unmonetizable stuffs, but joy. &nbsp;&nbsp;</h2></li>")?;
   for year in sorted_years.iter() {
+    build_home_children_item(file, terms, year, false)?;
+  }
+  file.write(b"</ul></div></pxy>")?;
+  Ok(())
+}
+
+fn build_home_children_item(
+  file: &mut LineWriter<File>,
+  terms: &Term,
+  year: &(String, String),
+  recursive: bool,
+) -> Result<(), Box<dyn Error>> {
+  let mut prev_year = String::new();
+  file.write(b"<li>")?;
+  if recursive == false {
     file.write_fmt(format_args!("<strong>{}</strong>", year.0))?;
-    file.write(b"<ul>")?;
-    for term in terms.parent.as_ref().unwrap().borrow().children.iter() {
+  }
+  file.write(b"<ul>")?;
+  for term in terms.children.iter() {
+    let _term = term.as_ref().unwrap().borrow();
+
+    if year.0.parse::<i32>() == _term.year.parse::<i32>() {
       let name = term.as_ref().unwrap().borrow().name.clone();
       let bref = term.as_ref().unwrap().borrow().bref.clone();
-      if year.0.parse::<i32>() == term.as_ref().unwrap().borrow().year.parse::<i32>() {
+
+      // TODO: more intuitive code, dont lazy.
+      if _term.r#type == "category" {
+        file.write_fmt(format_args!(
+          "<li><span>{}</span><fdt>{}</fdt></li>",
+          name, bref
+        ))?;
+      } else {
         file.write_fmt(format_args!(
           "<li><a href='/site/{}.html'>{}</a> — <fdt>{}</fdt></li>",
           term.as_ref().unwrap().borrow().filename.clone(),
@@ -1033,11 +1060,14 @@ fn build_home(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn E
           bref
         ))?;
       }
+      if _term.children_len > 0 && _term.name.clone() != "home" {
+        build_home_children_item(file, &_term, year, true)?
+      }
     }
-    file.write(b"</ul>")?;
   }
+  file.write(b"</ul>")?;
   file.write(b"</li>")?;
-  file.write(b"</ul></div></pxy>")?;
+
   Ok(())
 }
 
@@ -1156,11 +1186,15 @@ fn build_footer(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn
             name
           ))?;
         } else {
-          file.write_fmt(format_args!(
-            "<a href='{}.html'><p>{}</p></a>",
-            term.as_ref().unwrap().borrow().filename,
-            name
-          ))?;
+          if term.as_ref().unwrap().borrow().r#type == "category" {
+            file.write_fmt(format_args!("<span><p>{}</p></span>", name))?;
+          } else {
+            file.write_fmt(format_args!(
+              "<a href='{}.html'><p>{}</p></a>",
+              term.as_ref().unwrap().borrow().filename,
+              name
+            ))?;
+          }
         }
       }
     }
@@ -1696,6 +1730,7 @@ fn findlist(glo: &Glossary, name: &str) -> Option<Rc<RefCell<List>>> {
   return None;
 }
 
+// TODO: avoid using same key and value .
 fn get_sorted_years(terms: &Term) -> Vec<(String, String)> {
   let mut years: HashMap<String, String> = HashMap::new();
   for _term in terms.parent.as_ref().unwrap().borrow().children.iter() {

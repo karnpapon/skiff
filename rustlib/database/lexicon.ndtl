@@ -5,52 +5,78 @@ HOME
   HOST : home
   BREF : &nbsp;
   YEAR : 9999
-  TAGS
-    Development
-    Design
-  STACK
-    React
-    Redux
-    TypeScript
   BODY
     <p>index index index index.</p>
 
-AUDIO
-  HOST : home
-  TYPE : portal
-  BREF : The Audio portal hosts various soundtrack, records and live projects.
-  YEAR : 2019
-  TAGS
-    Development
-    Design
-  STACK
-    React
-    Redux
-    TypeScript
-  BODY
-    <p>One day many years ago a man walked along and stood in the sound of the ocean on a cold sunless shore and said:</p>
-    <p>"We need a voice to call across the water, to warn ships; I'll make one. I'll make a voice like all of time and all of the fog that ever was; I'll make a voice that is like an empty bed beside you all night long, and like an empty house when you open the door, and like trees in autumn with no leaves. A sound like the birds flying south, crying, and a sound like November wind and the sea on the hard, cold shore."</p>
-    <p>"I'll make a sound that's so alone that no one can miss it, that whoever hears it will weep in their souls, and hearths will seem warmer, and being inside will seem better to all who hear it in the distant towns. </p>
-    <p>I'll make me a sound and an apparatus and they'll call it a Fog Horn and whoever bears it will know the sadness of eternity and the briefness of life."</p>
-    <h5>—Ray Bradbury, The Fog Horn</h5>
-
 VISUAL
   HOST : home
-  TYPE : portal
-  BREF : The Visual hosts design and interaction projects.
+  TYPE : category
+  BREF : *
+  YEAR : 2018
+  TAGS
+    Development
+    Design
+
+SOUND
+  HOST : home
+  TYPE : category
+  BREF : *
+  YEAR : 2019
+  TAGS
+    Sound
+
+WORNG
+  HOST : home
+  TYPE : index
+  BREF : dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.
   YEAR : 2020
+  BODY
+    <p>xxxxxx</p>
+    <p>xxxxxx</p>
+    <p>xxxxxxxxx</p>
+    <p>xx</p>
+  TAGS
+    Development
+  STACK
+    Rust
+  LINK
+    source : https://github.com/karnpapon/worng
+
+ECT-ETC-TEC
+  HOST : home
+  TYPE : index
+  BREF : SJT algorithm for letters as a musical pattern.
+  YEAR : 2019
+  BODY
+    <p>xxxxxx</p>
+    <p>xxxxxx</p>
+    <p>xxxxxxxxx</p>
+    <p>xx</p>
   TAGS
     Development
     Design
   STACK
-    React
-    Redux
-    TypeScript
+    JavaScript (VueJS)
+  LINK
+    source : https://github.com/karnpapon/ect-etc-tec
 
-RESEARCH
+THE-BLACKCODES-ARTWORKS
+  HOST : the-blackcodes
+  TYPE : index
+  BREF : artworks for the black codes project.
+  YEAR : 2018
+  TAGS
+    Development
+    Design
+  STACK
+    JavaScript
+    Illustrator
+
+
+THE-BLACKCODES
   HOST : home
   TYPE : portal
-  BREF : The Research hosts philosophy and linguistics projects.
+  BREF : website for musical project.
   YEAR : 2018
   TAGS
     Development
@@ -58,39 +84,24 @@ RESEARCH
   STACK
     React
     Redux
-    TypeScript
+  LINK
+    source : https://theblackcodesweb.vercel.app/
 
-ABOUT
+SEEQ
   HOST : home
-  TYPE : album
-  BREF : This wiki is a digital playground and personal logging system.
+  TYPE : index
+  BREF : Custom sequencer and live-coding environment.
   YEAR : 2019
   TAGS
     Development
     Design
   STACK
-    React
-    Redux
-    TypeScript
+    Electron
   BODY
-    <p>The aim of this wiki is to build a form of <b>personal assistant</b> to help with the management of a vast repository of recorded statistics which includes notes on and .</p>
-    <p>is written in portable to be compiled on the operating system, and maintained from It is built to adapt to my needs as they change, and to  The databases are in thehuman-readable plaintext formats.</p>
-    <p>Each part of this project should aim to persist across , not one part of it should rely on heavy dependencies. — Every function should be <b>specific</b>, <b>unobfuscated</b>, and each one carefully chosen against general-purpose libraries, frameworks or wasteful foreign entities.</p>
-    <p>Using this tool should be <b>frictionless and undisruptive</b>, its formats and subsequent products versionable, re-purposable, interpretable and text-editable. Only through <b>open sources, open standards, human-readable formats</b> and their independencies, might they survive this fleeting age of self-destructing informatics.</p>
-    <p>These attributes should not only be <b>perceptible in its design</b>, <br />but deeply <b>rooted in its code</b>.</p>
-    <p>This type of website is a often referred to as a "memex", a kind of archive and mirror of everything that one has done, that one has learnt. It's a living document that outlines where one has been, and a tool that advises where one could go.</p>
-    <q>Consider a future device, a sort of mechanized private library in which an individual stores all his books, records, and communications, and which may be consulted with exceeding speed and flexibility. It is an enlarged intimate supplement to his memory.</q>
-    <h5>—Vannevar Bush, As We May Think</h5>
-    <h3>License</h3>
-    <p>The license applies to all the <b>documented projects, the projects themselves and their assets</b>. The {http://github.com/XXIIVV/Oscean platform code} is under the <b>MIT License</b>. The {https://creativecommons.org/licenses/by-nc-sa/4.0/ assets and text content} is under the <b>BY-NC-SA4.0 License</b>.</p>
-    <p><i>You are free to</i>: <b>Share</b>: copy and redistribute the material in any medium or format. <b>Adapt</b>: remix, transform, and build upon the material.</p>
-    <p><i>Under the following terms</i>: <b>Attribution</b>: You must give appropriate credit. <b>NonCommercial</b>: You may not use the material for commercial purposes. <b>ShareAlike</b>: You must distribute your contributions under the same license.</p>
-    <p>You can learn more about the  by visiting the portal, or by reading the. You can download a copy of the entire website content and sources as a {https://github.com/XXIIVV/Oscean/archive/master.zip .zip}.</p>
-    <p>If you have any <b>question or feedback</b>, please submit a {https://github.com/XXIIVV/Oscean/issues/new bug report}, for any additional informations, contact. </p>
+    <p>a custom sequencer, draw an inspiration from String’s description</p>
+    <p>"String is  traditionally <br> a sequence of letters”.</p>
   LINK
-    source files : https://github.com/XXIIVV/Oscean
-    rss feed : https://wiki.xxiivv.com/links/rss.xml
-    twtxt feed : https://wiki.xxiivv.com/links/tw.txt
+    source files : https://github.com/karnpapon/seeq
 
 
 SONGKRANIZER
@@ -104,16 +115,20 @@ SONGKRANIZER
     Chrome
     JavaScript
   BODY
-    <p>A travel across the fictional worlds of the where every album is a sort of travel diary across the landscape.</p>
+    <p>Chrome’s Extension to simulate Songkran festival through sight and sound without any VR’s equipment needed!,</p>
+    <p>for those who wanted to *feels*  like participating in one of the most famous festival in Thailand,</p>
+    <p>where people prompt to pour water on each others,</p>
+    {^img ../../assets/images/songkranizer/03.jpg}
+    <p>the period where the heat’s at its peak of the year and embedded-sub-woofer-car-sound-system’s culture are commonly heard.</p>
   LINK
-    bandcamp : https://aliceffekt.bandcamp.com
+    source : https://github.com/karnpapon/songkranizer
 
 
 PATITHIN
   HOST : home
   TYPE : index
   BREF : calendrical sequencer, based-on Github contribution calendar.
-  YEAR : 2021
+  YEAR : 2020
   TAGS
     Development
     Design
@@ -122,11 +137,11 @@ PATITHIN
     Redux
     TypeScript
   BODY 
-    <p>where velocity of the note is determined by commit's frequency.</p>
+    <p>calendrical sequencer based on Github's contribution history</p>
+    <p>where velocity of the note is determined by commit's frequency. </p>
     <p>total 53 weeks, the only way to assign trigger is just commit!.</p>
-    {^youtube 0MEqRyrv7BA}
   LINK
-    source files : https://github.com/karnpapon/patithin
+    source : https://github.com/karnpapon/patithin
     playground : https://tender-banach-703feb.netlify.app/
 
 
@@ -137,13 +152,94 @@ SKIFF
   YEAR : 2021
   TAGS
     Development
-    Design
   STACK
     Rust
   BODY 
-    <p>where velocity of the note is determined by commit's frequency.</p>
-    <p>total 53 weeks, the only way to assign trigger is just commit!.</p>
-    {^youtube 0MEqRyrv7BA}
+    <p>a static site generator, written purely in Rust. inspired by {https://github.com/XXIIVV/oscean Oscean } from {https://100r.co/site/home.html Hundred Rabbits}</p>
+    <p>to inherite Longtermism philosophy, solutioning for technological resilience and sustainability.</p>
+    <p>by taking out JavaScript and only using html/css and plaintext with custom database called indental.</p>
   LINK
-    source files : https://github.com/karnpapon/patithin
-    playground : https://tender-banach-703feb.netlify.app/
+    source : https://github.com/karnpapon/skiff
+
+
+AS-FAR-AS-I-CAN-TELL
+  HOST : visual
+  TYPE : index
+  BREF : DVD cover design for a Short-film, directed by Jirat Sompakdee
+  YEAR : 2018
+  TAGS
+    Design
+  STACK
+    Illustrator
+    GLSL
+  BODY 
+    <p>a DVD cover,"as far as i can tell" directed by Jirat Sompakdee.</p>
+    <p>first premiere in Bangkok Design Week 2018 designed by <b>GLSL</b> language, </p>
+    <p>to simulate out-focused landscape.</p>
+    {^vimeo 78802514}
+
+
+BELA-I2C
+  HOST : home
+  TYPE : index
+  BREF : a tool for communicating between device and i2c-supported Eurorack module (eg. ER-301 ) by using Bela as an intermediate.
+  YEAR : 2021
+  TAGS
+    Development
+  STACK
+    Rust
+  BODY 
+    <p>parsing msg from any device to Eurorack by using {https://bela.io/ Bela}</p>
+    <p>an embedded computing platform developed for high quality, ultra-low latency interactive audio</p>
+    <p>to parse {http://opensoundcontrol.org/ OSC} to {https://learn.sparkfun.com/tutorials/i2c/all i2c } for safety we might need {https://www.sparkfun.com/products/12009 logic level converter } to use with Eurorack level (5V). inspired by {https://llllllll.co/t/hans/36455/14 hans }.</p>
+  LINK
+    source : https://github.com/karnpapon/bela-i2c
+
+
+I-SAW-RUSSOLO
+  HOST : visual
+  TYPE : index
+  BREF : this jigsaw will blur the line between the hardest and the easiest, entertainment and annoyance, finish it or fuck it!
+  YEAR : 2018
+  TAGS
+    Development
+    Design
+  STACK
+    JavaScript (p5.js)
+  BODY 
+    <p>xxxxxxxxxxxxxxxxxxxx</p>
+  LINK
+    source : https://editor.p5js.org/karnpapon/sketches/u8ky5uEEF
+
+
+DITOX-JS
+  HOST : home
+  TYPE : index
+  BREF : digital detoxification tool.
+  YEAR : 2020
+  TAGS
+    Development
+  STACK
+    JavaScript
+  BODY 
+    <p>inspired by political heat in thailand around around late 2020</p>
+    <p>where hated-speech floating around facebook comments.</p>
+    <p>this tool was created to automatically unfollow person/page, where you can list the target name.</p>
+  LINK
+    source : https://gist.github.com/karnpapon/bd2610fdb823c5ade3009ed7c4ecadc3
+
+
+AGAIN-AGAIN
+  HOST : sound
+  TYPE : index
+  BREF : re-interpretation of Cadson Demak song's "again-again".
+  YEAR : 2019
+  TAGS
+    Development
+  STACK
+    SuperCollider
+  BODY 
+    <p>using SuperCollider for audio synthesis and algorithmic composition to intepret an unique story</p>
+    <p></p>
+  LINK
+    source : https://gist.github.com/karnpapon/6f585efdf934569b2a18b73490a36cbe

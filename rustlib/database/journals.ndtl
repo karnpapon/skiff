@@ -3,7 +3,11 @@
 ;     CODE HOST                 PIC NAME
 ;     7    12                   33  37
 19L12 +189 songkranizer          01 songkran_festival_simulator
-19L12 +189 patithin              02 custom_sequencer
-19L12 +189 patithin              03 pict_02
-20S12 -254 home                   - Brass_Faucet
-20S11 -237 home                   - Sinclair_Scientific
+19L12 +181 bela-i2c              01 songkran_festival_simulator
+19L12 +182 skiff                 01 songkran_festival_simulator
+19L12 +183 as-far-as-i-can-tell  01 songkran_festival_simulator
+19L12 +183 ditox-js              01 songkran_festival_simulator
+19L12 +184 seeq                  01 songkran_festival_simulator
+19L12 +185 the-blackcodes        01 songkran_festival_simulator
+19L12 +187 ect-etc-tec           01 songkran_festival_simulator
+19L12 +188 worng                 02 custom_sequencer
