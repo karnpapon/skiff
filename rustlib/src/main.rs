@@ -16,7 +16,7 @@ use std::io::BufWriter;
 use std::io::LineWriter;
 use std::io::{self, BufReader, Read, Write};
 use std::path::Path;
-use std::rc::Rc;
+use std::rc::{Rc, Weak};
 use std::time::{Duration, SystemTime};
 
 mod util;
@@ -66,11 +66,11 @@ pub struct Term {
   link: List,
   list: Vec<String>,
   list_len: i32,
-  /* generated */
   filename: String,
   date_from: RefCell<String>,
   date_last: RefCell<String>,
   parent: Option<Box<Rc<RefCell<Term>>>>,
+  // parent: Option<Box<Weak<RefCell<Term>>>>,
   next: Option<Box<Rc<RefCell<Term>>>>,
   prev: Option<Box<Rc<RefCell<Term>>>>,
   children: Vec<Option<Box<Rc<RefCell<Term>>>>>,
@@ -305,7 +305,7 @@ fn link_next_prev(lex: &mut Lexicon) -> Result<(), Box<dyn Error>> {
   // but skip only `home`(purposely for building suggested works).
   for (i, term) in lex.terms.iter().enumerate() {
     if term.borrow().name != "home" {
-      if i + 1 > (lex.terms.len() - 1) {
+      if i + 1 > lex.terms.len() {
         idx_next = 1;
       } else {
         idx_next = i + 1;
@@ -928,8 +928,8 @@ fn build_page(
 
   /* templated pages */
   match term.r#type.as_ref() {
-    "portal" => build_portal(file, jou, term).unwrap(),
-    "album" => build_album(file, jou, term).unwrap(),
+    // "portal" => build_portal(file, jou, term).unwrap(),
+    // "album" => build_album(file, jou, term).unwrap(),
     "index" => build_index(file, lex, term).unwrap(),
     _ => {}
   };
@@ -948,7 +948,7 @@ fn build_page(
   // build_horaire(file, jou, term).unwrap();
   file.write(b"</main>")?;
   file.write(b"<footer>")?;
-  build_footer(file, term).unwrap();
+  build_footer(file, term, term.name.clone()).unwrap();
   file.write(b"</footer>")?;
   file.write(b"</body></html>")?;
   Ok(())
@@ -1161,60 +1161,115 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
   Ok(())
 }
 
-fn build_footer(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn Error>> {
-  let mut sorted_years: Vec<_> = get_sorted_years(&terms);
+fn build_footer(
+  file: &mut LineWriter<File>,
+  terms: &Term,
+  term_name: String,
+) -> Result<(), Box<dyn Error>> {
+  // recurive to root parent ("home"), then render all children.
+  if terms.name == "home" {
+    let mut sorted_years: Vec<_> = get_sorted_years_root_parent(&terms);
 
-  file.write(b"<div class=\"footer\">")?;
-  file.write(b"<div>")?;
-  file.write(b"<lc><div>")?;
-  file.write_fmt(format_args!(
-    "<input type=\"checkbox\"/><label>{}</label>",
-    "index"
-  ))?;
-  file.write(b"<div class=\"works-list\">")?;
-
-  for year in sorted_years.iter() {
-    file.write(b"<div class=\"works\">")?;
-    file.write_fmt(format_args!("<h2>{}</h2>", year.0))?;
-    for term in terms.parent.as_ref().unwrap().borrow().children.iter() {
-      let name = term.as_ref().unwrap().borrow().name.clone();
-      if year.0.parse::<i32>() == term.as_ref().unwrap().borrow().year.parse::<i32>() {
-        if name == terms.name {
-          file.write_fmt(format_args!(
-            "<a href='{}.html'><p class=\"work-actived\">{}</p></a>",
-            term.as_ref().unwrap().borrow().filename.clone(),
-            name
-          ))?;
-        } else {
-          if term.as_ref().unwrap().borrow().r#type == "category" {
-            file.write_fmt(format_args!("<span><p>{}</p></span>", name))?;
-          } else {
+    file.write(b"<div class=\"footer\">")?;
+    file.write(b"<div>")?;
+    file.write(b"<lc><div>")?;
+    file.write_fmt(format_args!(
+      "<input type=\"checkbox\"/><label>{}</label>",
+      "index"
+    ))?;
+    file.write(b"<div class=\"works-list\">")?;
+    for year in sorted_years.iter() {
+      file.write(b"<div class=\"works\">")?;
+      file.write_fmt(format_args!("<h2>{}</h2>", year.0))?;
+      for term in terms.children.iter() {
+        let name = term.as_ref().unwrap().borrow().name.clone();
+        if year.0.parse::<i32>() == term.as_ref().unwrap().borrow().year.parse::<i32>() {
+          if name == term_name {
             file.write_fmt(format_args!(
-              "<a href='{}.html'><p>{}</p></a>",
-              term.as_ref().unwrap().borrow().filename,
-              name
+              "<a href='{}.html'><p class=\"work-actived\">{}</p></a>",
+              term.as_ref().unwrap().borrow().filename.clone(),
+              term_name
             ))?;
+
+            // if has children (eg. the-blackcodes)
+            if term.as_ref().unwrap().borrow().children_len > 0 {
+              for x in term.as_ref().unwrap().borrow().children.iter() {
+                file.write_fmt(format_args!(
+                  "<a href='{}.html'><p>{}</p></a>",
+                  x.as_ref().unwrap().borrow().filename,
+                  x.as_ref().unwrap().borrow().name
+                ))?;
+              }
+            }
+          } else {
+            // TODO: REFACTOR THESE UGLYYY CODES.
+            // if type == category render only text (not building page.)
+            if term.as_ref().unwrap().borrow().r#type == "category" {
+              for x in term.as_ref().unwrap().borrow().children.iter() {
+                if term_name == x.as_ref().unwrap().borrow().name {
+                  file.write_fmt(format_args!(
+                    "<a href='{}.html'><p class=\"work-actived\">{}</p></a>",
+                    term_name, term_name
+                  ))?;
+                } else {
+                  file.write_fmt(format_args!(
+                    "<a href='{}.html'><p>{}</p></a>",
+                    x.as_ref().unwrap().borrow().filename,
+                    x.as_ref().unwrap().borrow().name
+                  ))?;
+                }
+              }
+            } else if term.as_ref().unwrap().borrow().children_len > 0 {
+              // if that term has children, then keep looping and render those childs (including term).
+              file.write_fmt(format_args!(
+                "<a href='{}.html'><p>{}</p></a>",
+                term.as_ref().unwrap().borrow().filename,
+                name
+              ))?;
+
+              for x in term.as_ref().unwrap().borrow().children.iter() {
+                if term_name == x.as_ref().unwrap().borrow().name {
+                  file.write_fmt(format_args!(
+                    "<a href='{}.html'><p class=\"work-actived\">{}</p></a>",
+                    term_name, term_name
+                  ))?;
+                } else {
+                  file.write_fmt(format_args!(
+                    "<a href='{}.html'><p>{}</p></a>",
+                    x.as_ref().unwrap().borrow().filename,
+                    x.as_ref().unwrap().borrow().name
+                  ))?;
+                }
+              }
+            } else {
+              file.write_fmt(format_args!(
+                "<a href='{}.html'><p>{}</p></a>",
+                term.as_ref().unwrap().borrow().filename,
+                name
+              ))?;
+            }
           }
         }
       }
+      file.write(b"</div>")?;
     }
     file.write(b"</div>")?;
+    file.write(b"</div></lc>")?;
+    file.write(b"<rc>")?;
+    file.write_fmt(format_args!(
+      "<div>{}</div>",
+      "karnpapon - BY-NC-SA 4.0 - date 2020"
+    ))?;
+    file.write(b"<ic>")?;
+    file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
+    file.write(b"<a href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
+    file.write(b"</ic>")?;
+    file.write(b"</rc>")?;
+    file.write(b"</div>")?;
+    file.write(b"</div>")?;
+    return Ok(());
   }
-
-  file.write(b"</div>")?;
-  file.write(b"</div></lc>")?;
-  file.write(b"<rc>")?;
-  file.write_fmt(format_args!(
-    "<div>{}</div>",
-    "karnpapon - BY-NC-SA 4.0 - date 2020"
-  ))?;
-  file.write(b"<ic>")?;
-  file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
-  file.write(b"<a href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
-  file.write(b"</ic>")?;
-  file.write(b"</rc>")?;
-  file.write(b"</div>")?;
-  file.write(b"</div>")?;
+  build_footer(file, &terms.parent.as_ref().unwrap().borrow(), term_name).unwrap();
   Ok(())
 }
 
@@ -1237,7 +1292,7 @@ fn build_body(
   lex: &Lexicon,
   term: &Term,
 ) -> Result<(), Box<dyn Error>> {
-  file.write_fmt(format_args!("<h2>{}</h2>", &term.bref))?;
+  // file.write_fmt(format_args!("<h2>{}</h2>", &term.bref))?;
   build_body_part(file, lex, &term);
   Ok(())
 }
@@ -1381,46 +1436,46 @@ fn build_incoming(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dy
 //   Ok(())
 // }
 
-fn build_portal(
-  file: &mut LineWriter<File>,
-  jou: &Journal,
-  term: &Term,
-) -> Result<(), Box<dyn Error>> {
-  for term_children in term.children.iter() {
-    if let Some(_t) = term_children {
-      let mut _term = _t.as_ref().borrow().clone();
-      if let Some(l) = finddiary(jou, &_term) {
-        build_pict(
-          file,
-          l.borrow().pict,
-          &_term.name,
-          &_term.bref,
-          1,
-          Some(&_term.filename),
-        )?;
-      }
-    }
-  }
-  Ok(())
-}
+// fn build_portal(
+//   file: &mut LineWriter<File>,
+//   jou: &Journal,
+//   term: &Term,
+// ) -> Result<(), Box<dyn Error>> {
+//   for term_children in term.children.iter() {
+//     if let Some(_t) = term_children {
+//       let mut _term = _t.as_ref().borrow().clone();
+//       if let Some(l) = finddiary(jou, &_term) {
+//         build_pict(
+//           file,
+//           l.borrow().pict,
+//           &_term.name,
+//           &_term.bref,
+//           1,
+//           Some(&_term.filename),
+//         )?;
+//       }
+//     }
+//   }
+//   Ok(())
+// }
 
-fn build_album(
-  file: &mut LineWriter<File>,
-  jou: &Journal,
-  term: &Term,
-) -> Result<(), Box<dyn Error>> {
-  for log in jou.logs.iter() {
-    let journal_log = log.as_ref().borrow().clone();
-    if journal_log.term.unwrap().borrow().name != term.name
-      || journal_log.pict < 1
-      || journal_log.pict == finddiary(jou, term).unwrap().borrow().pict
-    {
-      continue;
-    }
-    build_log_pict(file, &log.borrow(), 1).unwrap();
-  }
-  Ok(())
-}
+// fn build_album(
+//   file: &mut LineWriter<File>,
+//   jou: &Journal,
+//   term: &Term,
+// ) -> Result<(), Box<dyn Error>> {
+//   for log in jou.logs.iter() {
+//     let journal_log = log.as_ref().borrow().clone();
+//     if journal_log.term.unwrap().borrow().name != term.name
+//       || journal_log.pict < 1
+//       || journal_log.pict == finddiary(jou, term).unwrap().borrow().pict
+//     {
+//       continue;
+//     }
+//     build_log_pict(file, &log.borrow(), 1).unwrap();
+//   }
+//   Ok(())
+// }
 
 fn build_index(
   file: &mut LineWriter<File>,
@@ -1728,6 +1783,20 @@ fn findlist(glo: &Glossary, name: &str) -> Option<Rc<RefCell<List>>> {
     }
   }
   return None;
+}
+
+fn get_sorted_years_root_parent(terms: &Term) -> Vec<(String, String)> {
+  let mut years: HashMap<String, String> = HashMap::new();
+  for _term in terms.children.iter() {
+    let y = _term.as_ref().unwrap().borrow().year.to_string();
+    if years.contains_key(&y) == false && &_term.as_ref().unwrap().borrow().name != "home" {
+      years.insert(y.clone(), y.clone());
+    }
+  }
+
+  let mut sorted_years: Vec<_> = years.into_iter().collect();
+  sorted_years.sort_by(|x, y| y.0.cmp(&x.0));
+  return sorted_years;
 }
 
 // TODO: avoid using same key and value .

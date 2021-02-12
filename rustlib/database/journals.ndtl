@@ -2,12 +2,16 @@
 ; https://wiki.xxiivv.com/site/tablatal.html
 ;     CODE HOST                 PIC NAME
 ;     7    12                   33  37
-19L12 +189 songkranizer          01 songkran_festival_simulator
-19L12 +181 bela-i2c              01 songkran_festival_simulator
-19L12 +182 skiff                 01 songkran_festival_simulator
-19L12 +183 as-far-as-i-can-tell  01 songkran_festival_simulator
-19L12 +183 ditox-js              01 songkran_festival_simulator
-19L12 +184 seeq                  01 songkran_festival_simulator
-19L12 +185 the-blackcodes        01 songkran_festival_simulator
-19L12 +187 ect-etc-tec           01 songkran_festival_simulator
-19L12 +188 worng                 02 custom_sequencer
+19L12 - songkranizer     12019 songkran_festival_simulator
+19L12 - bela-i2c         12021 i2c_communication_for_Bela
+19L12 - patithin          12020 patithin_sequencer
+19L12 - skiff             12021 skiff_generator
+19L12 - as-far-as-i-can-tell 62019 cover_design
+19L12 - ditox-js              01 songkran_festival_simulator
+19L12 - seeq              42019 regex_sequencer
+19L12 - tsiangt           32020 terminal_music_player
+19L12 - the-blackcodes    12018 the_blackcodes
+19L12 - ect-etc-tec       52019 pattern_generator
+19L12 - worng                 02 custom_sequencer
+19L12 - the-blackcodes-artworks  82018 album_artworks
+18L17 - i-saw-russolo    72019 noise_jigsaw

@@ -75,7 +75,7 @@ THE-BLACKCODES-ARTWORKS
 
 THE-BLACKCODES
   HOST : home
-  TYPE : portal
+  TYPE : index
   BREF : website for musical project.
   YEAR : 2018
   TAGS
@@ -207,7 +207,7 @@ I-SAW-RUSSOLO
   STACK
     JavaScript (p5.js)
   BODY 
-    <p>xxxxxxxxxxxxxxxxxxxx</p>
+    <h2>The Blacksmith, a merchandise and fun-and-silly-thing stuff with the first product “I (saw) Russolo” a jigsaw with noise pattern inspired from white jigsaw puzzle</h2>
   LINK
     source : https://editor.p5js.org/karnpapon/sketches/u8ky5uEEF
 
@@ -243,3 +243,21 @@ AGAIN-AGAIN
     <p></p>
   LINK
     source : https://gist.github.com/karnpapon/6f585efdf934569b2a18b73490a36cbe
+
+
+TSIANGT
+  HOST : home
+  TYPE : index
+  BREF : music player
+  YEAR : 2019
+  TAGS
+    Development
+  STACK
+    Rust
+  BODY 
+    <p>เสียง ( \siang\ ) means "sound" in Thai language.</p>
+    <p>audio music player written in Rust programming language.</p>
+    <p>with basic features eg. add song / play / pause</p>
+    <p>more informations can be found {https://github.com/karnpapon/tsiangt here}</p>
+  LINK
+    source : https://github.com/karnpapon/tsiangt
