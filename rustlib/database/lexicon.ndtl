@@ -1,6 +1,3 @@
-; based on indental.
-; https://wiki.xxiivv.com/site/indental.html
-
 HOME
   HOST : home
   BREF : &nbsp;
@@ -155,9 +152,13 @@ SKIFF
   STACK
     Rust
   BODY 
-    <p>a static site generator, written purely in Rust. inspired by {https://github.com/XXIIVV/oscean Oscean } from {https://100r.co/site/home.html Hundred Rabbits}</p>
-    <p>to inherite Longtermism philosophy, solutioning for technological resilience and sustainability.</p>
-    <p>by taking out JavaScript and only using html/css and plaintext with custom database called indental.</p>
+    <p>a static site generator, written in {https://www.rust-lang.org/ Rust}.</p>
+    <p>traditionally, JavaScript is inevitable in modern web development. with technological acceleration, everything changes rapidly.</p>
+    <p>we implicitly forced to catch up with the latest technology and discard outdated one.</p>
+    <br/>
+    <p>to inherite {https://www.youtube.com/watch?v=BW32yUEymvU Longtermism} philosophy, solutioning for technological resilience and sustainability.</p>
+    <p>by omitting JavaScript and only using plaintext database called {https://wiki.xxiivv.com/site/indental.html indental} and {https://wiki.xxiivv.com/site/tablatal.html tablatal} to generate HTML/CSS. almost any device is able to intepret them.</p>
+    <p>this (might) encourage to rethink about technological waste and responsibility for an environment. </p>
   LINK
     source : https://github.com/karnpapon/skiff
 
@@ -189,9 +190,9 @@ BELA-I2C
   STACK
     Rust
   BODY 
-    <p>parsing msg from any device to Eurorack by using {https://bela.io/ Bela}</p>
-    <p>an embedded computing platform developed for high quality, ultra-low latency interactive audio</p>
-    <p>to parse {http://opensoundcontrol.org/ OSC} to {https://learn.sparkfun.com/tutorials/i2c/all i2c } for safety we might need {https://www.sparkfun.com/products/12009 logic level converter } to use with Eurorack level (5V). inspired by {https://llllllll.co/t/hans/36455/14 hans }.</p>
+    <p>parsing msg from any device to Eurorack by using {https://bela.io/ Bela}, an embedded computing platform developed for high quality, ultra-low latency interactive audio</p>
+    <p>for safety parsing {http://opensoundcontrol.org/ OSC} through {https://learn.sparkfun.com/tutorials/i2c/all i2c } protocol  a {https://www.sparkfun.com/products/12009 logic level converter } to use with Eurorack level (5V) is needed.</p>
+    <p>inspired by {https://llllllll.co/t/hans/36455/14 hans}.</p>
   LINK
     source : https://github.com/karnpapon/bela-i2c
 

@@ -290,10 +290,10 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
   Ok(())
 }
 
-fn link_next_prev(lex: &mut Lexicon) -> Result<(), Box<dyn Error>> {
+fn link_next_prev(lex_term: &mut Vec<Rc<RefCell<Term>>>) -> Result<(), Box<dyn Error>> {
   let mut idx_next = 0;
   let mut idx_prev = 0;
-  lex.terms.sort_by(|a, b| {
+  lex_term.sort_by(|a, b| {
     b.borrow()
       .year
       .parse::<i32>()
@@ -303,22 +303,30 @@ fn link_next_prev(lex: &mut Lexicon) -> Result<(), Box<dyn Error>> {
 
   // link to `next` and `prev` term
   // but skip only `home`(purposely for building suggested works).
-  for (i, term) in lex.terms.iter().enumerate() {
+  for (i, term) in lex_term.iter().enumerate() {
     if term.borrow().name != "home" {
-      if i + 1 > lex.terms.len() {
-        idx_next = 1;
+      if i + 1 > lex_term.len() - 1 {
+        idx_next = 0;
       } else {
         idx_next = i + 1;
       }
 
       if i - 1 == 0 {
-        idx_prev = lex.terms.len() - 1;
+        idx_prev = lex_term.len() - 1;
       } else {
         idx_prev = i - 1;
       }
 
-      term.borrow_mut().next = Some(Box::new(lex.terms[idx_next].clone()));
-      term.borrow_mut().prev = Some(Box::new(lex.terms[idx_prev].clone()));
+      // if term.borrow().children_len > 0 {
+      //   let mut term_children = Vec::new();
+      //   for _term in &term.borrow().children {
+      //     term_children.push(*(_term.as_ref().unwrap()).clone());
+      //   }
+      //   link_next_prev(&mut term_children).unwrap();
+      // } else {
+      term.borrow_mut().prev = Some(Box::new(lex_term[idx_prev].clone()));
+      term.borrow_mut().next = Some(Box::new(lex_term[idx_next].clone()));
+      // }
     }
   }
 
@@ -945,7 +953,6 @@ fn build_page(
   // };
   build_list(file, term).unwrap();
   build_incoming(file, term).unwrap();
-  // build_horaire(file, jou, term).unwrap();
   file.write(b"</main>")?;
   file.write(b"<footer>")?;
   build_footer(file, term, term.name.clone()).unwrap();
@@ -1256,10 +1263,7 @@ fn build_footer(
     file.write(b"</div>")?;
     file.write(b"</div></lc>")?;
     file.write(b"<rc>")?;
-    file.write_fmt(format_args!(
-      "<div>{}</div>",
-      "karnpapon - BY-NC-SA 4.0 - date 2020"
-    ))?;
+    file.write_fmt(format_args!("<div>{}</div>", "karnpapon - BY-NC-SA 4.0"))?;
     file.write(b"<ic>")?;
     file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
     file.write(b"<a href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
@@ -1378,64 +1382,6 @@ fn build_incoming(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dy
   Ok(())
 }
 
-// fn build_horaire(
-//   file: &mut LineWriter<File>,
-//   jou: &Journal,
-//   term: &Term,
-// ) -> Result<(), Box<dyn Error>> {
-//   let mut len = 0;
-//   let mut events_len = 0;
-//   let mut ch = 0;
-//   let mut fh = 0;
-
-//   for l in jou.logs.iter() {
-//     let log = l.as_ref().borrow().clone();
-//     let log_term = log.term.as_ref().unwrap().borrow().clone();
-//     if log_term.name != term.name && log.term.parent != term {
-//       continue;
-//     }
-//     if log.rune == '+'.to_string() {
-//       events_len += 1;
-//     }
-//     ch += (log.code / 10) % 10;
-//     fh += log.code % 10;
-//     len += 1;
-//   }
-//   /* Updated */
-//   // if len < 2 || helpers::slen(&term.date_last.borrow()) == 0 {
-//   if len < 2 || term.date_last.borrow().len() == 0 {
-//     return Ok(());
-//   }
-//   file.write(b"<p>")?;
-//   file.write_fmt(format_args!(
-//     "<i>Last update on <a href='tracker.html'>{}</a>, edited {} times. +{}/{}fh</i>",
-//     term.date_last.borrow().to_string(),
-//     len,
-//     ch,
-//     fh
-//   ))?;
-//   // build_lifeline(f, t);
-//   file.write(b"</p>")?;
-//   /* Events */
-//   if events_len < 1 {
-//     return Ok(());
-//   }
-//   file.write(b"<ul>")?;
-//   for l in jou.logs.iter() {
-//     let log = l.as_ref().borrow().clone();
-//     let log_term = log.term.as_ref().unwrap().borrow().clone();
-//     if log.rune != '+'.to_string() {
-//       continue;
-//     }
-//     if log_term.name != term.name && log_term.parent.unwrap().borrow().name != term.name {
-//       continue;
-//     }
-//     file.write_fmt(format_args!("<li>{} — {}</li>", log.date, log.name))?;
-//   }
-//   file.write(b"</ul>")?;
-//   Ok(())
-// }
-
 // fn build_portal(
 //   file: &mut LineWriter<File>,
 //   jou: &Journal,
@@ -1497,194 +1443,6 @@ fn build_index(
 
   Ok(())
 }
-
-// fn build_special_home(
-//   file: &mut LineWriter<File>,
-//   journal: &Journal,
-// ) -> Result<(), Box<dyn Error>> {
-//   let mut events = 0;
-//   for i in 0..5 {
-//     if journal.logs[i].borrow().rune == '+'.to_string() {
-//       events = 1;
-//       break;
-//     }
-//   }
-//   if events > 0 {
-//     return Ok(());
-//   }
-//   file.write(b"<h2>Events</h2>")?;
-//   file.write(b"<ul>")?;
-//   for i in 0..5 {
-//     let jou_log = journal.logs[i].as_ref().borrow().clone();
-//     if jou_log.rune != '+'.to_string() {
-//       continue;
-//     }
-//     file.write_fmt(format_args!(
-//       "<li><a href='{}.html'>{}</a>{}</li>",
-//       jou_log.term.unwrap().borrow().filename,
-//       jou_log.date,
-//       jou_log.name
-//     ))?;
-//   }
-//   file.write(b"</ul>")?;
-
-//   Ok(())
-// }
-
-// fn build_special_calendar(
-//   file: &mut LineWriter<File>,
-//   journal: &Journal,
-// ) -> Result<(), Box<dyn Error>> {
-//   let mut last_year = 0;
-//   file.write(b"<ul>")?;
-//   for log in journal.logs.iter() {
-//     let journal_log = log.as_ref().borrow().clone();
-//     if log.borrow().rune != '+'.to_string() {
-//       continue;
-//     }
-
-//     let date = journal_log.date.chars().collect::<Vec<char>>();
-//     if last_year != helpers::sint(&date, 2) {
-//       file.write(b"</ul><ul>")?;
-//     }
-
-//     file.write_fmt(format_args!(
-//       "<li><a href='{}.html'>{}</a> {}</li>",
-//       journal_log.term.unwrap().borrow().filename,
-//       journal_log.date,
-//       journal_log.name
-//     ))?;
-//     last_year = helpers::sint(&date, 2);
-//   }
-//   file.write(b"</ul>")?;
-//   Ok(())
-// }
-
-// fn build_special_tracker(
-//   file: &mut LineWriter<File>,
-//   journal: &Journal,
-// ) -> Result<(), Box<dyn Error>> {
-//   let mut known_id: usize = 0;
-//   let mut last_year = 20;
-//   file.write(b"<ul>")?;
-//   let mut known = Vec::with_capacity(LEXICON_BUFFER);
-//   for log in journal.logs.iter() {
-//     let journal_log = log.as_ref().borrow().clone();
-//     let term = journal_log.term.as_ref().unwrap().borrow().clone();
-//     let date = journal_log.date.chars().collect::<Vec<char>>();
-//     if known.len() > 0 {
-//       if helpers::afnd(&known, known_id, &term.name) > -1 {
-//         continue;
-//       }
-//     }
-//     if known_id >= LEXICON_BUFFER {
-//       println!("Warning: Reached tracker buffer\n");
-//       break;
-//     }
-//     if last_year != helpers::sint(&date, 2) {
-//       file.write(b"</ul><ul>")?;
-//     }
-//     file.write(b"<li>")?;
-//     file.write_fmt(format_args!(
-//       "<a href='{}.html'>{}</a> — last update {}",
-//       &term.filename, &term.name, &journal_log.date
-//     ))?;
-
-//     // build_lifeline(f, journal_log.term);
-//     file.write(b"</li>")?;
-//     last_year = helpers::sint(&date, 2);
-//     &known.push(term.name.to_string());
-//     known_id += 1;
-//   }
-//   file.write(b"</ul>")?;
-//   Ok(())
-// }
-
-// fn build_special_journal(
-//   file: &mut LineWriter<File>,
-//   journal: &Journal,
-// ) -> Result<(), Box<dyn Error>> {
-//   let mut count = 0;
-//   for log in journal.logs.iter() {
-//     let journal_log = log.as_ref().borrow().clone();
-//     if count > 20 {
-//       break;
-//     }
-//     if journal_log.pict == 0 {
-//       continue;
-//     }
-//     build_log_pict(file, &journal_log, 1)?;
-//     count += 1;
-//   }
-//   Ok(())
-// }
-
-// fn build_special_index(file: &mut LineWriter<File>, lex: &Lexicon) -> Result<(), Box<dyn Error>> {
-//   file.write(b"<ul>")?;
-//   print_term_details(file, &lex.terms[0].as_ref().borrow().clone(), &mut 0)?;
-//   file.write(b"</ul>")?;
-//   Ok(())
-// }
-
-// fn build_special_now(file: &mut LineWriter<File>, lex: &Lexicon, jou: &Journal) -> Result<(), Box<dyn Error>> {
-//   let mut projects_len = 0;
-//   let mut pname = vec![];
-//   let mut pfname = vec![];
-//   let sum_value = 0;
-//   let pval = vec![];
-//   let pmaxval = 0;
-//   let mut epoch = SystemTime::now();
-
-// 	for i in 0..LOGS_RANGE {
-// 		let index = 0;
-// 		let l = jou.logs[i];
-// 		if epoch - arvelie_to_epoch(l.date) > LOGS_RANGE {
-// 			break;
-//     }
-// 		index = afnd(pname, projects_len, l.term.name);
-// 		if index < 0 {
-// 			index = projects_len;
-// 			pname[index] = l.term.name;
-// 			pfname[index] = l.term.filename;
-// 			pval[index] = 0;
-// 			projects_len += 1;
-// 		}
-// 		pval[index] += l.code % 10;
-// 		sum_value += l.code % 10;
-// 	}
-// 	/* find most active with a photo */
-// 	for i in 0..projects_len {
-// 		if finddiary(jou, findterm(lex, pname[i])) && pval[i] > pmaxval {
-// 			pmaxval = pval[i];
-//     }
-// 	}
-// 	for i in 0..projects_len {
-// 		if pval[i] != pmaxval {
-// 			continue;
-//     }
-// 		build_log_pict(f, finddiary(jou, findterm(lex, pname[i])), 1);
-// 	}
-// 	fprintf(
-// 	    f,
-// 	    "<p>This data shows the distribution of <b>%.0f hours over %d projects</b>, "
-// 	    "recorded during the last %d days, for an average of %.1f work hours per day "
-// 	    "and %.1f work hours per project.</p>",
-// 	    sum_value, projects_len,
-// 	    LOGS_RANGE, sum_value / LOGS_RANGE,
-// 	    sum_value / projects_len);
-// 	fputs("<ul style='columns:2'>", f);
-// 	for i in 0..projects_len {
-// 		fputs("<li>", f);
-// 		fprintf(f, "<a href='%s.html'>%s</a> %.2f&#37; ",
-// 		        pfname[i],
-// 		        pname[i],
-// 		        pval[i] / sum_value * 100);
-// 		fputs("</li>", f);
-// 	}
-// 	fputs("</ul>", f);
-//   fprintf(f, "<p>Last generated on %s(" LOCATION ").</p>", nowstr());
-//   Ok(())
-// }
 
 fn build_log_pict(
   file: &mut LineWriter<File>,
@@ -1822,7 +1580,7 @@ fn main() {
   let all_logs = &mut Journal::new();
   parse(all_lists, all_terms, all_logs);
   link(all_lists, all_terms, all_logs).unwrap();
-  link_next_prev(all_terms).unwrap();
+  link_next_prev(&mut all_terms.terms).unwrap();
   build(all_terms, all_logs).unwrap();
   check(all_terms, all_lists, all_logs).unwrap();
 }

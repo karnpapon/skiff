@@ -3,7 +3,7 @@
 ;     CODE HOST                 PIC NAME
 ;     7    12                   33  37
 19L12 - songkranizer     12019 songkran_festival_simulator
-19L12 - bela-i2c         12021 i2c_communication_for_Bela
+19L12 - bela-i2c         22021 i2c_communication_for_Bela
 19L12 - patithin          12020 patithin_sequencer
 19L12 - skiff             12021 skiff_generator
 19L12 - as-far-as-i-can-tell 62019 cover_design

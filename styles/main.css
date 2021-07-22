@@ -32,6 +32,29 @@ ul li:last-child:after { display: none }
 ul li.root { margin: 0px 0px 0px -20px;}
 ul li.root:before, ul li.root:after {  display: none;}
 
+pre code {
+  display: block;
+  background: none;
+  white-space: pre;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: scroll;
+  max-width: 100%;
+  min-width: 100px;
+  padding: 0;
+}
+code { 
+  font-size: 1rem;
+  padding: 20px;
+  white-space: pre-wrap;
+  background-color: rgb(235, 235, 235);
+}
+
+codesnippet{ 
+  font-family: monospace;
+  font-size: 0.75rem;
+  background-color: rgb(235, 235, 235);
+}
+
 px { margin: 1rem 0; display: flex; flex-direction: column; }
 pxy { padding: 2rem; display: flex; }
 /* pxy > div a { color: black;} */
