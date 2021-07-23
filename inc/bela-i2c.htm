@@ -1,0 +1,40 @@
+<p>for safety parsing <a href="http://opensoundcontrol.org/">OSC</a> through i2c a <a href="https://www.sparkfun.com/products/12009">logic level converter</a> to use with Eurorack level (5V) is needed.</p>
+<br/>
+<br/>
+
+<img src="/media/images/bela-i2c/22021.jpeg"/>
+<br/>
+<h2>Quick Start</h2>
+<code># run bela-osc
+./build.sh
+
+# open another window
+cargo run
+</code>
+
+<h2>Usage</h2>
+<px style="line-height: 1.75rem; display: inline;">osc pattern = <codesnippet>module/module_number/command/output_port value</codesnippet> eg. <codesnippet>/er301/1/cv_slew/1 1000</codesnippet>
+use same configuration as <a href="https://monome.org/docs/teletype/">Teletype</a>(value = unsigned 14bits integer (16,384 = 10v))/</px>
+
+<h2>[Example] sending data via WIFI (eg. use TouchOSC (Mobile) -&gt; Bela)</h2>
+<p><img src="/media/images/bela-i2c/02.png"></p>
+
+<li>setup WIFI on Bela first, details <a href="https://learn.bela.io/using-bela/bela-techniques/connecting-to-wifi/">here</a>.</li>
+<li>make sure you&#39;re in same WIFI as Bela.</li>
+<li>on Bela
+<li>get wlan IP by <codesnippet>ip a</codesnippet> on Bela board.</li>
+
+</li>
+<li>on TouchOSC:
+<li>set HOST to IP obtained by previous command (eg. <codesnippet>192.168.1.115</codesnippet> as shown above).</li>
+<li>set Outgoing to <codesnippet>7562</codesnippet> (default Bela&#39;s listening port).</li>
+</li>
+<h2>Disclaimer</h2>
+<p>this have been successfully tested on
+Bela image: v0.3.2, (released 13 March 2018).
+OSX: 10.13.6 (High Sierra)
+MacBook Pro (Retina, 13-inch, Early 2013)</p>
+
+<br/>
+<br/>
+<p>inspired by <a href="https://llllllll.co/t/hans/36455/14">hans</a></p> 

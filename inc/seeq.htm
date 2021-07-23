@@ -1,0 +1,177 @@
+<q>String is  traditionally a sequence of letters.</q>
+
+<px style="line-height: 1.75rem;">to play with it, just put any words, sentences, just like searching from Google or any search engine. Seeq will manage to find the descriptions for that keywords and use it as a step sequencer (using API from WikiPedia).
+	a “trigger” is simply assigned by typing any words/letters in provided input, Regex is also available. 
+	currently support only sending MIDI out.
+</px>
+
+
+<div style="width: 100%; height: 0; padding-top: 56.25%; position: relative;">
+	<iframe width="100%" height="100%" style="border:none;overflow:hidden;position:absolute;top:0;" src="https://www.youtube.com/embed/DGaakhSvYOg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<br/>
+<br/>
+<h2>Diagram</h2>
+
+<img src="/media/images/seeq/diagram.svg">
+<img src="/media/images/seeq/04.gif">
+
+<px style="line-height: 1.75rem;">
+sequencer/sequencing are commons in electronic music scene.
+most of music making process were constructed from rhythm — to be more precise, it’s periodic sets of interval.
+DOM manipulation is fundamental for every web development process.
+this draw me back to fundamentally understanding and face it squarely, without any UI library or anything apart from Electron. 
+since I started learning JavaScript via React,  this is a kind of the demystified-JavaScript’s learning process.
+</px>
+
+<h2>Usage</h2>
+<p>in order to move selection, the console has to be toggled off ( <codesnippet>cmd</codesnippet> + <codesnippet>i</codesnippet>).</p>
+<h3 style="margin: 1rem 0;">movement</h3>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>start / stop</td>
+<td><codesnippet>spacebar</codesnippet></td>
+</tr>
+<tr>
+<td>move</td>
+<td><codesnippet>arrow</codesnippet></td>
+</tr>
+<tr>
+<td>leap</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>arrow</codesnippet></td>
+</tr>
+</tbody>
+</table>
+<h3 style="margin: 1rem 0;">selection ( cursor )</h3>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>range</td>
+<td><codesnippet>shift</codesnippet> + <codesnippet>arrow</codesnippet></td>
+</tr>
+<tr>
+<td>large range</td>
+<td><codesnippet>shift</codesnippet> + <codesnippet>arrow</codesnippet> + <codesnippet>cmd</codesnippet></td>
+</tr>
+<tr>
+<td>add</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>n</codesnippet></td>
+</tr>
+<tr>
+<td>delete</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>backspace</codesnippet></td>
+</tr>
+<tr>
+<td>rename</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>e</codesnippet></td>
+</tr>
+<tr>
+<td>show current name</td>
+<td><codesnippet>option</codesnippet> + <codesnippet>e</codesnippet></td>
+</tr>
+<tr>
+<td>switch between</td>
+<td><codesnippet>option</codesnippet> + <codesnippet>tab</codesnippet></td>
+</tr>
+<tr>
+<td>get step within</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>return (enter)</codesnippet></td>
+</tr>
+<tr>
+<td>focused</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>f</codesnippet></td>
+</tr>
+</tbody>
+</table>
+<h3 style="margin: 1rem 0;">step ( within selection )</h3>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>add step</td>
+<td><codesnippet>shift</codesnippet> + <codesnippet>+</codesnippet></td>
+</tr>
+</tbody>
+</table>
+<h3 style="margin: 1rem 0;">console -&gt; input</h3>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>toggle insert</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>i</codesnippet></td>
+</tr>
+<tr>
+<td>eval input</td>
+<td><codesnippet>enter</codesnippet></td>
+</tr>
+</tbody>
+</table>
+<h3 style="margin: 1rem 0;">console -&gt; status</h3>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BPM up</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>&gt;</codesnippet></td>
+</tr>
+<tr>
+<td>BPM down</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>&lt;</codesnippet></td>
+</tr>
+</tbody>
+</table>
+<h3 style="margin: 1rem 0;">config</h3>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>set MIDI</td>
+<td><codesnippet>cmd</codesnippet> + <codesnippet>m</codesnippet></td>
+</tr>
+</tbody>
+</table>
+
+<br/>
+<h2>Caveats</h2> 
+<div>currently, MIDI devices / OSC addrs / UDP port are not configurable.</div>
+
+<br/>
+<br/>
+<br/>
+*
+<p>bigs up for an <a target="_blank" href="https://hundredrabbits.itch.io/orca">Orca</a>, live coding environment, for inspirations.</p> 

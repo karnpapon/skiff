@@ -97,7 +97,7 @@ SEEQ
   BODY
     <h2>a custom sequencer, draw an inspiration from String’s description</h2>
   LINK
-    source files : https://github.com/karnpapon/seeq
+    source : https://github.com/karnpapon/seeq
 
 
 SONGKRANIZER
@@ -115,6 +115,21 @@ SONGKRANIZER
     <h2>Chrome’s Extension to simulate Songkran festival through sight and sound without any VR’s equipment needed!, for those who wanted to *feels*  like participating in one of the most famous festival in Thailand, where people prompt to pour water on each others,</h2>
   LINK
     source : https://github.com/karnpapon/songkranizer
+
+BKKDW
+  HOST : home
+  TYPE : index
+  BREF : Live-coding performance at Bangkok Design Week'18.
+  YEAR : 2018
+  TAGS
+    Performance
+    Music
+  STACK
+    TidalCycles
+    Ableton
+    GLSL (Veda.js)
+  BODY
+    <h2>Live-coding performance for {https://web.tcdc.or.th/en/Projects/Detail/BangkokDesignWeek Bangkok Design Week'18} at {https://web.tcdc.or.th/th TCDC } (Thailand Creative Design Center's building) rooftop 5th fl.</h2>
 
 
 PATITHIN
@@ -175,7 +190,7 @@ BELA-I2C
   STACK
     Rust
   BODY 
-    <h2>parsing msg ({https://learn.sparkfun.com/tutorials/i2c/all i2c } protocol) from laptop to Eurorack modules eg. {http://www.orthogonaldevices.com/er-301 ER301} via {https://bela.io/ Bela}, an embedded computing platform. for safety parsing {http://opensoundcontrol.org/ OSC} through i2c a {https://www.sparkfun.com/products/12009 logic level converter } to use with Eurorack level (5V) is needed.</h2>
+    <h2>parsing msg ({https://learn.sparkfun.com/tutorials/i2c/all i2c } protocol) from laptop to Eurorack modules eg. {http://www.orthogonaldevices.com/er-301 ER301} via {https://bela.io/ Bela}, an embedded computing platform.</h2>
   LINK
     source : https://github.com/karnpapon/bela-i2c
 
@@ -189,7 +204,7 @@ EXP
   STACK
     Rust
   BODY 
-    <h2>CLI to create an opinionated temporary folder structure, automatically cleanup after they're expired. keep the disk-space size without worrying about heaviness of dependencies (eg. node_modules)</h2>
+    <h2>CLI to create an opinionated temporary folder structure, automatically cleanup after they're expired. keeping disk-space size without worrying about heaviness of dependencies (eg. node_modules)</h2>
   LINK
     source : https://github.com/karnpapon/exp
 
@@ -210,23 +225,6 @@ I-SAW-RUSSOLO
     source : https://editor.p5js.org/karnpapon/sketches/u8ky5uEEF
 
 
-DITOX-JS
-  HOST : home
-  TYPE : index
-  BREF : digital detoxification tool.
-  YEAR : 2020
-  TAGS
-    Development
-  STACK
-    JavaScript
-  BODY 
-    <p>inspired by political heat in thailand around around late 2020</p>
-    <p>where hated-speech floating around facebook comments.</p>
-    <p>this tool was created to automatically unfollow person/page, where you can list the target name.</p>
-  LINK
-    source : https://gist.github.com/karnpapon/bd2610fdb823c5ade3009ed7c4ecadc3
-
-
 AGAIN-AGAIN
   HOST : sound
   TYPE : index
@@ -239,8 +237,40 @@ AGAIN-AGAIN
   BODY 
     <h2>audio synthesis and algorithmic composition to intepret an unique story</h2>
   LINK
-    source : https://gist.github.com/karnpapon/6f585efdf934569b2a18b73490a36cbe
+    source : https://github.com/karnpapon/againagain
+    source (sound) : https://gist.github.com/karnpapon/6f585efdf934569b2a18b73490a36cbe
     listen : https://open.spotify.com/track/0vE8BQVmhswXKZJLzrhpSr?si=58e2f50ecf4a4ad1
+    playground : https://againagain.netlify.app/
+
+LIVECODEFEST
+  HOST : home
+  TYPE : index
+  BREF : Livecode festival, London(unofficial) re-design for Livecode Fest.
+  YEAR : 2018
+  TAGS
+    Design
+    Development
+  STACK
+    React
+  BODY 
+    <h2>Livecode festival is algorithmic music festival, held in England, the former design is only orange texts with plain white background. this design picked up key elements like color, plain layout and organized them systematically.</h2>
+  LINK
+    source : https://github.com/karnpapon/livecodefest
+    www : https://unruffled-keller-e5ce56.netlify.app/
+
+ILLUSTRATIONS
+  HOST : home
+  TYPE : index
+  BREF : Illustrations collection around 2016 ~ 2017.
+  YEAR : 2016
+  TAGS
+    Design
+    Illustration
+  STACK
+    Adobe Illustration
+    Adobe Photohop
+  BODY 
+    <h2>an illustration collections around 2016 ~ 2017. some of them are being used for {/site/the-blackcodes.html The Black Codes} album</h2>
 
 
 TSIANGT

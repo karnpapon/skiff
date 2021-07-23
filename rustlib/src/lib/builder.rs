@@ -497,7 +497,7 @@ fn build_links(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn E
 		};
 
 		file.write_fmt(format_args!(
-			"<url><a href='{}' target='_blank'>{} {}</a></url>",
+			"<url><a href='{}' target='_blank'>{}\u{00A0} {}</a></url>",
 			term.link.vals[i as usize], icon, k
 		))?
 	}
