@@ -52,7 +52,7 @@ fn scan_glossary(content: &str) {
 	let mut scanner = Scanner::new(&content);
 }
 
-pub fn glossary_link(lex: &mut Lexicon, glo: &mut Glossary) {
+pub fn link(lex: &mut Lexicon, glo: &mut Glossary) {
 	for i in 0..lex.len {
 		let lex_term = &lex.terms[i as usize];
 		let lext_t_clone = lex_term.borrow().body.clone();
@@ -96,7 +96,7 @@ pub fn findlist(glo: &Glossary, name: &str) -> Option<Rc<RefCell<List>>> {
 	return None;
 }
 
-pub fn parse_glossary(path: String, glossary: &mut Glossary) -> Result<(), SkiffError> {
+pub fn parse(path: String, glossary: &mut Glossary) -> Result<(), SkiffError> {
 	let mut f = File::open(path).expect("Glossary Parsing: file not found");
 	let mut f_reader = BufReader::new(f);
 	let mut len: usize = 0;
@@ -179,4 +179,15 @@ pub fn parse_glossary(path: String, glossary: &mut Glossary) -> Result<(), Skiff
 		line.clear();
 	}
 	Ok(())
+}
+
+pub fn check(glo: &Glossary) {
+	for list in glo.lists.iter() {
+		if list.borrow().routes < 1 {
+			println!(
+				"Warning: Unused (glossary)list \"{}\"\n",
+				list.borrow().name
+			);
+		}
+	}
 }

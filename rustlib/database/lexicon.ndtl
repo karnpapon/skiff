@@ -28,10 +28,7 @@ WORNG
   BREF : dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.
   YEAR : 2020
   BODY
-    <p>xxxxxx</p>
-    <p>xxxxxx</p>
-    <p>xxxxxxxxx</p>
-    <p>xx</p>
+    <h2>dynamic programming language and tree-walk interpreter, written in Rust. based on Lox language from {http://craftinginterpreters.com/ Crafting Iterpreters book}  by Bob Nystrom.</h2>
   TAGS
     Development
   STACK
@@ -45,10 +42,7 @@ ECT-ETC-TEC
   BREF : SJT algorithm for letters as a musical pattern.
   YEAR : 2019
   BODY
-    <p>xxxxxx</p>
-    <p>xxxxxx</p>
-    <p>xxxxxxxxx</p>
-    <p>xx</p>
+    <h2>implementation on {https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm SJT} ( Steinhaus-Johnson-Trotter's) algorithm as a musical pattern sequencer.</h2>
   TAGS
     Development
     Design
@@ -56,6 +50,7 @@ ECT-ETC-TEC
     JavaScript (VueJS)
   LINK
     source : https://github.com/karnpapon/ect-etc-tec
+    playground : https://karnpapon.github.io/ect-etc-tec/
 
 THE-BLACKCODES-ARTWORKS
   HOST : the-blackcodes
@@ -65,6 +60,7 @@ THE-BLACKCODES-ARTWORKS
   TAGS
     Development
     Design
+    Music
   STACK
     JavaScript
     Illustrator
@@ -81,8 +77,11 @@ THE-BLACKCODES
   STACK
     React
     Redux
+    GLSL
+  BODY
+    <h2>promo website for launching first album of The ███████ </h2>
   LINK
-    source : https://theblackcodesweb.vercel.app/
+    www : https://theblackcodesweb.vercel.app/
 
 SEEQ
   HOST : home
@@ -92,11 +91,11 @@ SEEQ
   TAGS
     Development
     Design
+    Music
   STACK
     Electron
   BODY
-    <p>a custom sequencer, draw an inspiration from String’s description</p>
-    <p>"String is  traditionally <br> a sequence of letters”.</p>
+    <h2>a custom sequencer, draw an inspiration from String’s description</h2>
   LINK
     source files : https://github.com/karnpapon/seeq
 
@@ -108,15 +107,12 @@ SONGKRANIZER
   YEAR : 2020
   TAGS
     Development
+    Music
   STACK
     Chrome
     JavaScript
   BODY
-    <p>Chrome’s Extension to simulate Songkran festival through sight and sound without any VR’s equipment needed!,</p>
-    <p>for those who wanted to *feels*  like participating in one of the most famous festival in Thailand,</p>
-    <p>where people prompt to pour water on each others,</p>
-    {^img ../../assets/images/songkranizer/03.jpg}
-    <p>the period where the heat’s at its peak of the year and embedded-sub-woofer-car-sound-system’s culture are commonly heard.</p>
+    <h2>Chrome’s Extension to simulate Songkran festival through sight and sound without any VR’s equipment needed!, for those who wanted to *feels*  like participating in one of the most famous festival in Thailand, where people prompt to pour water on each others,</h2>
   LINK
     source : https://github.com/karnpapon/songkranizer
 
@@ -129,14 +125,13 @@ PATITHIN
   TAGS
     Development
     Design
+    Music
   STACK
     React
     Redux
     TypeScript
   BODY 
-    <p>calendrical sequencer based on Github's contribution history</p>
-    <p>where velocity of the note is determined by commit's frequency. </p>
-    <p>total 53 weeks, the only way to assign trigger is just commit!.</p>
+    <h2>calendrical sequencer based on Github's contribution history where velocity of the note is determined by commit history. in range of 53 weeks (approx 1 year), the only way to assign trigger is just commit!.</h2>
   LINK
     source : https://github.com/karnpapon/patithin
     playground : https://tender-banach-703feb.netlify.app/
@@ -152,13 +147,7 @@ SKIFF
   STACK
     Rust
   BODY 
-    <p>a static site generator, written in {https://www.rust-lang.org/ Rust}.</p>
-    <p>traditionally, JavaScript is inevitable in modern web development. with technological acceleration, everything changes rapidly.</p>
-    <p>we implicitly forced to catch up with the latest technology and discard outdated one.</p>
-    <br/>
-    <p>to inherite {https://www.youtube.com/watch?v=BW32yUEymvU Longtermism} philosophy, solutioning for technological resilience and sustainability.</p>
-    <p>by omitting JavaScript and only using plaintext database called {https://wiki.xxiivv.com/site/indental.html indental} and {https://wiki.xxiivv.com/site/tablatal.html tablatal} to generate HTML/CSS. almost any device is able to intepret them.</p>
-    <p>this (might) encourage to rethink about technological waste and responsibility for an environment. </p>
+    <h2>a static site generator, written in {https://www.rust-lang.org/ Rust}. traditionally, JavaScript is inevitable in modern web development. with technological acceleration, everything changes rapidly. we implicitly forced to catch up with the latest technology and discard outdated one.</h2>
   LINK
     source : https://github.com/karnpapon/skiff
 
@@ -174,27 +163,35 @@ AS-FAR-AS-I-CAN-TELL
     Illustrator
     GLSL
   BODY 
-    <p>a DVD cover,"as far as i can tell" directed by Jirat Sompakdee.</p>
-    <p>first premiere in Bangkok Design Week 2018 designed by <b>GLSL</b> language, </p>
-    <p>to simulate out-focused landscape.</p>
-    {^vimeo 78802514}
-
+    <h2>a DVD cover,"as far as i can tell" directed by Jirat Sompakdee. first premiere in Bangkok Design Week 2018 designed by <b>GLSL</b> language, to simulate out-focused landscape.</h2>
 
 BELA-I2C
   HOST : home
   TYPE : index
-  BREF : a tool for communicating between device and i2c-supported Eurorack module (eg. ER-301 ) by using Bela as an intermediate.
+  BREF : a tool for communicating between laptop and i2c-supported Eurorack module (eg. ER-301 ) by using Bela.
   YEAR : 2021
   TAGS
     Development
   STACK
     Rust
   BODY 
-    <p>parsing msg from any device to Eurorack by using {https://bela.io/ Bela}, an embedded computing platform developed for high quality, ultra-low latency interactive audio</p>
-    <p>for safety parsing {http://opensoundcontrol.org/ OSC} through {https://learn.sparkfun.com/tutorials/i2c/all i2c } protocol  a {https://www.sparkfun.com/products/12009 logic level converter } to use with Eurorack level (5V) is needed.</p>
-    <p>inspired by {https://llllllll.co/t/hans/36455/14 hans}.</p>
+    <h2>parsing msg ({https://learn.sparkfun.com/tutorials/i2c/all i2c } protocol) from laptop to Eurorack modules eg. {http://www.orthogonaldevices.com/er-301 ER301} via {https://bela.io/ Bela}, an embedded computing platform. for safety parsing {http://opensoundcontrol.org/ OSC} through i2c a {https://www.sparkfun.com/products/12009 logic level converter } to use with Eurorack level (5V) is needed.</h2>
   LINK
     source : https://github.com/karnpapon/bela-i2c
+
+EXP
+  HOST : home
+  TYPE : index
+  BREF : CLI to create an opinionated temporary folder structure, automatically cleanup after they're expired.
+  YEAR : 2021
+  TAGS
+    Development
+  STACK
+    Rust
+  BODY 
+    <h2>CLI to create an opinionated temporary folder structure, automatically cleanup after they're expired. keep the disk-space size without worrying about heaviness of dependencies (eg. node_modules)</h2>
+  LINK
+    source : https://github.com/karnpapon/exp
 
 
 I-SAW-RUSSOLO
@@ -208,7 +205,7 @@ I-SAW-RUSSOLO
   STACK
     JavaScript (p5.js)
   BODY 
-    <h2>The Blacksmith, a merchandise and fun-and-silly-thing stuff with the first product “I (saw) Russolo” a jigsaw with noise pattern inspired from white jigsaw puzzle</h2>
+    <h2>The Blacksmith, a merchandise from {/site/the-blackcodes.html The Black Codes} launching the first product “I (saw) Russolo” a jigsaw with noise pattern.</h2>
   LINK
     source : https://editor.p5js.org/karnpapon/sketches/u8ky5uEEF
 
@@ -236,14 +233,14 @@ AGAIN-AGAIN
   BREF : re-interpretation of Cadson Demak song's "again-again".
   YEAR : 2019
   TAGS
-    Development
+    Music
   STACK
     SuperCollider
   BODY 
-    <p>using SuperCollider for audio synthesis and algorithmic composition to intepret an unique story</p>
-    <p></p>
+    <h2>audio synthesis and algorithmic composition to intepret an unique story</h2>
   LINK
     source : https://gist.github.com/karnpapon/6f585efdf934569b2a18b73490a36cbe
+    listen : https://open.spotify.com/track/0vE8BQVmhswXKZJLzrhpSr?si=58e2f50ecf4a4ad1
 
 
 TSIANGT
@@ -256,9 +253,6 @@ TSIANGT
   STACK
     Rust
   BODY 
-    <p>เสียง ( \siang\ ) means "sound" in Thai language.</p>
-    <p>audio music player written in Rust programming language.</p>
-    <p>with basic features eg. add song / play / pause</p>
-    <p>more informations can be found {https://github.com/karnpapon/tsiangt here}</p>
+    <h2>เสียง ( \sǐaŋ\ ) means "sound" in Thai language. audio music player written in Rust programming language. seamlessly jump between your terminal workflow.</h2>
   LINK
     source : https://github.com/karnpapon/tsiangt

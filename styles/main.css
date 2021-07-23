@@ -17,8 +17,9 @@ body { font-family: serif; font-weight: lighter; font-size: 16px; }
 body > * { margin-bottom: 30px; }
 h1 { font-weight: lighter;font-size: 3rem;color: rgb(0, 38, 255); text-decoration: underline;} 
 h2 { font-size: 1.5rem; margin: 1rem 0;}
-p { margin: 0}
+p,li { margin: 0.25rem 0;}
 inc { margin: 20px 0}
+q { font-size: 2rem; font-weight: bolder; font-style: italic; width: 100%; text-align: center; padding: 2rem 0;}
 img { width: 100%; margin: 2rem 0;}
 iframe { margin: var(--main-padding) 0;}
 ul{ display: flex; flex-direction: column;}
@@ -31,7 +32,9 @@ ul li:after { position: absolute; left: -15px; bottom: -7px; content: ''; displa
 ul li:last-child:after { display: none }
 ul li.root { margin: 0px 0px 0px -20px;}
 ul li.root:before, ul li.root:after {  display: none;}
-
+table { width:100%; }
+table, th, td { border: 1px solid black; border-collapse: collapse; }
+th, td { padding: 8px; text-align: left; }
 pre code {
   display: block;
   background: none;

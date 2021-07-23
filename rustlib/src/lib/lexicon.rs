@@ -101,7 +101,7 @@ pub fn findterm(lex: &Lexicon, name: &str) -> Option<Rc<RefCell<Term>>> {
 	return None;
 }
 
-pub fn lexicon_link(jou: &mut Journal, lex: &mut Lexicon) {
+pub fn link(jou: &mut Journal, lex: &mut Lexicon) {
 	for i in 0..jou.len {
 		let jou_logs = &mut jou.logs[i as usize];
 		let host_name = jou_logs.borrow().host.to_string();
@@ -127,13 +127,13 @@ pub fn lexicon_link(jou: &mut Journal, lex: &mut Lexicon) {
 }
 
 // TODO: make it less C-ish style.
-pub fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> {
-	let mut f = File::open(path).expect("lexicon parsing: file not found");
+pub fn parse(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> {
+	let f = File::open(path).expect("lexicon parsing: file not found");
 	let mut f_reader = BufReader::new(f);
 	let mut key_len: usize;
 	let mut val_len: usize;
-	let mut len: usize = 0;
-	let count = 0;
+	let mut len: usize;
+	// let count = 0;
 	let mut catch_body = false;
 	let mut catch_link = false;
 	let mut catch_list = false;
@@ -158,7 +158,7 @@ pub fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffErr
 			None => len = 0,
 		}
 
-		// len < 3 = skip 'newline' eg. '\n';
+		// if len < 3 = skip eg. case of newline '\n';
 		if len < 3 || &scanner.source[0] == &';' {
 			line.clear();
 			continue;
@@ -261,4 +261,19 @@ pub fn parse_lexicon(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffErr
 		line.clear();
 	}
 	Ok(())
+}
+
+pub fn check(lex: &Lexicon) {
+	let mut sends = 0;
+	for term in lex.terms.iter() {
+		sends += term.borrow().incoming_len;
+		if term.borrow().incoming_len < 1 && term.borrow().outgoing_len < 1 {
+			println!("Warning: \"{}\" unlinked", term.borrow().name);
+		} else if term.borrow().incoming_len < 1 {
+			println!("Warning: \"{}\" orphaned", term.borrow().name);
+		} else if term.borrow().outgoing_len < 1 {
+			println!("Warning: \"{}\" dead-end", term.borrow().name);
+		}
+	}
+	println!("sends({} incomings) ", sends);
 }

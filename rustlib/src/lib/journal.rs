@@ -51,7 +51,7 @@ impl Log {
 	}
 }
 
-pub fn journal_link(lex: &mut Lexicon, glo: &mut Glossary) {
+pub fn link(lex: &mut Lexicon, glo: &mut Glossary) {
 	for i in 0..lex.len {
 		let mut lext = lex.terms[i as usize].borrow_mut();
 		let lex_terms_list = lext.clone().list;
@@ -76,7 +76,7 @@ pub fn journal_link(lex: &mut Lexicon, glo: &mut Glossary) {
 	}
 }
 
-pub fn parse_journals(path: String, journal: &mut Journal) -> Result<(), SkiffError> {
+pub fn parse(path: String, journal: &mut Journal) -> Result<(), SkiffError> {
 	let f = File::open(path).expect("journal parsing: file not found");
 	let mut f_reader = BufReader::new(f);
 	let mut len;
@@ -136,4 +136,12 @@ pub fn parse_journals(path: String, journal: &mut Journal) -> Result<(), SkiffEr
 	}
 
 	Ok(())
+}
+
+pub fn check(jou: &Journal) {
+	for log in jou.logs.iter() {
+		if log.borrow().code < 1 {
+			println!("Warning: Empty code {}\n", log.borrow().date);
+		}
+	}
 }

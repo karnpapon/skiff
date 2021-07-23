@@ -489,9 +489,16 @@ fn build_links(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn E
 	}
 	file.write(b"<ul>")?;
 	for i in 0..term.link.len {
+		let k = term.link.keys[i as usize].clone();
+		let icon = match term.link.keys[i as usize].to_lowercase().as_str() {
+			"playground" => "🏓",
+			"source" => "🔎",
+			_ => "🌏",
+		};
+
 		file.write_fmt(format_args!(
-			"<url><a href='{}' target='_blank'>\u{1F855} {}</a></url>",
-			term.link.vals[i as usize], term.link.keys[i as usize]
+			"<url><a href='{}' target='_blank'>{} {}</a></url>",
+			term.link.vals[i as usize], icon, k
 		))?
 	}
 	file.write(b"</ul>")?;
