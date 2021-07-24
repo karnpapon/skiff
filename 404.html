@@ -1,53 +1,28 @@
----
-permalink: /404.html
----
 <!DOCTYPE html>
-<html lang='en'>
-<head>
-  <meta charset='utf-8'>
-  <meta name='author' content='Karnpapon Boonput'>
-  <meta name='description' content=''/>
-  <meta name='keywords' content='' />
-  <meta name='license' content='name=BY-NC-SA(4.0), url=https://creativecommons.org/licenses/by-nc-sa/4.0/'/>
-  <meta name='thumbnail' content='' />
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <!-- <link rel='alternate' type='application/rss+xml' title='RSS Feed' href='https://wiki.xxiivv.com/links/rss.xml' /> -->
-  <link rel='shortcut icon' type='image/png' href=''>
-  <link rel='stylesheet' type='text/css' href='https://wiki.xxiivv.com/styles/main.css'>
-  <noscript>
-    <meta http-equiv='refresh' content='0; url=site/index.html' />
-  </noscript>
-  <title>— Halting —</title>
-</head>
-<body>
-  <main>
-    <p style='max-width: 500px'>
-        Your destination could not be found.
-        back to <a href='https://karnpapon.com/site/index.html'>index</a>
-    </p>
-  </main>
-  <script>
-    'use strict'
-
-    const parts = window.location.pathname.split("/")
-    const target = parts.slice(-1)
-    const filename = toFilename(target[0])
-    const filepath = `https://wiki.xxiivv.com/site/${filename}.html`
-
-    if(UrlExists(filepath)){
-      window.location.replace(filepath)
-    }
-
-    function toFilename(str){
-      return `${str}`.replace('#','').replace(/[\W_]+/g,"_").toLowerCase().trim()
-    }
-
-    function UrlExists(url) {
-      const http = new XMLHttpRequest()
-      http.open('HEAD', url, false)
-      http.send()
-      return http.status!=404
-    }
-  </script>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Karnpapon Boonput" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+      name="license"
+      content="name=BY-NC-SA(4.0), url=https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    />
+    <meta name="thumbnail" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="" />
+    <noscript>
+      <meta http-equiv="refresh" content="0; url=site/index.html" />
+    </noscript>
+    <title>— 404 —</title>
+  </head>
+  <body>
+    <main>
+      <p style="max-width: 500px">
+        Your destination could not be found. back to
+        <a href="http://localhost:5500/home.html">index</a>
+      </p>
+    </main>
+  </body>
 </html>

@@ -1,7 +1,7 @@
 # skiff
 
 a static site generator, written purely in Rust.
-inspired by [Oscean](https://github.com/XXIIVV/oscean) from [Hundred Rabbits](https://100r.co/site/home.html)
+inspired by [Oscean](https://github.com/XXIIVV/oscean) from [Hundred Rabbits](https://100r.co/index.html)
 to inherite Longtermism philosophy, solutioning for technological resilience and sustainability.
 by taking out JavaScript and only using html/css and plaintext with custom database called [indental](https://wiki.xxiivv.com/site/indental.html). for more details please watch [this inspiring talks](https://www.youtube.com/watch?v=BW32yUEymvU).
 

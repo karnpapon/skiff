@@ -18,7 +18,7 @@ body > * { margin-bottom: 30px; }
 h1 { font-weight: lighter;font-size: 3rem;color: rgb(0, 38, 255); text-decoration: underline;} 
 h2 { font-size: 1.5rem; margin: 1rem 0;}
 p,li { margin: 0.25rem 0;}
-inc { margin: 20px 0}
+inc { display: inline; line-height: 1.75rem; margin: 20px 0}
 q { font-size: 2rem; font-weight: bolder; font-style: italic; width: 100%; text-align: center; padding: 2rem 0;}
 img { width: 100%; margin: 2rem 0;}
 iframe { margin: 0;}
@@ -35,6 +35,7 @@ ul li.root:before, ul li.root:after {  display: none;}
 table { width:100%; }
 table, th, td { border: 1px solid black; border-collapse: collapse; }
 th, td { padding: 8px; text-align: left; }
+small {color: rgb(179, 179, 179);}
 pre code {
   display: block;
   background: none;
@@ -46,6 +47,7 @@ pre code {
   padding: 0;
 }
 code { 
+  display: flex;
   font-size: 1rem;
   padding: 20px;
   white-space: pre-wrap;
@@ -68,6 +70,7 @@ tag { margin: 0.25rem 0; padding: 0.5rem; border: 0.5px solid; width: 10rem;}
 url { color: rgb(0, 38, 255);text-decoration: underline;}
 lc { display: flex; flex: 1}
 rc { display: flex; flex: 1}
+ic { padding-right: 2rem; }
 ic a:hover{  background-color: unset; opacity: 0.5;}
 
 .s0 { position: relative; display: flex;z-index: 1; background: white;}
@@ -114,3 +117,6 @@ ic a:hover{  background-color: unset; opacity: 0.5;}
 .footer lc > div > label { height: 100%; width: 100%; justify-content: center; align-items: center; display: flex; }
 .footer lc > div > input { cursor: pointer;opacity: 0;height: 100%; width: 5rem;position: absolute; }
 .footer rc > div { height: 100%; margin-left: var(--main-padding);margin-right: var(--main-padding);align-items: center; display: flex;}
+
+
+#go-home{ font-size: 2.5rem; color: black;}

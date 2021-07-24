@@ -1,5 +1,6 @@
 HOME
   HOST : home
+  TYPE : home
   BREF : &nbsp;
   YEAR : 9999
   BODY
@@ -94,8 +95,9 @@ SEEQ
     Music
   STACK
     Electron
+    JavaScript
   BODY
-    <h2>a custom sequencer, draw an inspiration from String’s description</h2>
+    <h2>a custom sequencer, draw an inspiration from String’s definition.</h2>
   LINK
     source : https://github.com/karnpapon/seeq
 
@@ -135,7 +137,7 @@ BKKDW
 PATITHIN
   HOST : home
   TYPE : index
-  BREF : calendrical sequencer, based-on Github contribution calendar.
+  BREF : calendrical sequencer, based-on Github contribution.
   YEAR : 2020
   TAGS
     Development
@@ -197,14 +199,14 @@ BELA-I2C
 EXP
   HOST : home
   TYPE : index
-  BREF : CLI to create an opinionated temporary folder structure, automatically cleanup after they're expired.
+  BREF : CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired.
   YEAR : 2021
   TAGS
     Development
   STACK
     Rust
   BODY 
-    <h2>CLI to create an opinionated temporary folder structure, automatically cleanup after they're expired. keeping disk-space size without worrying about heaviness of dependencies (eg. node_modules)</h2>
+    <h2>CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired. keeping disk-space size without worrying about heaviness of dependencies.</h2>
   LINK
     source : https://github.com/karnpapon/exp
 
@@ -262,7 +264,7 @@ ILLUSTRATIONS
   HOST : home
   TYPE : index
   BREF : Illustrations collection around 2016 ~ 2017.
-  YEAR : 2016
+  YEAR : 2017
   TAGS
     Design
     Illustration

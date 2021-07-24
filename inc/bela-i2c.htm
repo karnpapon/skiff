@@ -1,8 +1,9 @@
-<p>for safety parsing <a href="http://opensoundcontrol.org/">OSC</a> through i2c a <a href="https://www.sparkfun.com/products/12009">logic level converter</a> to use with Eurorack level (5V) is needed.</p>
+<p>for safety parsing <a target="_blank" href="http://opensoundcontrol.org/">OSC</a> through i2c a <a target="_blank" href="https://www.sparkfun.com/products/12009">logic level converter</a> to use with Eurorack level (5V) is needed.</p>
 <br/>
 <br/>
 
-<img src="/media/images/bela-i2c/22021.jpeg"/>
+<img src="/media/images/bela-i2c/03.jpg" style="margin-bottom: 0.5rem;"/>
+<small>credit: https://www.creativeapplications.net/news/bela-an-embedded-platform-for-low-latency-interactive-audio-kickstarter/</small>
 <br/>
 <h2>Quick Start</h2>
 <code># run bela-osc
@@ -13,10 +14,64 @@ cargo run
 </code>
 
 <h2>Usage</h2>
-<px style="line-height: 1.75rem; display: inline;">osc pattern = <codesnippet>module/module_number/command/output_port value</codesnippet> eg. <codesnippet>/er301/1/cv_slew/1 1000</codesnippet>
+
+<div style="margin-bottom: 2rem;">
+	<p>osc pattern</p>
+	<code>module/module_number/command/output_port value</code> 
+</div>
+
+<div style="margin-bottom: 2rem;">
+	<p>explain</p>
+	<table>
+		<tr>
+			<th>msg</th>
+			<th>description</th> 
+			<th>type</th> 
+			<th>notes</th> 
+		</tr>
+		<tr>
+			<td>module</td>
+			<td>name of connecting module, currently support only <a href="http://www.orthogonaldevices.com/er-301">ER301</a></td>
+			<td> String </td>
+			<td> - </td>
+		</tr>
+		<tr>
+			<td>module_number</td>
+			<td>the order number of connecting module (eg. 1)</td>
+			<td> Int </td>
+			<td> - </td>
+		</tr>
+		<tr>
+			<td>command</td>
+			<td>command to send to module</td>
+			<td> string </td>
+			<td>available command for ER301 documentation please refer to <a href="https://docs.orthogonaldevices.com/er-301/teletype-pkg/how-to-use.html#available-units-and-commands">this</a> eg. cv_slew, tr_pulse, tr</td>
+		</tr>
+		<tr>
+			<td>output_port</td>
+			<td>1</td>
+			<td> Int </td>
+			<td> - </td>
+		</tr>
+		<tr>
+			<td>value</td>
+			<td>1000</td>
+			<td> Float </td>
+			<td> - </td>
+		</tr>
+	</table>
+</div>
+
+<p>please refer to module documentation</p>
+<px style="line-height: 1.75rem; display: inline;">
 use same configuration as <a href="https://monome.org/docs/teletype/">Teletype</a>(value = unsigned 14bits integer (16,384 = 10v))/</px>
 
 <h2>[Example] sending data via WIFI (eg. use TouchOSC (Mobile) -&gt; Bela)</h2>
+
+<div style="width: 100%; height: 0; padding-top: 56.25%; position: relative;">
+	<iframe width="100%" height="100%" style="border:none;overflow:hidden;position:absolute;top:0;" src="https://www.youtube.com/embed/BFHCymXCxAw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
 <p><img src="/media/images/bela-i2c/02.png"></p>
 
 <li>setup WIFI on Bela first, details <a href="https://learn.bela.io/using-bela/bela-techniques/connecting-to-wifi/">here</a>.</li>

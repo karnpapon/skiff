@@ -20,17 +20,22 @@ pub fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
 	println!("Building | ");
 	for i in 0..lex.len {
 		let lex_term = lex.terms[i as usize].as_ref().borrow_mut().clone();
-		if &lex_term.r#type != "category" {
-			let filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
-			let path = Path::new(&filepath);
-			let display = path.display();
-			file_writer = match File::create(path) {
-				Err(why) => panic!("couldn't create {}: {}", display, why),
-				Ok(f) => f,
-			};
-			file = LineWriter::new(file_writer);
-			build_page(&mut file, lex, &lex_term, jou).unwrap();
+		if &lex_term.r#type == "category" {
+			continue;
 		}
+		let mut filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
+		if &lex_term.r#type == "home" {
+			filepath = format!("{}/{}.{}", "../", "index", "html");
+		}
+
+		let path = Path::new(&filepath);
+		let display = path.display();
+		file_writer = match File::create(path) {
+			Err(why) => panic!("couldn't create {}: {}", display, why),
+			Ok(f) => f,
+		};
+		file = LineWriter::new(file_writer);
+		build_page(&mut file, lex, &lex_term, jou).unwrap();
 	}
 	Ok(())
 }
@@ -109,7 +114,7 @@ fn build_nav(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Err
 				}
 
 				if t_parent_parent_name != t_parent_name {
-					let t_parent_parent_clone = t_parent_parent.clone();
+					// let _t_parent_parent_clone = t_parent_parent.clone();
 					build_nav_part(file, &t_parent.borrow(), &term)?;
 				}
 
@@ -157,9 +162,9 @@ fn build_nav_part(
 }
 
 fn build_home(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn Error>> {
-	let mut sorted_years: Vec<_> = get_sorted_years(&terms);
+	let sorted_years: Vec<_> = get_sorted_years(&terms);
 	file.write(b"<pxy><div><ul>")?;
-	file.write(b"<li class=\"root\"><h2>unmonetizable stuffs, but joy. &nbsp;&nbsp;</h2></li>")?;
+	file.write(b"<li class=\"root\"><h2>~ &nbsp;&nbsp;</h2></li>")?;
 	for year in sorted_years.iter() {
 		build_home_children_item(file, terms, year, false)?;
 	}
@@ -173,7 +178,7 @@ fn build_home_children_item(
 	year: &(String, String),
 	recursive: bool,
 ) -> Result<(), Box<dyn Error>> {
-	let mut prev_year = String::new();
+	// let _prev_year = String::new();
 	file.write(b"<li>")?;
 	if recursive == false {
 		file.write_fmt(format_args!("<strong>{}</strong>", year.0))?;
@@ -226,7 +231,7 @@ fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), 
 	file.write(b"</px>")?;
 	file.write_fmt(format_args!("<p>({})</p>", term.year))?;
 	file.write(b"</div>")?;
-	file.write(b"<div><a href=\"/index.html\"><i class=\"icon-arr-back\">~</i></a></div>")?;
+	// file.write(b"<div><a href=\"/index.html\"><i class=\"icon-arr-back\">~</i></a></div>")?;
 	file.write(b"</section>")?;
 	Ok(())
 }
@@ -266,6 +271,7 @@ fn build_section_details(
 		}
 	}
 	file.write(b"</px>")?;
+	file.write(b"<a id='go-home' href='/index.html'> ~ </a>")?;
 	file.write(b"</div>")?;
 	file.write(b"</div>")?;
 
@@ -308,7 +314,7 @@ fn build_footer(
 ) -> Result<(), Box<dyn Error>> {
 	// recurive to root parent ("home"), then render all children.
 	if terms.name == "home" {
-		let mut sorted_years: Vec<_> = get_sorted_years_root_parent(&terms);
+		let sorted_years: Vec<_> = get_sorted_years_root_parent(&terms);
 
 		file.write(b"<div class=\"footer\">")?;
 		file.write(b"<div>")?;
@@ -443,7 +449,7 @@ fn build_body_part(file: &mut LineWriter<File>, lex: &Lexicon, term: &Term) {
 fn build_include(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
 	let filepath: String = format!("{}/{}.{}", "../inc", term.filename, "htm");
 	let path = Path::new(&filepath);
-	let mut buff;
+	let buff;
 	match fs::read_to_string(path) {
 		Ok(c) => buff = c,
 		_ => return Ok(()),
@@ -487,7 +493,7 @@ fn build_links(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn E
 	if term.link.len < 1 {
 		return Ok(());
 	}
-	file.write(b"<ul>")?;
+	file.write(b"<ul style='margin: 0;'>")?;
 	for i in 0..term.link.len {
 		let k = term.link.keys[i as usize].clone();
 		let icon = match term.link.keys[i as usize].to_lowercase().as_str() {
