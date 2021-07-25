@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='description' content='CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired.'/><meta name='thumbnail' content='https://karnpapon.com/media/services/thumbnail.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>exp — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html"><span>..</span></a>/exp</h1><px><p>CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired.</p></px><p>(2021)</p></div></section><section class="s1"><div><div><figure><img src='../media/images/32021.jpg' alt='exp cli picture' width='900'/><figcaption>19L12 — exp cli</figcaption></figure><px><h2>CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired. keeping disk-space size without worrying about heaviness of dependencies.</h2></px><p>useful for people who wants to quickly inspect opensource project.</p>
+<br/>
+<br/>
+<img src="/media/images/exp/01.gif"/>
+
+<li><codesnippet>exp</codesnippet> will create temp folder <codesnippet>explore</codesnippet> and to soon-to-be-deleted folder <codesnippet>expire</codesnippet></li>
+<li>files/folders live inside <codesnippet>explore</codesnippet> will be moved to <codesnippet>expire</codesnippet> 7 days after its last opened. </li>
+<li>and then after next 7 days all files/folder will be deleted from <codesnippet>expire</codesnippet> folder. </li>
+<li>The config file <codesnippet>.exp</codesnippet> will be created automatically and located at <codesnippet>EXP_PATH</codesnippet> When you first run <codesnippet>exp init</codesnippet></li>
+<li>normally you don't have to edit <codesnippet>.exp</codesnippet>. it is being used only for checking <codesnippet>EXP_PATH</codesnippet>.</li>
+
+<h2>installation</h2>
+<code>## download binary first
+$ curl -LSfs https://japaric.github.io/trust/install.sh | \
+   sh -s -- --git karnpapon/exp
+
+
+## check whether exp is installed.
+exp -h
+</code>
+
+<h2 id="usage">usage</h2>
+<li><codesnippet>cd to-your-target-path &amp;&amp; exp init</codesnippet></li>
+<li>put returned string (eg. <codesnippet>export EXP_PATH=/your/target/path</codesnippet>) into <codesnippet>.profile</codesnippet> or <codesnippet>.zprofile</codesnippet> (for <a target="_blank" href="https://ohmyz.sh/">zsh</a> users) depends on what shell you&#39;re using, normally default would be <codesnippet>.profile</codesnippet>.</li>
+<li>add <codesnippet>exp</codesnippet> command to your <codesnippet>.profile</codesnippet> or <codesnippet>.zprofile</codesnippet>.</li>
+<li>everytime terminal is opened, <codesnippet>exp</codesnippet> will manage to check if any folder/file should be moved or deleted.</li>
+<h2 id="command">command</h2>
+<li><codesnippet>exp init</codesnippet> = to create <codesnippet>explore</codesnippet> and <codesnippet>expire</codesnippet> folder and <codesnippet>.exp</codesnippet> (config file).</li>
+<li><codesnippet>exp</codesnippet> = to check if file/folder is valid (ready to move/delete).</li>
+</div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/exp' target='_blank'>🔎  source</a></url></ul><px><p>Rust</p></px><px><tag>Development</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=worng.html><fm>worng</fm><p>dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.</p></a></div><div class="box"><a href=bela-i2c.html><fm>bela-i2c</fm><p>a tool for communicating between laptop and i2c-supported Eurorack module (eg. ER-301 ) by using Bela.</p></a></div></rc></div></section></main><footer><div class="footer"><div><lc><div><input type="checkbox"/><label>index</label><div class="works-list"><div class="works"><h2>2021</h2><a href='exp.html'><p class="work-actived">exp</p></a><a href='bela-i2c.html'><p>bela-i2c</p></a><a href='skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='patithin.html'><p>patithin</p></a><a href='songkranizer.html'><p>songkranizer</p></a><a href='worng.html'><p>worng</p></a></div><div class="works"><h2>2019</h2><a href='tsiangt.html'><p>tsiangt</p></a><a href='seeq.html'><p>seeq</p></a><a href='ect-etc-tec.html'><p>ect-etc-tec</p></a><a href='again-again.html'><p>again-again</p></a></div><div class="works"><h2>2018</h2><a href='livecodefest.html'><p>livecodefest</p></a><a href='bkkdw.html'><p>bkkdw</p></a><a href='the-blackcodes.html'><p>the-blackcodes</p></a><a href='the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a><a href='i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a></div><div class="works"><h2>2017</h2><a href='illustrations.html'><p>illustrations</p></a></div></div></div></lc><rc><div>karnpapon - BY-NC-SA 4.0</div><ic><a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a><a href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github' width='30'/></a></ic></rc></div></div></footer></body></html>

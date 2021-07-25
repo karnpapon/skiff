@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='description' content='dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.'/><meta name='thumbnail' content='https://karnpapon.com/media/services/thumbnail.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>worng — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html"><span>..</span></a>/worng</h1><px><p>dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.</p></px><p>(2020)</p></div></section><section class="s1"><div><div><figure><img src='../media/images/61120.jpg' alt='worng lang picture' width='900'/><figcaption>19L12 — worng lang</figcaption></figure><px><h2>dynamic programming language and tree-walk interpreter, written in Rust. based on Lox language from <a href='http://craftinginterpreters.com/' target='_blank'>Crafting Iterpreters book</a>  by Bob Nystrom.</h2></px><!-- <p><strong>NOTES:</strong> bytecode VM is not implemented yet.</p> -->
+<img src="/media/images/worng/01.png"/>
+
+<h2>Rules</h2>
+<code>
+expression → literal
+| unary
+| binary
+| grouping ;
+
+literal    → NUMBER | STRING | "true" | "false" | "nil" ;
+grouping   → "(" expression ")" ;
+unary      → ( "-" | "!" ) expression ;
+binary     → expression operator expression ;
+operator   → "==" | "!=" | "<" | "<=" | ">" | ">="
+| "+"  | "-"  | "*" | "/" ;
+
+
+---------------------------------
+
+program     → declaration* EOF ;
+
+declaration → class_declaration
+ | function_declaration
+ | var_declaration
+ | statement ;
+
+class_declaration → "class" IDENTIFIER ( "<" IDENTIFIER )?
+ "{" function* "}" ;
+
+function_declaration  → "fun" function ;
+function → IDENTIFIER "(" parameters? ")" block ;
+parameters → IDENTIFIER ( "," IDENTIFIER )* ;
+
+statement  → expression_statement
+| for_statement
+| if_statement
+| print_statement
+| return_statement
+| while_statement
+| block_statement ;
+
+return_statement → "return" expression? ";" ;
+
+for_statement   → "for" "(" ( var_declaration | expression_statement | ";" )
+					 expression? ";"
+					 expression? ")" statement ;
+
+
+if_statement    → "if" "(" expression ")" statement ( "else" statement )? ;
+
+expression      → assignment ;
+print_statement → "print" expression ";" ;
+block           → "{" declaration* "}" ;
+
+
+assignment → ( call "." )? IDENTIFIER "=" assignment
+| logic_or ;
+
+logic_or   → logic_and ( "or" logic_and )* ;
+logic_and  → equality ( "and" equality )* ;
+
+equality       → comparison ( ( "!=" | "==" ) comparison )* ;
+comparison     → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
+addition       → multiplication ( ( "-" | "+" ) multiplication )* ;
+multiplication → unary ( ( "/" | "*" ) unary )* ;
+
+
+unary → ( "!" | "-" ) unary | call ;
+call → primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
+
+arguments → expression ( "," expression )* ;    // eg (arg1, arg2) or more args.
+
+primary → "true" | "false" | "nil" | "this"
+| NUMBER | STRING | IDENTIFIER | "(" expression ")"
+| "super" "." IDENTIFIER ;
+
+</code></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/worng' target='_blank'>🔎  source</a></url></ul><px><p>Rust</p></px><px><tag>Development</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=songkranizer.html><fm>songkranizer</fm><p>Songkranizer, is a Songkran festival simulator on Chrome extension.</p></a></div><div class="box"><a href=exp.html><fm>exp</fm><p>CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired.</p></a></div></rc></div></section></main><footer><div class="footer"><div><lc><div><input type="checkbox"/><label>index</label><div class="works-list"><div class="works"><h2>2021</h2><a href='exp.html'><p>exp</p></a><a href='bela-i2c.html'><p>bela-i2c</p></a><a href='skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='patithin.html'><p>patithin</p></a><a href='songkranizer.html'><p>songkranizer</p></a><a href='worng.html'><p class="work-actived">worng</p></a></div><div class="works"><h2>2019</h2><a href='tsiangt.html'><p>tsiangt</p></a><a href='seeq.html'><p>seeq</p></a><a href='ect-etc-tec.html'><p>ect-etc-tec</p></a><a href='again-again.html'><p>again-again</p></a></div><div class="works"><h2>2018</h2><a href='livecodefest.html'><p>livecodefest</p></a><a href='bkkdw.html'><p>bkkdw</p></a><a href='the-blackcodes.html'><p>the-blackcodes</p></a><a href='the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a><a href='i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a></div><div class="works"><h2>2017</h2><a href='illustrations.html'><p>illustrations</p></a></div></div></div></lc><rc><div>karnpapon - BY-NC-SA 4.0</div><ic><a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a><a href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github' width='30'/></a></ic></rc></div></div></footer></body></html>

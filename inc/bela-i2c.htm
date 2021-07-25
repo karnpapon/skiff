@@ -2,16 +2,21 @@
 <br/>
 <br/>
 
-<img src="/media/images/bela-i2c/03.jpg" style="margin-bottom: 0.5rem;"/>
-<small>credit: https://www.creativeapplications.net/news/bela-an-embedded-platform-for-low-latency-interactive-audio-kickstarter/</small>
+<img src="/media/images/bela-i2c/04.jpg" style="margin-bottom: 0.5rem;"/>
 <br/>
 <h2>Quick Start</h2>
-<code># run bela-osc
+<px style="display: inline;">make sure you're already on Bela board (root@bela). and Bela's WIFI is setup, details <a href="https://learn.bela.io/using-bela/bela-techniques/connecting-to-wifi/">here.</a> </px>
+<code> # download this repo to Bela.
+git clone https://github.com/karnpapon/bela-i2c && cd bela-i2c
+
+# run bela-osc
 ./build.sh
 
+# build c++ file on Bela (more handy, if you don't want to open Bela user-interface and click build button.)
+make -C ~/Bela PROJECT=render.cpp run CL="-p16"
+
 # open another window
-cargo run
-</code>
+cargo run </code>
 
 <h2>Usage</h2>
 
@@ -28,36 +33,42 @@ cargo run
 			<th>description</th> 
 			<th>type</th> 
 			<th>notes</th> 
+			<th>example</th> 
 		</tr>
 		<tr>
 			<td>module</td>
 			<td>name of connecting module, currently support only <a href="http://www.orthogonaldevices.com/er-301">ER301</a></td>
 			<td> String </td>
 			<td> - </td>
+			<td> er301 </td>
 		</tr>
 		<tr>
 			<td>module_number</td>
-			<td>the order number of connecting module (eg. 1)</td>
+			<td>the order number of connecting module</td>
 			<td> Int </td>
 			<td> - </td>
+			<td>1</td>
 		</tr>
 		<tr>
 			<td>command</td>
 			<td>command to send to module</td>
-			<td> string </td>
-			<td>available command for ER301 documentation please refer to <a href="https://docs.orthogonaldevices.com/er-301/teletype-pkg/how-to-use.html#available-units-and-commands">this</a> eg. cv_slew, tr_pulse, tr</td>
+			<td>String</td>
+			<td>available command for ER301 documentation please refer to <a href="https://docs.orthogonaldevices.com/er-301/teletype-pkg/how-to-use.html#available-units-and-commands">this</a></td>
+			<td>cv_slew, tr_pulse, tr</td>
 		</tr>
 		<tr>
 			<td>output_port</td>
-			<td>1</td>
+			<td>output port number</td>
 			<td> Int </td>
 			<td> - </td>
+			<td>1</td>
 		</tr>
 		<tr>
 			<td>value</td>
-			<td>1000</td>
+			<td>value to send to</td>
 			<td> Float </td>
 			<td> - </td>
+			<td>1000</td>
 		</tr>
 	</table>
 </div>
