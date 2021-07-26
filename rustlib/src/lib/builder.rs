@@ -147,12 +147,12 @@ fn build_nav_part(
 		if &term_children.name == &target.name.to_string() {
 			// add symbol "/" at the end as a current actived (eg. `about/` ).
 			file.write_fmt(format_args!(
-				"<li><a href='{}.html'>{}/</a></li>",
+				"<li><a href='/site/{}.html'>{}/</a></li>",
 				filename, name
 			))?;
 		} else {
 			file.write_fmt(format_args!(
-				"<li><a href='{}.html'>{}</a></li>",
+				"<li><a href='/site/{}.html'>{}</a></li>",
 				filename, name
 			))?;
 		}
@@ -166,7 +166,9 @@ fn build_home(file: &mut LineWriter<File>, terms: &Term) -> Result<(), Box<dyn E
 	file.write(b"<pxy><div><ul>")?;
 	file.write(b"<li class=\"root\"><h2>~ &nbsp;&nbsp;</h2></li>")?;
 	for year in sorted_years.iter() {
+		file.write(b"<li>")?;
 		build_home_children_item(file, terms, year, false)?;
+		file.write(b"</li>")?;
 	}
 	file.write(b"</ul></div></pxy>")?;
 	Ok(())
@@ -179,7 +181,6 @@ fn build_home_children_item(
 	recursive: bool,
 ) -> Result<(), Box<dyn Error>> {
 	// let _prev_year = String::new();
-	file.write(b"<li>")?;
 	if recursive == false {
 		file.write_fmt(format_args!("<strong>{}</strong>", year.0))?;
 	}
@@ -191,12 +192,28 @@ fn build_home_children_item(
 			let name = term.as_ref().unwrap().borrow().name.clone();
 			let bref = term.as_ref().unwrap().borrow().bref.clone();
 
-			// TODO: more intuitive code, dont lazy.
-			if _term.r#type == "category" {
+			// TODO: more intuitive code.
+			// if _term.r#type == "category" {
+			// 	file.write_fmt(format_args!(
+			// 		"<li><span>{}</span><fdt>{}</fdt></li>",
+			// 		name, bref
+			// 	))?;
+			// } else {
+			// file.write_fmt(format_args!(
+			// 	"<li><a href='/site/{}.html'>{}</a> — <fdt>{}</fdt></li>",
+			// 	term.as_ref().unwrap().borrow().filename.clone(),
+			// 	name,
+			// 	bref
+			// ))?;
+			// }
+			if _term.children_len > 0 && _term.name.clone() != "home" {
 				file.write_fmt(format_args!(
-					"<li><span>{}</span><fdt>{}</fdt></li>",
-					name, bref
+					"<li class='has-child'><a href='/site/{}.html'>{}</a> — <fdt>{}</fdt></li>",
+					term.as_ref().unwrap().borrow().filename.clone(),
+					name,
+					bref
 				))?;
+				build_home_children_item(file, &_term, year, true)?
 			} else {
 				file.write_fmt(format_args!(
 					"<li><a href='/site/{}.html'>{}</a> — <fdt>{}</fdt></li>",
@@ -205,13 +222,9 @@ fn build_home_children_item(
 					bref
 				))?;
 			}
-			if _term.children_len > 0 && _term.name.clone() != "home" {
-				build_home_children_item(file, &_term, year, true)?
-			}
 		}
 	}
 	file.write(b"</ul>")?;
-	file.write(b"</li>")?;
 
 	Ok(())
 }
@@ -307,6 +320,99 @@ fn build_section_suggest(file: &mut LineWriter<File>, term: &Term) -> Result<(),
 	Ok(())
 }
 
+fn build_current_actived_footer_item(
+	file: &mut LineWriter<File>,
+	term: String,
+	term_name: String,
+) -> Result<(), Box<dyn Error>> {
+	file.write_fmt(format_args!(
+		"<a href='/site/{}.html'><p class=\"work-actived\">{}</p></a>",
+		term, term_name
+	))?;
+	Ok(())
+}
+
+fn build_footer_item(
+	file: &mut LineWriter<File>,
+	term: String,
+	term_name: String,
+) -> Result<(), Box<dyn Error>> {
+	file.write_fmt(format_args!(
+		"<a href='/site/{}.html'><p>{}</p></a>",
+		term, term_name
+	))?;
+	Ok(())
+}
+
+fn is_actived_term(a: &str, b: &str) -> bool {
+	return a == b;
+}
+
+fn build_footer_terms(
+	file: &mut LineWriter<File>,
+	term: String,
+	current_term: String,
+	name: String,
+	file_name: String,
+) -> Result<(), Box<dyn Error>> {
+	if &term == &current_term {
+		build_current_actived_footer_item(file, term.clone(), term.clone())?;
+	} else {
+		build_footer_item(file, file_name, name)?;
+	}
+	Ok(())
+}
+
+fn build_actived_footer(
+	file: &mut LineWriter<File>,
+	term: &Term,
+	_term: String,
+	term_name: String,
+) -> Result<(), Box<dyn Error>> {
+	build_current_actived_footer_item(file, _term, term_name.clone())?;
+	if term.children_len > 0 {
+		build_term_list(file, term)?;
+	}
+	Ok(())
+}
+
+fn build_unactived_footer(
+	file: &mut LineWriter<File>,
+	term: &Term,
+	_term: String,
+	term_name: String,
+	name: String,
+) -> Result<(), Box<dyn Error>> {
+	build_footer_item(file, _term, name)?;
+	if term.children_len <= 0 {
+		return Ok(());
+	}
+
+	// if that term has children, then keep looping and render those childs (including term).
+	for x in term.children.iter() {
+		build_footer_terms(
+			file,
+			term_name.clone(),
+			x.as_ref().unwrap().borrow().name.clone(),
+			x.as_ref().unwrap().borrow().name.clone(),
+			x.as_ref().unwrap().borrow().filename.clone(),
+		)?;
+	}
+	Ok(())
+}
+
+fn build_term_list(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
+	// if has children (eg. the-blackcodes)
+	for x in term.children.iter() {
+		build_footer_item(
+			file,
+			x.as_ref().unwrap().borrow().filename.clone(),
+			x.as_ref().unwrap().borrow().name.clone(),
+		)?;
+	}
+	Ok(())
+}
+
 fn build_footer(
 	file: &mut LineWriter<File>,
 	terms: &Term,
@@ -328,71 +434,23 @@ fn build_footer(
 			file.write(b"<div class=\"works\">")?;
 			file.write_fmt(format_args!("<h2>{}</h2>", year.0))?;
 			for term in terms.children.iter() {
-				let name = term.as_ref().unwrap().borrow().name.clone();
+				let term_ref = &term.as_ref().unwrap().borrow();
+				let term_ref_name = term_ref.name.clone();
+				let term_ref_filename = term_ref.filename.clone();
+				let term_name_clone = term_name.clone();
 				if year.0.parse::<i32>() == term.as_ref().unwrap().borrow().year.parse::<i32>() {
-					if name == term_name {
-						file.write_fmt(format_args!(
-							"<a href='{}.html'><p class=\"work-actived\">{}</p></a>",
-							term.as_ref().unwrap().borrow().filename.clone(),
-							term_name
-						))?;
-
-						// if has children (eg. the-blackcodes)
-						if term.as_ref().unwrap().borrow().children_len > 0 {
-							for x in term.as_ref().unwrap().borrow().children.iter() {
-								file.write_fmt(format_args!(
-									"<a href='{}.html'><p>{}</p></a>",
-									x.as_ref().unwrap().borrow().filename,
-									x.as_ref().unwrap().borrow().name
-								))?;
-							}
+					match is_actived_term(&term_ref_name, &term_name_clone) {
+						true => {
+							build_actived_footer(file, term_ref, term_ref_filename, term_name_clone)?;
 						}
-					} else {
-						// TODO: REFACTOR THESE UGLYYY CODES.
-						// if type == category render only text (not building page.)
-						if term.as_ref().unwrap().borrow().r#type == "category" {
-							for x in term.as_ref().unwrap().borrow().children.iter() {
-								if term_name == x.as_ref().unwrap().borrow().name {
-									file.write_fmt(format_args!(
-										"<a href='{}.html'><p class=\"work-actived\">{}</p></a>",
-										term_name, term_name
-									))?;
-								} else {
-									file.write_fmt(format_args!(
-										"<a href='{}.html'><p>{}</p></a>",
-										x.as_ref().unwrap().borrow().filename,
-										x.as_ref().unwrap().borrow().name
-									))?;
-								}
-							}
-						} else if term.as_ref().unwrap().borrow().children_len > 0 {
-							// if that term has children, then keep looping and render those childs (including term).
-							file.write_fmt(format_args!(
-								"<a href='{}.html'><p>{}</p></a>",
-								term.as_ref().unwrap().borrow().filename,
-								name
-							))?;
-
-							for x in term.as_ref().unwrap().borrow().children.iter() {
-								if term_name == x.as_ref().unwrap().borrow().name {
-									file.write_fmt(format_args!(
-										"<a href='{}.html'><p class=\"work-actived\">{}</p></a>",
-										term_name, term_name
-									))?;
-								} else {
-									file.write_fmt(format_args!(
-										"<a href='{}.html'><p>{}</p></a>",
-										x.as_ref().unwrap().borrow().filename,
-										x.as_ref().unwrap().borrow().name
-									))?;
-								}
-							}
-						} else {
-							file.write_fmt(format_args!(
-								"<a href='{}.html'><p>{}</p></a>",
-								term.as_ref().unwrap().borrow().filename,
-								name
-							))?;
+						false => {
+							build_unactived_footer(
+								file,
+								term_ref,
+								term_ref_filename,
+								term_name_clone,
+								term_ref_name,
+							)?;
 						}
 					}
 				}

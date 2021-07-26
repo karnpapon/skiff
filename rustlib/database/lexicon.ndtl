@@ -6,23 +6,6 @@ HOME
   BODY
     <p>index index index index.</p>
 
-VISUAL
-  HOST : home
-  TYPE : category
-  BREF : *
-  YEAR : 2018
-  TAGS
-    Development
-    Design
-
-SOUND
-  HOST : home
-  TYPE : category
-  BREF : *
-  YEAR : 2019
-  TAGS
-    Sound
-
 WORNG
   HOST : home
   TYPE : index
@@ -171,7 +154,7 @@ SKIFF
 
 
 AS-FAR-AS-I-CAN-TELL
-  HOST : visual
+  HOST : home
   TYPE : index
   BREF : DVD cover design for a Short-film, directed by Jirat Sompakdee
   YEAR : 2018
@@ -213,7 +196,7 @@ EXP
 
 
 I-SAW-RUSSOLO
-  HOST : visual
+  HOST : home
   TYPE : index
   BREF : this jigsaw will blur the line between the hardest and the easiest, entertainment and annoyance, finish it or fuck it!
   YEAR : 2018
@@ -229,7 +212,7 @@ I-SAW-RUSSOLO
 
 
 AGAIN-AGAIN
-  HOST : sound
+  HOST : home
   TYPE : index
   BREF : re-interpretation of Cadson Demak song's "again-again".
   YEAR : 2019
