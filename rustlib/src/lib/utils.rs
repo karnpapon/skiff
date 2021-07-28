@@ -54,7 +54,7 @@ pub fn get_sorted_years(terms: &Term) -> Vec<(String, String)> {
 	let mut years: HashMap<String, String> = HashMap::new();
 	for _term in terms.parent.as_ref().unwrap().borrow().children.iter() {
 		let y = _term.as_ref().unwrap().borrow().year.to_string();
-		if years.contains_key(&y) == false && &_term.as_ref().unwrap().borrow().name != "home" {
+		if years.contains_key(&y) == false && &_term.as_ref().unwrap().borrow().r#type != "unindex" {
 			years.insert(y.clone(), y.clone());
 		}
 	}

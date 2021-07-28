@@ -1,10 +1,27 @@
 HOME
   HOST : home
-  TYPE : home
+  TYPE : unindex
   BREF : &nbsp;
   YEAR : 9999
   BODY
     <p>index index index index.</p>
+
+ABOUT
+  HOST : home
+  TYPE : unindex
+  BREF : *
+  STACK
+    JavaScript
+    TypeScript
+    Rust
+  TAGS
+    Development
+    Designer
+    Musician
+  BODY
+    <h2>Karnpapon Boonput</h2>
+  LINK
+    www : https://github.com/karnpapon
 
 WORNG
   HOST : home

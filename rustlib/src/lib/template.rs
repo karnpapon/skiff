@@ -232,8 +232,8 @@ pub fn link_next_prev(lex_term: &mut Vec<Rc<RefCell<Term>>>) -> Result<(), Box<d
 		b.borrow()
 			.year
 			.parse::<i32>()
-			.unwrap()
-			.cmp(&a.borrow().year.parse::<i32>().unwrap())
+			.unwrap_or(9999)
+			.cmp(&a.borrow().year.parse::<i32>().unwrap_or(9999))
 	});
 
 	// link to `next` and `prev` term

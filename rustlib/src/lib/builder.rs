@@ -24,7 +24,7 @@ pub fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
 			continue;
 		}
 		let mut filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
-		if &lex_term.r#type == "home" {
+		if &lex_term.name == "home" {
 			filepath = format!("{}/{}.{}", "../", "index", "html");
 		}
 
@@ -180,32 +180,15 @@ fn build_home_children_item(
 	year: &(String, String),
 	recursive: bool,
 ) -> Result<(), Box<dyn Error>> {
-	// let _prev_year = String::new();
 	if recursive == false {
 		file.write_fmt(format_args!("<strong>{}</strong>", year.0))?;
 	}
 	file.write(b"<ul>")?;
 	for term in terms.children.iter() {
 		let _term = term.as_ref().unwrap().borrow();
-
 		if year.0.parse::<i32>() == _term.year.parse::<i32>() {
 			let name = term.as_ref().unwrap().borrow().name.clone();
 			let bref = term.as_ref().unwrap().borrow().bref.clone();
-
-			// TODO: more intuitive code.
-			// if _term.r#type == "category" {
-			// 	file.write_fmt(format_args!(
-			// 		"<li><span>{}</span><fdt>{}</fdt></li>",
-			// 		name, bref
-			// 	))?;
-			// } else {
-			// file.write_fmt(format_args!(
-			// 	"<li><a href='/site/{}.html'>{}</a> — <fdt>{}</fdt></li>",
-			// 	term.as_ref().unwrap().borrow().filename.clone(),
-			// 	name,
-			// 	bref
-			// ))?;
-			// }
 			if _term.children_len > 0 && _term.name.clone() != "home" {
 				file.write_fmt(format_args!(
 					"<li class='has-child'><a href='/site/{}.html'>{}</a> — <fdt>{}</fdt></li>",
@@ -460,7 +443,7 @@ fn build_footer(
 		file.write(b"</div>")?;
 		file.write(b"</div></lc>")?;
 		file.write(b"<rc>")?;
-		file.write_fmt(format_args!("<div>{}</div>", "karnpapon - BY-NC-SA 4.0"))?;
+		file.write_fmt(format_args!("<div>{}</div>", "BY-NC-SA 4.0"))?;
 		file.write(b"<ic>")?;
 		file.write(b"<a href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg' width='30'/></a>")?;
 		file.write(b"<a href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github' width='30'/></a>")?;
@@ -625,7 +608,7 @@ fn build_pict(
 ) -> Result<(), Box<dyn Error>> {
 	file.write(b"<figure>")?;
 	file.write_fmt(format_args!(
-		"<img src='../media/images/{}.jpg' alt='{} picture' width='900'/>",
+		"<img src='../media/images/{}.jpg' alt='{} picture' width='900' style='margin-top: 0;' />",
 		pict, name
 	))?;
 	if caption > 0 {
