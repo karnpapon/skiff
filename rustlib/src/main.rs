@@ -24,6 +24,8 @@ fn link(glo: &mut Glossary, lex: &mut Lexicon, jou: &mut Journal) -> Result<(), 
   lexicon::link(jou, lex);
   glossary::link(lex, glo);
   journal::link(lex, glo);
+
+  lexicon::get_home_depth(lex).unwrap();
   Ok(())
 }
 

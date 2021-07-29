@@ -37,6 +37,7 @@ pub struct Term {
 	pub children_len: i32,
 	pub docs: Vec<Option<Rc<RefCell<List>>>>,
 	pub docs_len: i32,
+	pub home_dept: usize,
 	pub incoming: Vec<Box<Rc<RefCell<Term>>>>,
 	pub incoming_len: i32,
 	pub outgoing_len: i32,
@@ -82,6 +83,7 @@ impl Term {
 			children_len: 0,
 			docs: vec![],
 			docs_len: 0,
+			home_dept: 0,
 			incoming: vec![],
 			incoming_len: 0,
 			outgoing_len: 0,
@@ -260,6 +262,25 @@ pub fn parse(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> {
 		}
 		line.clear();
 	}
+	Ok(())
+}
+
+fn _get_home_dept(term: &mut Term, dist: usize) -> usize {
+	if term.name == "home" || term.parent.as_ref().unwrap().borrow_mut().name == "home" {
+		return dist;
+	}
+	return _get_home_dept(&mut term.parent.as_ref().unwrap().borrow_mut(), dist + 1);
+}
+
+/// find distance between Term (work) and home.
+/// eg. the-blackcodes-artworks is 1 levels from home(starting from 0).
+/// purposely for 'directory-alike' title name's (work's details page).
+pub fn get_home_depth(lex: &Lexicon) -> Result<(), SkiffError> {
+	for term in lex.terms.iter() {
+		let mut t = term.borrow_mut();
+		t.home_dept = _get_home_dept(&mut t, 0);
+	}
+
 	Ok(())
 }
 

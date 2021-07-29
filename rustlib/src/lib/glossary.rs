@@ -68,7 +68,7 @@ pub fn link(lex: &mut Lexicon, glo: &mut Glossary) {
 		match findterm(lex, &host_name) {
 			Some(t) => {
 				lex_term.borrow_mut().parent = Some(Box::new(t));
-				let mut parent_term = lex_term.borrow().parent.as_ref().unwrap().clone();
+				let parent_term = lex_term.borrow().parent.as_ref().unwrap().clone();
 				parent_term
 					.borrow_mut()
 					.children

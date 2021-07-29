@@ -216,18 +216,37 @@ fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), 
 	file.write(b"<section class=\"s0\">")?;
 	file.write(b"<div>")?;
 	file.write(b"<h1>")?;
-	file.write_fmt(format_args!(
-		"<a class=\"link-default\" href=\"/index.html\"><span>..</span></a>/{}",
-		term.name
-	))?;
+	let home_path = "<a class=\"link-default\" href=\"/index.html\"><span>..</span></a>/";
+	let mut parent_paths = String::from("");
+	// println!(
+	// 	"term.name = {} & term.home_depth = {}",
+	// 	term.name, term.home_dept
+	// );
+
+	if term.home_dept > 0 {
+		for _ in 0..term.home_dept {
+			let parent_string = format!(
+				"<a class=\"link-default\" href=\"/site/{}.html\"><span>..</span></a>/",
+				term.parent.as_ref().unwrap().borrow().filename
+			);
+			parent_paths.push_str(parent_string.as_str());
+		}
+		let paths = format!("{}{}", home_path, parent_paths);
+		file.write_fmt(format_args!("{}{}", paths, term.name))?;
+	} else {
+		file.write_fmt(format_args!("{}{}", home_path, term.name))?;
+	}
 	file.write(b"</h1>")?;
 
 	file.write(b"<px>")?;
-	file.write_fmt(format_args!("<p>{}</p>", term.bref))?;
+	if term.bref.is_empty() == false {
+		file.write_fmt(format_args!("<p>{}</p>", term.bref))?;
+	}
 	file.write(b"</px>")?;
-	file.write_fmt(format_args!("<p>({})</p>", term.year))?;
+	if term.year.is_empty() == false {
+		file.write_fmt(format_args!("<p>({})</p>", term.year))?;
+	}
 	file.write(b"</div>")?;
-	// file.write(b"<div><a href=\"/index.html\"><i class=\"icon-arr-back\">~</i></a></div>")?;
 	file.write(b"</section>")?;
 	Ok(())
 }
