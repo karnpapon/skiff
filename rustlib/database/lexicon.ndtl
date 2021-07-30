@@ -1,10 +1,8 @@
 HOME
   HOST : home
   TYPE : unindex
-  BREF : &nbsp;
+  BREF : Software Gardener
   YEAR : 9999
-  BODY
-    <p>index index index index.</p>
 
 ABOUT
   HOST : home
@@ -19,7 +17,7 @@ ABOUT
     Designer
     Musician
   BODY
-    <h2>Karnpapon Boonput</h2>
+    <h2>Karnpapon Boonput — Software Gardener</h2>
   LINK
     www : https://github.com/karnpapon
 
@@ -65,6 +63,8 @@ THE-BLACKCODES-ARTWORKS
   STACK
     JavaScript
     Illustrator
+  LINK
+    listen : https://theblackcodes.bandcamp.com/releases
 
 
 THE-BLACKCODES
@@ -83,6 +83,7 @@ THE-BLACKCODES
     <h2>promo website for launching first album of The ███████ </h2>
   LINK
     www : https://theblackcodesweb.vercel.app/
+    listen : https://theblackcodes.bandcamp.com/releases
 
 SEEQ
   HOST : home
@@ -286,6 +287,6 @@ TSIANGT
   STACK
     Rust
   BODY 
-    <h2>เสียง ( \sǐaŋ\ ) means "sound" in Thai language. audio music player written in Rust programming language. seamlessly jump between your terminal workflow.</h2>
+    <h2>tsiangt ( \sǐaŋ\ ) means "sound" in Thai language, is an terminal music player written in Rust. seamlessly jump between your terminal workflow.</h2>
   LINK
     source : https://github.com/karnpapon/tsiangt

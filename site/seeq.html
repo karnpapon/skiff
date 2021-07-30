@@ -1,15 +1,15 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='description' content='Custom sequencer and live-coding environment.'/><meta name='thumbnail' content='https://karnpapon.com/media/services/thumbnail.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>seeq — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html"><span>..</span></a>/seeq</h1><px><p>Custom sequencer and live-coding environment.</p></px><p>(2019)</p></div></section><section class="s1"><div><div><figure><img src='../media/images/42019.jpg' alt='text sequencer picture' width='900' style='margin-top: 0;' /><figcaption>19L12 — text sequencer</figcaption></figure><px><h2>a custom sequencer, draw an inspiration from String’s definition.</h2></px><q>String is  traditionally a sequence of letters.</q>
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='description' content='Custom sequencer and live-coding environment.'/><meta name='thumbnail' content='https://nifty-hugle-773ec5.netlify.app/media/images/12021.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>seeq — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html"><span>..</span></a>/seeq</h1><px><p>Custom sequencer and live-coding environment.</p></px><p>(2019)</p></div></section><section class="s1"><div><div><figure><img src='../media/images/42019.jpg' alt='text sequencer picture' width='900' style='margin-top: 0;' /></figure><px><h2>a custom sequencer, draw an inspiration from String’s definition.</h2></px><q>String is  traditionally a sequence of letters.</q>
 
 <px style="display: inline; line-height: 1.75rem;">
-	Seeq is yet-another-live-coding-environment-alike. It's heavily inspired by <a target="_blank" href="https://hundredrabbits.itch.io/orca">Orca</a>.
-	Initially, the idea coming from being tired of keep remembering new functions from <a target="_blank" href="https://tidalcycles.org/">TidalCycles</a>.  
+	Seeq is yet-another-live-coding-environment-alike sequencer. It's heavily inspired by <a target="_blank" href="https://hundredrabbits.itch.io/orca">Orca</a>.
+	Initially, the idea coming from being tired of keep remembering new available functions from <a target="_blank" href="https://tidalcycles.org/">TidalCycles</a>, a language for creating complex pattern purposely for <a target="_blank" href="https://toplap.org/">live-coding</a> performance.  
 	<br/><br/>Don't get me wrong. TidalCycles is hands-down obviously a great language out there. 
 	But for non-programming person like me. I cannot utilize the true power of TidalCycles without knowing <a target="_blank" href="https://www.haskell.org/">Haskell</a> language.
 	<br/><br/>
 	Thus, for the sake of understanding programming in general. I decided to roll my own.
 	JavaScript is a language of choice since it's personally more friendly for newbie. 
 	Creating programming language is considered advanced topic. 
-	So, I decided to looking for practical way like sequencer instead.
+	So, I decided to looking for practical way like sequencer instead. and utilize from existing "language" like <a href="https://en.wikipedia.org/wiki/Regular_expression">RegEx</a> to create a pattern (i know, i know you may immediately argue that "but RegEx is not even considered a programming language!". well, you're right but lemme call it language in this context anyway.).
 	</px>
 
 <img style="width: 60%; align-self: center;" src="/media/images/seeq/05.gif">
@@ -27,9 +27,8 @@
 
 
 <h2>Usage</h2>
-<px style="line-height: 1.75rem;">to play with it, just put any words, sentences, just like searching from Google or any search engine. Seeq will manage to find the descriptions for that keywords and use it as a step sequencer (using API from WikiPedia).<br/><br/>
-	a “trigger” is simply assigned by typing any words/letters in provided input, Regex is also available. 
-	currently support only sending MIDI out.
+<px style="display: inline; line-height: 1.75rem;">to play with it, just put any words, sentences, just like searching from Google or any search engine. Seeq will manage to find the descriptions for that keywords and use it as a step sequencer (using API from WikiPedia).<br/><br/>
+	a “trigger” is simply assigned by typing any words/letters in provided  <codesnippet>find</codesnippet> input,  <strong>Regex is also supported.</strong> in <codesnippet>regex</codesnippet> input.
 </px>
 <p>in order to move selection, the console has to be toggled off ( <codesnippet>cmd</codesnippet> + <codesnippet>i</codesnippet>).</p>
 <h3 style="margin: 1rem 0;">movement</h3>

@@ -8,6 +8,6 @@ pub const LEXICON_BUFFER: usize = 512;
 pub const LOGS_RANGE: usize = 56;
 pub const LIST_ITEMS: usize = 50;
 pub const NAME: &str = "karnpapon";
-pub const DOMAIN: &str = "https://karnpapon.com/";
+pub const DOMAIN: &str = "https://nifty-hugle-773ec5.netlify.app/media/images/12021.jpg";
 pub const LOCATION: &str = "Bangkok, Thailand";
 pub const REPOPATH: &str = "https://github.com/karnpapon/skiff/";

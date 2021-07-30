@@ -55,7 +55,7 @@ fn build_page(
 		term.bref
 	))?;
 	file.write_fmt(format_args!(
-		"<meta name='thumbnail' content='{}media/services/thumbnail.jpg' />",
+		"<meta name='thumbnail' content='{}' />",
 		DOMAIN
 	))?;
 	file.write(b"<link rel='stylesheet' type='text/css' href='../styles/main.css'>")?;
@@ -630,18 +630,18 @@ fn build_pict(
 		"<img src='../media/images/{}.jpg' alt='{} picture' width='900' style='margin-top: 0;' />",
 		pict, name
 	))?;
-	if caption > 0 {
-		file.write(b"<figcaption>")?;
-		if let Some(_link) = link {
-			file.write_fmt(format_args!(
-				"<a href='{}.html'>{}</a> — {}",
-				_link, host, name
-			))?;
-		} else {
-			file.write_fmt(format_args!("{} — {}", host, name))?;
-		}
-		file.write(b"</figcaption>")?;
-	}
+	// if caption > 0 {
+	// 	file.write(b"<figcaption>")?;
+	// 	if let Some(_link) = link {
+	// 		file.write_fmt(format_args!(
+	// 			"<a href='{}.html'>{}</a> — {}",
+	// 			_link, host, name
+	// 		))?;
+	// 	} else {
+	// 		file.write_fmt(format_args!("{} — {}", host, name))?;
+	// 	}
+	// 	file.write(b"</figcaption>")?;
+	// }
 	file.write(b"</figure>")?;
 	Ok(())
 }
