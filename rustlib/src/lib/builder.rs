@@ -4,7 +4,7 @@ use super::journal::{Journal, Log};
 use super::lexicon::{Lexicon, Term};
 use super::template::ftemplate;
 use super::utils::{finddiary, get_sorted_years, get_sorted_years_root_parent};
-use super::vars::DOMAIN;
+use super::vars::{DOMAIN, THUMBNAIL_IMG};
 
 use std::error::Error;
 use std::fs;
@@ -51,12 +51,22 @@ fn build_page(
 	file.write(b"<head>")?;
 	file.write(b"<meta charset='utf-8'>")?;
 	file.write_fmt(format_args!(
-		"<meta name='description' content='{}'/>",
+		"<meta property=\"og:title\" content='Karnpapon Boonput'/>",
+	))?;
+	file.write_fmt(format_args!(
+		"<meta property=\"og:type\" content='garden'/>"
+	))?;
+	file.write_fmt(format_args!(
+		"<meta property=\"og:description\" content='{}'/>",
 		term.bref
 	))?;
 	file.write_fmt(format_args!(
-		"<meta name='thumbnail' content='{}' />",
+		"<meta property=\"og:url\" content='{}' />",
 		DOMAIN
+	))?;
+	file.write_fmt(format_args!(
+		"<meta property=\"og:image\" content='{}' />",
+		THUMBNAIL_IMG
 	))?;
 	file.write(b"<link rel='stylesheet' type='text/css' href='../styles/main.css'>")?;
 	file.write(b"<link rel='shortcut icon' type='image/png' href='../media/services/icon.png'>")?;
@@ -216,7 +226,10 @@ fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), 
 	file.write(b"<section class=\"s0\">")?;
 	file.write(b"<div>")?;
 	file.write(b"<h1>")?;
-	let home_path = "<a class=\"link-default\" href=\"/index.html\"><span>..</span></a>/";
+	let home_path = format!(
+		"<a class=\"link-default\" href=\"/index.html\">~</a>/{}/",
+		term.year
+	);
 	let mut parent_paths = String::from("");
 	// println!(
 	// 	"term.name = {} & term.home_depth = {}",
@@ -232,9 +245,15 @@ fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), 
 			parent_paths.push_str(parent_string.as_str());
 		}
 		let paths = format!("{}{}", home_path, parent_paths);
-		file.write_fmt(format_args!("{}{}", paths, term.name))?;
+		file.write_fmt(format_args!(
+			"{}<a href='/site/{}.html'>{}</a>",
+			paths, term.filename, term.name
+		))?;
 	} else {
-		file.write_fmt(format_args!("{}{}", home_path, term.name))?;
+		file.write_fmt(format_args!(
+			"{}<a href='/site/{}.html'>{}</a>",
+			home_path, term.filename, term.name
+		))?;
 	}
 	file.write(b"</h1>")?;
 
@@ -243,9 +262,9 @@ fn build_section_header(file: &mut LineWriter<File>, term: &Term) -> Result<(), 
 		file.write_fmt(format_args!("<p>{}</p>", term.bref))?;
 	}
 	file.write(b"</px>")?;
-	if term.year.is_empty() == false {
-		file.write_fmt(format_args!("<p>({})</p>", term.year))?;
-	}
+	// if term.year.is_empty() == false {
+	// 	file.write_fmt(format_args!("<p>({})</p>", term.year))?;
+	// }
 	file.write(b"</div>")?;
 	file.write(b"</section>")?;
 	Ok(())
@@ -272,6 +291,8 @@ fn build_section_details(
 	file.write(b"<div>")?;
 	file.write(b"<div class=\"position-sticky\">")?;
 	build_links(file, term).unwrap();
+
+	file.write_fmt(format_args!("<p class=\"info-year\">{}</p>", term.year))?;
 	file.write(b"<px>")?;
 	if term.stack.len() > 0 {
 		for _stack in term.stack.iter() {
@@ -429,7 +450,7 @@ fn build_footer(
 		file.write(b"<lc><div>")?;
 		file.write_fmt(format_args!(
 			"<input type=\"checkbox\"/><label>{}</label>",
-			"index"
+			"YEAR"
 		))?;
 		file.write(b"<div class=\"works-list\">")?;
 		for year in sorted_years.iter() {

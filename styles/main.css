@@ -12,9 +12,9 @@
 
 
 * { margin: 0; padding: 0; box-sizing: border-box; text-decoration: none; color: black; }
-a { color: rgb(0, 38, 255); }
+a, a.link-default span { color: rgb(0, 0, 255); }
 hr { margin: 10px 0;}
-a:hover,a:hover i { background-color: rgb(0, 38, 255); color:white; }
+a:hover,a:hover i, a#go-home:hover { background-color: rgb(0, 38, 255); color:white; }
 body { font-family: serif; font-weight: lighter; font-size: 16px; }
 body > * { margin-bottom: 30px; }
 h1 { font-weight: lighter;font-size: 3rem;color: rgb(0, 38, 255); text-decoration: underline;} 
@@ -71,7 +71,8 @@ fb { font-size: 2.5rem; }
 fm { font-size: 1.5rem; }
 /* fdt { font-family: system-ui; font-style: italic; color: var(--md-gray-color); font-size: 0.8rem; font-weight: lighter; }  */
 fdt { font-family: monospace; font-style: inherit; color: var(--md-gray-color); font-size: 0.8rem; font-weight: lighter; } 
-tag { margin: 0.25rem 0; padding: 0.5rem; border: 0.5px solid; width: 10rem;}
+tag { margin: 0.25rem 0; width: 10rem; font-style: italic;}
+tag::before { content: "#";}
 url { color: rgb(0, 38, 255);text-decoration: underline;}
 lc { display: flex; flex: 1}
 rc { display: flex; flex: 1}
@@ -83,6 +84,7 @@ ic a:hover{  background-color: unset; opacity: 0.5;}
 .s0 > div:nth-child(1) { flex: 3 }
 .s0 > div:nth-child(2) { flex: 1; justify-content: flex-end; display: flex; font-size: 3rem; align-items: flex-end; }
 .s1 { position: relative; display: flex;z-index: 1;flex-direction: column;}
+.s1 > div:nth-child(1) { border-bottom: 1px solid; }
 .s1 > div:nth-child(1), .s1 > div:nth-child(2) { padding: var(--main-padding); z-index: 1; display: flex; background: white;}
 .s1 > div > div:nth-child(1) { flex: 2; display: flex; padding-right: var(--main-padding);flex-direction: column;}
 .s1 > div > div:nth-child(2) { flex: 1; height: auto;}
@@ -95,8 +97,8 @@ ic a:hover{  background-color: unset; opacity: 0.5;}
   .position-sticky px { margin: 0;} */
 }
 .s2 { display: flex; position: fixed; bottom: 0;margin-bottom: 60px;z-index: 0; z-index: 0 !important;width: 100%;height: var(--scroll-space-height); }
-.s2 lc { border-top:1px  solid black;}
-.s2 rc { border-top:1px  solid black;}
+/* .s2 lc { border-top:1px  solid black;} */
+/* .s2 rc { border-top:1px  solid black;} */
 /* .s2 lc { background-color: black;} */
 /* .s2 lc > fb { color: white;} */
 /* .s2 rc{ background-color: black; color: white;} */
@@ -108,13 +110,14 @@ ic a:hover{  background-color: unset; opacity: 0.5;}
 .flex-col { display: flex;flex-direction: column;}
 .position-sticky{ position: sticky; top: 1rem;}
 .box {padding: var(--main-padding); height: 100%; cursor: pointer;flex-direction: column;justify-content: center;display: flex;}
+.s2 rc > div:hover, .s2 rc > div:hover fm, .s2 rc > div:hover a, .s2 rc > div:hover p { background-color: rgb(0, 0, 255);}
 .box:hover, .box:hover fm,.box:hover p, .box:hover a{ background: black; color: white;}
 
 @media screen and (max-width: 767px){
   .box{ padding: 1rem;}
 }
 
-
+.info-year { margin-top: 1rem; margin-bottom: 1rem; font-weight: bold;}
 .scroll-spacing { background: none !important; height: var(--scroll-space-height); margin-bottom: 30px; width: 100%; visibility: hidden; pointer-events: none; display: flex; }
 .works-list {display: none;width: 100vw; left: 0; bottom: 0; position: absolute; height: 15rem; margin-bottom: 60px; background-color: white; border-top: 1px solid;} 
 .works { flex: 1;}
@@ -132,7 +135,7 @@ ic a:hover{  background-color: unset; opacity: 0.5;}
 /* .footer lc:hover{ background: black;color:white; } */
 .footer rc{ flex: 10;width: 100%;height: 100%;justify-content: space-between;}
 .footer lc > div { height: 100%; width: 100%; justify-content: center; align-items: center; display: flex; }
-.footer lc > div > label { height: 100%; width: 100%; justify-content: center; align-items: center; display: flex; }
+.footer lc > div > label { height: 100%; width: 100%; justify-content: center; align-items: center; display: flex; font-weight: bold; }
 .footer lc > div > input { cursor: pointer;opacity: 0;height: 100%; width: 5rem;position: absolute; }
 .footer rc > div { height: 100%; margin-left: var(--main-padding);margin-right: var(--main-padding);align-items: center; display: flex;}
 
