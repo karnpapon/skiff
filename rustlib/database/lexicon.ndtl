@@ -1,12 +1,13 @@
 HOME
   HOST : home
   TYPE : unindex
-  BREF : just a miscellaneous Software Gardener
+  BREF : just a asdfsdfds Software Gardener
   YEAR : 9999
 
 ABOUT
   HOST : home
   TYPE : unindex
+  YEAR : -
   BREF : *
   STACK
     JavaScript
@@ -46,7 +47,8 @@ ECT-ETC-TEC
     Development
     Design
   STACK
-    JavaScript (VueJS)
+    JavaScript
+      Vue
   LINK
     source : https://github.com/karnpapon/ect-etc-tec
     playground : https://karnpapon.github.io/ect-etc-tec/
@@ -62,7 +64,10 @@ THE-BLACKCODES-ARTWORKS
     Music
   STACK
     JavaScript
+      RuneJS
+      Firebase
     Illustrator
+    Photoshop
   LINK
     listen : https://theblackcodes.bandcamp.com/releases
 
@@ -76,9 +81,10 @@ THE-BLACKCODES
     Development
     Design
   STACK
-    React
-    Redux
-    GLSL
+    JavaScript
+      React
+      Redux
+      Veda (GLSL)
   BODY
     <h2>promo website for launching first album of The ███████ </h2>
   LINK
@@ -95,8 +101,8 @@ SEEQ
     Design
     Music
   STACK
-    Electron
     JavaScript
+      Electron
   BODY
     <h2>a custom sequencer, draw an inspiration from String’s definition.</h2>
   LINK
@@ -113,8 +119,8 @@ SONGKRANIZER
     Development
     Music
   STACK
-    Chrome
     JavaScript
+    Chrome
   BODY
     <h2>Chrome’s Extension to simulate Songkran festival through sight and sound without any VR’s equipment needed!, for those who wanted to *feels*  like participating in one of the most famous festival in Thailand, where people prompt to pour water on each others,</h2>
   LINK
@@ -129,9 +135,11 @@ BKKDW
     Performance
     Music
   STACK
-    TidalCycles
+    JavaScript
+      Veda (GLSL)
+    Haskell
+      TidalCycles
     Ableton
-    GLSL (Veda.js)
   BODY
     <h2>Live-coding performance for {https://web.tcdc.or.th/en/Projects/Detail/BangkokDesignWeek Bangkok Design Week'18} at {https://web.tcdc.or.th/th TCDC } (Thailand Creative Design Center's building) rooftop 5th fl.</h2>
 
@@ -146,9 +154,9 @@ PATITHIN
     Design
     Music
   STACK
-    React
-    Redux
     TypeScript
+      React
+      Redux
   BODY 
     <h2>calendrical sequencer based on Github's contribution history where velocity of the note is determined by commit history. in range of 53 weeks (approx 1 year), the only way to assign trigger is just commit!.</h2>
   LINK
@@ -174,7 +182,7 @@ SKIFF
 AS-FAR-AS-I-CAN-TELL
   HOST : home
   TYPE : index
-  BREF : DVD cover design for a Short-film, directed by Jirat Sompakdee
+  BREF : DVD cover design for a Short-film, directed by Jirat Sompakdee.
   YEAR : 2018
   TAGS
     Design
@@ -222,7 +230,8 @@ I-SAW-RUSSOLO
     Development
     Design
   STACK
-    JavaScript (p5.js)
+    JavaScript
+      P5
   BODY 
     <h2>The Blacksmith, a merchandise from {/site/the-blackcodes.html The Black Codes} launching the first product “I (saw) Russolo” a jigsaw with noise pattern.</h2>
   LINK
@@ -238,6 +247,9 @@ AGAIN-AGAIN
     Music
   STACK
     SuperCollider
+    JavaScript
+      MarchingJS
+      Vue
   BODY 
     <h2>audio synthesis and algorithmic composition to intepret an unique story</h2>
   LINK
@@ -255,7 +267,8 @@ LIVECODEFEST
     Design
     Development
   STACK
-    React
+    JavaScript
+      React
   BODY 
     <h2>Livecode festival is algorithmic music festival, held in England, the former design is only orange texts with plain white background. this design picked up key elements like color, plain layout and organized them systematically.</h2>
   LINK
@@ -271,8 +284,8 @@ ILLUSTRATIONS
     Design
     Illustration
   STACK
-    Adobe Illustration
-    Adobe Photohop
+    Illustration
+    Photohop
   BODY 
     <h2>an illustration collections around 2016 ~ 2017. some of them are being used for {/site/the-blackcodes.html The Black Codes} album</h2>
 
@@ -280,7 +293,7 @@ ILLUSTRATIONS
 TSIANGT
   HOST : home
   TYPE : index
-  BREF : music player
+  BREF : terminal music player.
   YEAR : 2019
   TAGS
     Development

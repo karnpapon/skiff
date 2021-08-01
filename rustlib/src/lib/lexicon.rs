@@ -12,6 +12,12 @@ use super::scanner::Scanner;
 use super::vars::{KEY_BUF_LEN, STR_BUF_LEN};
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+pub struct Stack {
+	pub parent: String,
+	pub children: Vec<String>,
+}
+
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 #[allow(dead_code)]
 pub struct Term {
 	pub name: String,
@@ -20,7 +26,7 @@ pub struct Term {
 	pub year: String,
 	pub r#type: String,
 	pub tag: Vec<String>,
-	pub stack: Vec<String>,
+	pub stack: Vec<Stack>,
 	pub body: Vec<String>,
 	pub body_len: usize,
 	pub link: List,
@@ -91,6 +97,23 @@ impl Term {
 	}
 }
 
+impl Stack {
+	fn new() -> Stack {
+		Stack {
+			parent: String::from(""),
+			children: vec![],
+		}
+	}
+
+	fn add_parent(&mut self, stack_parent: String) {
+		self.parent = stack_parent
+	}
+
+	fn add_children(&mut self, stack_child: String) {
+		self.children.push(stack_child)
+	}
+}
+
 pub fn findterm(lex: &Lexicon, name: &str) -> Option<Rc<RefCell<Term>>> {
 	let mut _name = String::with_capacity(name.len());
 	_name = name.to_lowercase().replace("_", " ");
@@ -141,6 +164,7 @@ pub fn parse(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> {
 	let mut catch_list = false;
 	let mut catch_tag = false;
 	let mut catch_stack = false;
+	let mut catch_sub_stack = false;
 	let mut t = &mut lexicon.terms[lexicon.len as usize];
 	let mut line = String::new();
 	let mut scanner: Scanner;
@@ -255,9 +279,18 @@ pub fn parse(path: String, lexicon: &mut Lexicon) -> Result<(), SkiffError> {
 			// stack
 			if catch_stack {
 				let stack_len = t.borrow().stack.len() as usize;
-				t.borrow_mut()
-					.stack
-					.insert(stack_len, helpers::sstr(&scanner.source, 4, len - 4));
+				let mut s = Stack::new();
+				s.add_parent(helpers::sstr(&scanner.source, 4, len - 4));
+				t.borrow_mut().stack.insert(stack_len, s);
+			}
+		} else if depth == 6 {
+			if catch_stack {
+				let stack_len = t.borrow().stack.len() as usize;
+				t.borrow_mut().stack[stack_len - 1].add_children(helpers::sstr(
+					&scanner.source,
+					6,
+					len - 6,
+				));
 			}
 		}
 		line.clear();

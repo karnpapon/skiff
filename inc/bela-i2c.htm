@@ -32,42 +32,36 @@ cargo run </code>
 			<th>msg</th>
 			<th>description</th> 
 			<th>type</th> 
-			<th>notes</th> 
 			<th>example</th> 
 		</tr>
 		<tr>
 			<td>module</td>
 			<td>name of connecting module, currently support only <a href="http://www.orthogonaldevices.com/er-301">ER301</a></td>
 			<td> String </td>
-			<td> - </td>
 			<td> er301 </td>
 		</tr>
 		<tr>
 			<td>module_number</td>
 			<td>the order number of connecting module</td>
 			<td> Int </td>
-			<td> - </td>
 			<td>1</td>
 		</tr>
 		<tr>
 			<td>command</td>
-			<td>command to send to module</td>
+			<td>command to send to module available command for ER301 documentation please refer to <a href="https://docs.orthogonaldevices.com/er-301/teletype-pkg/how-to-use.html#available-units-and-commands">this</a></td>
 			<td>String</td>
-			<td>available command for ER301 documentation please refer to <a href="https://docs.orthogonaldevices.com/er-301/teletype-pkg/how-to-use.html#available-units-and-commands">this</a></td>
 			<td>cv_slew, tr_pulse, tr</td>
 		</tr>
 		<tr>
 			<td>output_port</td>
 			<td>output port number</td>
 			<td> Int </td>
-			<td> - </td>
 			<td>1</td>
 		</tr>
 		<tr>
 			<td>value</td>
 			<td>value to send to</td>
 			<td> Float </td>
-			<td> - </td>
 			<td>1000</td>
 		</tr>
 	</table>
