@@ -118,7 +118,7 @@ ic a:hover{  background-color: unset; opacity: 0.5;}
 .footer-mobile-index { display: none;}
 @media screen and (max-width: 1024px){
   h1 { font-size: 2rem;}
-  .box{ padding: 1rem;}
+  .box{ padding: var(--main-padding);}
   .footer-cc { visibility: hidden; display: none; width: 0px; }
   .footer rc > div { margin-left: 0 !important;}
   .footer rc > p {
