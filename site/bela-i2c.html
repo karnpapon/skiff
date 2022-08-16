@@ -1,100 +1,87 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='a tool for communicating between laptop and i2c-supported Eurorack module (eg. ER-301 ) by using Bela.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>bela-i2c — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2021/<a href='/site/bela-i2c.html'>bela-i2c</a></h1><px><p>a tool for communicating between laptop and i2c-supported Eurorack module (eg. ER-301 ) by using Bela.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/22021.jpg' alt='i2c communication for Bela picture' width='900' style='margin-top: 0;' /></figure><px><h2>parsing msg (<a href='https://learn.sparkfun.com/tutorials/i2c/all' target='_blank'>i2c </a> protocol) from laptop to Eurorack modules eg. <a href='http://www.orthogonaldevices.com/er-301' target='_blank'>ER301</a> via <a href='https://bela.io/' target='_blank'>Bela</a>, an embedded computing platform.</h2></px><p>for safety parsing <a target="_blank" href="http://opensoundcontrol.org/">OSC</a> through i2c a <a target="_blank" href="https://www.sparkfun.com/products/12009">logic level converter</a> to use with Eurorack level (5V) is needed.</p>
-<br/>
-<br/>
-
-<img src="/media/images/bela-i2c/04.jpg" style="width: 50%; align-self: center; margin-bottom: 0.5rem;"/>
-<br/>
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='a tool for communicating between laptop and i2c-supported Eurorack module (eg. ER-301 ) by using Bela.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>bela-i2c — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2021/<a href='/site/bela-i2c.html'>bela-i2c</a></h1><px><p>a tool for communicating between laptop and i2c-supported Eurorack module (eg. ER-301 ) by using Bela.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/22021.jpg' alt='i2c communication for Bela picture' width='900' style='margin-top: 0;' /></figure><px><h2>parsing msg (<a href='https://learn.sparkfun.com/tutorials/i2c/all' target='_blank'>i2c </a> protocol) from laptop to Eurorack modules eg. <a href='http://www.orthogonaldevices.com/er-301' target='_blank'>ER301</a> via <a href='https://bela.io/' target='_blank'>Bela</a>, an embedded computing platform.</h2></px><div class='markdown-body'><p>for safety parsing <a href="http://opensoundcontrol.org/">OSC</a> through i2c a <a href="https://www.sparkfun.com/products/12009">logic level converter</a> to use with Eurorack level (5V) is needed.</p>
+<p><img src="/media/images/bela-i2c/04.jpg" alt="img-1" /></p>
 <h2>Quick Start</h2>
-<px style="display: inline;">make sure you're already on Bela board (root@bela). and Bela's WIFI is setup, details <a href="https://learn.bela.io/using-bela/bela-techniques/connecting-to-wifi/">here.</a> </px>
-<code> # download this repo to Bela.
-git clone https://github.com/karnpapon/bela-i2c && cd bela-i2c
+<p>make sure you're already on Bela board (root@bela). and Bela's WIFI is setup, details <a href="https://learn.bela.io/using-bela/bela-techniques/connecting-to-wifi/">here</a>.</p>
+<pre><code># download this repo to Bela.
+git clone https://github.com/karnpapon/bela-i2c &amp;&amp; cd bela-i2c
 
 # run bela-osc
 ./build.sh
 
 # build c++ file on Bela (more handy, if you don't want to open Bela user-interface and click build button.)
-make -C ~/Bela PROJECT=render.cpp run CL="-p16"
+make -C ~/Bela PROJECT=render.cpp run CL=&quot;-p16&quot;
 
 # open another window
-cargo run </code>
-
+cargo run
+</code></pre>
 <h2>Usage</h2>
-
-<div style="margin-bottom: 2rem;">
-	<p>osc pattern</p>
-	<code>module/module_number/command/output_port value</code> 
-</div>
-
-<div style="margin-bottom: 2rem;">
-	<p>explains</p>
-	<table>
-		<tr>
-			<th>msg</th>
-			<th>description</th> 
-			<th>type</th> 
-			<th>example</th> 
-		</tr>
-		<tr>
-			<td>module</td>
-			<td>name of connecting module, currently support only <a href="http://www.orthogonaldevices.com/er-301">ER301</a></td>
-			<td> String </td>
-			<td> er301 </td>
-		</tr>
-		<tr>
-			<td>module_number</td>
-			<td>the order number of connecting module</td>
-			<td> Int </td>
-			<td>1</td>
-		</tr>
-		<tr>
-			<td>command</td>
-			<td>command to send to module available command for ER301 documentation please refer to <a href="https://docs.orthogonaldevices.com/er-301/teletype-pkg/how-to-use.html#available-units-and-commands">this</a></td>
-			<td>String</td>
-			<td>cv_slew, tr_pulse, tr</td>
-		</tr>
-		<tr>
-			<td>output_port</td>
-			<td>output port number</td>
-			<td> Int </td>
-			<td>1</td>
-		</tr>
-		<tr>
-			<td>value</td>
-			<td>value to send to</td>
-			<td> Float </td>
-			<td>1000</td>
-		</tr>
-	</table>
-</div>
-
-<p>please refer to module documentation</p>
-<px style="line-height: 1.75rem; display: inline;">
-use same configuration as <a href="https://monome.org/docs/teletype/">Teletype</a>(value = unsigned 14bits integer (16,384 = 10v))/</px>
-
+<p>osc pattern
+<code>module/module_number/command/output_port value</code></p>
+<table>
+<thead>
+<tr>
+<th>msg</th>
+<th>description</th>
+<th>type</th>
+<th>example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>module</td>
+<td>name of connecting module, currently support only   ER301</td>
+<td>String</td>
+<td>er301</td>
+</tr>
+<tr>
+<td>module_number</td>
+<td>the order number of connecting module</td>
+<td>Int</td>
+<td>1</td>
+</tr>
+<tr>
+<td>command</td>
+<td>command to send to module available command for ER301 documentation please refer to   this</td>
+<td>String</td>
+<td>cv_slew, tr_pulse, tr</td>
+</tr>
+<tr>
+<td>output_port</td>
+<td>output port number</td>
+<td>Int</td>
+<td>1</td>
+</tr>
+<tr>
+<td>value</td>
+<td>value to send to</td>
+<td>Float</td>
+<td>1000</td>
+</tr>
+</tbody>
+</table>
+<p>please refer to module documentation
+use same configuration as <a href="https://monome.org/docs/teletype/">Teletype</a> (value = unsigned 14bits integer (16,384 = 10v))</p>
 <h2>[Example] sending data via WIFI (eg. use TouchOSC (Mobile) -&gt; Bela)</h2>
-
 <div style="width: 100%; height: 0; padding-top: 56.25%; position: relative;">
 	<iframe width="100%" height="100%" style="border:none;overflow:hidden;position:absolute;top:0;" src="https://www.youtube.com/embed/BFHCymXCxAw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
-
-<p><img src="/media/images/bela-i2c/02.png"></p>
-
+<p><img src="/media/images/bela-i2c/02.png" alt="img-2" /></p>
+<ul>
 <li>setup WIFI on Bela first, details <a href="https://learn.bela.io/using-bela/bela-techniques/connecting-to-wifi/">here</a>.</li>
-<li>make sure you&#39;re in same WIFI as Bela.</li>
-<li>on Bela
-<li>get wlan IP by <codesnippet>ip a</codesnippet> on Bela board.</li>
-
-</li>
+<li>make sure you're in same WIFI as Bela.</li>
+<li>on Bela</li>
+<li>get wlan IP by <code>ip a</code> on Bela board.</li>
 <li>on TouchOSC:
-<li>set HOST to IP obtained by previous command (eg. <codesnippet>192.168.1.115</codesnippet> as shown above).</li>
-<li>set Outgoing to <codesnippet>7562</codesnippet> (default Bela&#39;s listening port).</li>
+<ul>
+<li>set HOST to IP obtained by previous command (eg. <code>192.168.1.115</code> as shown above).&lt;</li>
+<li>set Outgoing to <code>7562</code> (default Bela's listening port).</li>
+</ul>
 </li>
+</ul>
 <h2>Disclaimer</h2>
 <p>this have been successfully tested on
 Bela image: v0.3.2, (released 13 March 2018).
 OSX: 10.13.6 (High Sierra)
 MacBook Pro (Retina, 13-inch, Early 2013)</p>
-
-<br/>
-<br/>
-<p>inspired by <a href="https://llllllll.co/t/hans/36455/14">hans</a></p> </div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/bela-i2c' target='_blank'>🔎  source</a></url></ul><p class="info-year">2021</p><px><p>Rust</p><ul></ul></px><px><tag>Development</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=exp.html><fm>exp</fm><p>CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired.</p></a></div><div class="box"><a href=skiff.html><fm>skiff</fm><p>static site generator, purely written in Rust.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p class="work-actived">bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p>worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/seeq.html'><p>seeq</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>
+<p>inspired by <a href="https://llllllll.co/t/hans/36455/14">hans</a></p>
+</div></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/bela-i2c' target='_blank'>🔎  source</a></url></ul><p class="info-year">2021</p><px><p>Rust</p><ul></ul></px><px><tag>Development</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=exp.html><fm>exp</fm><p>CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired.</p></a></div><div class="box"><a href=skiff.html><fm>skiff</fm><p>static site generator, purely written in Rust.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2022</h2><a href='/site/oscd.html'><p>oscd</p></a><a href='/site/xen.html'><p>xen</p></a><a href='/site/acara.html'><p>acara</p></a></div><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p class="work-actived">bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p>worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/seeq.html'><p>seeq</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>

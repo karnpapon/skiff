@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='an implementation on De Casteljau's algorithm for live performance.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>xen — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2022/<a href='/site/xen.html'>xen</a></h1><px><p>an implementation on De Casteljau's algorithm for live performance.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/172022.jpg' alt='xen tool picture' width='900' style='margin-top: 0;' /></figure><px><h2>an implementation on <a href='https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm' target='_blank'>De Casteljau's</a> algorithm,</h2></px><div class='markdown-body'><p>an implementation on <a href="https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm"> De Casteljau's </a> algorithm, capable of sending MIDI (trigger), <a href="https://en.wikipedia.org/wiki/Open_Sound_Control">OSC</a> to target client/server  eg.<a href="https://supercollider.github.io/">SuperCollider</a> (OSC only works in repl mode), NOTE: xen is backend-agnostic, Intentionally used for live performance. thus, no built-in audio engine is implemented.</p>
+<p><img src="/media/images/xen/ss3.gif" alt="image 1" /></p>
+<div style="width: 100%; height: 0; padding-top: 56.25%; position: relative;">
+	<iframe width="100%" height="100%" style="border:none;overflow:hidden;position:absolute;top:0;" src="/media/images/xen/xen-live.mp4" title="xenlive" frameborder="0" allow="accelerometer; clipboard-write; autoplay=0; encrypted-media; gyroscope; picture-in-picture"  allowfullscreen sandbox></iframe>
+</div>
+<p>video taken by <a href="https://www.facebook.com/TentaclesN22/">Tentacle Workshop Bkk</a></p>
+<h2>Run</h2>
+<pre><code>git clone https://github.com/karnpapon/xen.git
+cd xen
+npm install
+npm run start
+
+# in order to send OSC
+# open new terminal tab.
+cd bridge  
+npm install
+node index.js
+
+</code></pre>
+<h2>Keybinding</h2>
+<ul>
+<li><strong>play/pause</strong>: <code>spacebar</code></li>
+<li><strong>add new point</strong>: <code>cmd</code> + <code>left click</code></li>
+<li><strong>add point group</strong>: <code>Shift</code> + <code>n</code> = spawn new point group.</li>
+<li><strong>remove point</strong>: <code>right click</code> at target point (make sure group is selected).</li>
+<li><strong>trigger first/last line</strong> <code>t</code>, since cubic bezier calculated by four points. by nature the distance between point is basically a straight line. thus moving point cannot avoid colliding with first line(start) and last line(end). use this option to avoid trigger first/last line.</li>
+<li><strong>switch between point group</strong>: <code>tab</code>, selected group will be highlighted in <code>BLUE</code> color <code>rgb(0,0,255)</code></li>
+<li><strong>toggle control-line</strong>: <code>c</code> = only current selected group, <code>Shift</code> + <code>C</code> = toggle all group.</li>
+<li><strong>toggle L-Point</strong>: <code>l</code> = toggle even recursived points (collision in <code>RED</code>), <code>Shift</code> + <code>L</code> = toggle all points.</li>
+<li><strong>toggle R-point</strong>: <code>r</code> = toggle odd recursive points (collision in <code>BLUE</code>),  <code>Shift</code> + <code>R</code> = toggle all points.</li>
+</ul>
+<h2>File/Folder</h2>
+<ul>
+<li><strong>/src</strong>: main xen's sourcecode.</li>
+<li><strong>/tool</strong>: for test sending msg(osc).</li>
+<li><strong>/bridge</strong>: for receiving msg(osc) from browser and forward to target server.</li>
+</ul>
+<h3>IO</h3>
+<ul>
+<li><strong>midi</strong>.</li>
+<li><strong>osc</strong>: Sends OSC message, <strong>NOTE</strong> run <code>node bridge/index.js</code> first. in order to send OSC out to host.</li>
+</ul>
+<h1>Resources</h1>
+<ul>
+<li><a href="https://pomax.github.io/bezierinfo/#decasteljau">https://pomax.github.io/bezierinfo/#decasteljau</a></li>
+<li><a href="https://www.khanacademy.org/computing/pixar/animate/parametric-curves/a/equations-from-de-casteljaus-algorithm">https://www.khanacademy.org/computing/pixar/animate/parametric-curves/a/equations-from-de-casteljaus-algorithm</a></li>
+<li><a href="https://www.youtube.com/watch?v=aVwxzDHniEw">https://www.youtube.com/watch?v=aVwxzDHniEw</a></li>
+<li><a href="https://webmidijs.org/docs/getting-started/basics/">https://webmidijs.org/docs/getting-started/basics/</a></li>
+</ul>
+</div></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/xen' target='_blank'>🔎  source</a></url><url><a href='https://xen-xen.netlify.app/' target='_blank'>🏓  playground</a></url></ul><p class="info-year">2022</p><px><p>JavaScript</p><ul></ul></px><px><tag>Development</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=oscd.html><fm>oscd</fm><p>a simple interactive OSC (Open Sound Control) debugger for terminal.</p></a></div><div class="box"><a href=acara.html><fm>acara</fm><p>an (a)scii (ca)nvas gene(ra)tor and small sketch tool.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2022</h2><a href='/site/oscd.html'><p>oscd</p></a><a href='/site/xen.html'><p class="work-actived">xen</p></a><a href='/site/acara.html'><p>acara</p></a></div><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p>bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p>worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/seeq.html'><p>seeq</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>

@@ -36,6 +36,51 @@ WORNG
   LINK
     source : https://github.com/karnpapon/worng
 
+ACARA
+  HOST : home
+  TYPE : index
+  BREF : an (a)scii (ca)nvas gene(ra)tor and small sketch tool.
+  YEAR : 2022
+  BODY
+    <h2>acara (อักขระ (àk-kà-rà), means 'character' or 'letter' in Thai), an (a)scii (ca)nvas gene(ra)tor and small sketch tool.</h2>
+  TAGS
+    Development
+  STACK
+    JavaScript
+  LINK
+    source : https://github.com/karnpapon/acara
+    playground : https://acara.netlify.app/
+
+XEN
+  HOST : home
+  TYPE : index
+  BREF : an implementation on De Casteljau's algorithm for live performance.
+  YEAR : 2022
+  BODY
+    <h2>an implementation on {https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm De Casteljau's} algorithm,</h2>
+  TAGS
+    Development
+  STACK
+    JavaScript
+  LINK
+    source : https://github.com/karnpapon/xen
+    playground : https://xen-xen.netlify.app/
+
+OSCD
+  HOST : home
+  TYPE : index
+  BREF : a simple interactive OSC (Open Sound Control) debugger for terminal.
+  YEAR : 2022
+  BODY
+    <h2>oscd, a simple interactive {https://en.wikipedia.org/wiki/Open_Sound_Control OSC} debugger for the terminal</h2>
+  TAGS
+    Development
+    Tools
+  STACK
+    Rust
+  LINK
+    source : https://github.com/karnpapon/oscd
+
 ECT-ETC-TEC
   HOST : home
   TYPE : index

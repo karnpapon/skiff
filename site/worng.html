@@ -1,19 +1,16 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>worng — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2020/<a href='/site/worng.html'>worng</a></h1><px><p>dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/61120.jpg' alt='worng lang picture' width='900' style='margin-top: 0;' /></figure><px><h2>dynamic programming language and tree-walk interpreter, written in Rust. based on Lox language from <a href='http://craftinginterpreters.com/' target='_blank'>Crafting Iterpreters book</a>  by Bob Nystrom.</h2></px><!-- <p><strong>NOTES:</strong> bytecode VM is not implemented yet.</p> -->
-<img src="/media/images/worng/01.png"/>
-
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>worng — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2020/<a href='/site/worng.html'>worng</a></h1><px><p>dynamic programming language and tree-walk interpreter written in Rust, based on Lox Language.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/61120.jpg' alt='worng lang picture' width='900' style='margin-top: 0;' /></figure><px><h2>dynamic programming language and tree-walk interpreter, written in Rust. based on Lox language from <a href='http://craftinginterpreters.com/' target='_blank'>Crafting Iterpreters book</a>  by Bob Nystrom.</h2></px><div class='markdown-body'><p><img src="/media/images/worng/01.png" alt="img-1" /></p>
 <h2>Rules</h2>
-<code>
-expression → literal
+<pre><code>expression → literal
 | unary
 | binary
 | grouping ;
 
-literal    → NUMBER | STRING | "true" | "false" | "nil" ;
-grouping   → "(" expression ")" ;
-unary      → ( "-" | "!" ) expression ;
+literal    → NUMBER | STRING | &quot;true&quot; | &quot;false&quot; | &quot;nil&quot; ;
+grouping   → &quot;(&quot; expression &quot;)&quot; ;
+unary      → ( &quot;-&quot; | &quot;!&quot; ) expression ;
 binary     → expression operator expression ;
-operator   → "==" | "!=" | "<" | "<=" | ">" | ">="
-| "+"  | "-"  | "*" | "/" ;
+operator   → &quot;==&quot; | &quot;!=&quot; | &quot;&lt;&quot; | &quot;&lt;=&quot; | &quot;&gt;&quot; | &quot;&gt;=&quot;
+| &quot;+&quot;  | &quot;-&quot;  | &quot;*&quot; | &quot;/&quot; ;
 
 
 ---------------------------------
@@ -25,12 +22,12 @@ declaration → class_declaration
  | var_declaration
  | statement ;
 
-class_declaration → "class" IDENTIFIER ( "<" IDENTIFIER )?
- "{" function* "}" ;
+class_declaration → &quot;class&quot; IDENTIFIER ( &quot;&lt;&quot; IDENTIFIER )?
+ &quot;{&quot; function* &quot;}&quot; ;
 
-function_declaration  → "fun" function ;
-function → IDENTIFIER "(" parameters? ")" block ;
-parameters → IDENTIFIER ( "," IDENTIFIER )* ;
+function_declaration  → &quot;fun&quot; function ;
+function → IDENTIFIER &quot;(&quot; parameters? &quot;)&quot; block ;
+parameters → IDENTIFIER ( &quot;,&quot; IDENTIFIER )* ;
 
 statement  → expression_statement
 | for_statement
@@ -40,39 +37,40 @@ statement  → expression_statement
 | while_statement
 | block_statement ;
 
-return_statement → "return" expression? ";" ;
+return_statement → &quot;return&quot; expression? &quot;;&quot; ;
 
-for_statement   → "for" "(" ( var_declaration | expression_statement | ";" )
-					 expression? ";"
-					 expression? ")" statement ;
+for_statement   → &quot;for&quot; &quot;(&quot; ( var_declaration | expression_statement | &quot;;&quot; )
+					 expression? &quot;;&quot;
+					 expression? &quot;)&quot; statement ;
 
 
-if_statement    → "if" "(" expression ")" statement ( "else" statement )? ;
+if_statement    → &quot;if&quot; &quot;(&quot; expression &quot;)&quot; statement ( &quot;else&quot; statement )? ;
 
 expression      → assignment ;
-print_statement → "print" expression ";" ;
-block           → "{" declaration* "}" ;
+print_statement → &quot;print&quot; expression &quot;;&quot; ;
+block           → &quot;{&quot; declaration* &quot;}&quot; ;
 
 
-assignment → ( call "." )? IDENTIFIER "=" assignment
+assignment → ( call &quot;.&quot; )? IDENTIFIER &quot;=&quot; assignment
 | logic_or ;
 
-logic_or   → logic_and ( "or" logic_and )* ;
-logic_and  → equality ( "and" equality )* ;
+logic_or   → logic_and ( &quot;or&quot; logic_and )* ;
+logic_and  → equality ( &quot;and&quot; equality )* ;
 
-equality       → comparison ( ( "!=" | "==" ) comparison )* ;
-comparison     → addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
-addition       → multiplication ( ( "-" | "+" ) multiplication )* ;
-multiplication → unary ( ( "/" | "*" ) unary )* ;
+equality       → comparison ( ( &quot;!=&quot; | &quot;==&quot; ) comparison )* ;
+comparison     → addition ( ( &quot;&gt;&quot; | &quot;&gt;=&quot; | &quot;&lt;&quot; | &quot;&lt;=&quot; ) addition )* ;
+addition       → multiplication ( ( &quot;-&quot; | &quot;+&quot; ) multiplication )* ;
+multiplication → unary ( ( &quot;/&quot; | &quot;*&quot; ) unary )* ;
 
 
-unary → ( "!" | "-" ) unary | call ;
-call → primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
+unary → ( &quot;!&quot; | &quot;-&quot; ) unary | call ;
+call → primary ( &quot;(&quot; arguments? &quot;)&quot; | &quot;.&quot; IDENTIFIER )* ;
 
-arguments → expression ( "," expression )* ;    // eg (arg1, arg2) or more args.
+arguments → expression ( &quot;,&quot; expression )* ;    // eg (arg1, arg2) or more args.
 
-primary → "true" | "false" | "nil" | "this"
-| NUMBER | STRING | IDENTIFIER | "(" expression ")"
-| "super" "." IDENTIFIER ;
+primary → &quot;true&quot; | &quot;false&quot; | &quot;nil&quot; | &quot;this&quot;
+| NUMBER | STRING | IDENTIFIER | &quot;(&quot; expression &quot;)&quot;
+| &quot;super&quot; &quot;.&quot; IDENTIFIER ;
 
-</code></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/worng' target='_blank'>🔎  source</a></url></ul><p class="info-year">2020</p><px><p>Rust</p><ul></ul></px><px><tag>Development</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=songkranizer.html><fm>songkranizer</fm><p>Songkranizer, is a Songkran festival simulator on Chrome extension.</p></a></div><div class="box"><a href=exp.html><fm>exp</fm><p>CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p>bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p class="work-actived">worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/seeq.html'><p>seeq</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>
+</code></pre>
+</div></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/worng' target='_blank'>🔎  source</a></url></ul><p class="info-year">2020</p><px><p>Rust</p><ul></ul></px><px><tag>Development</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=songkranizer.html><fm>songkranizer</fm><p>Songkranizer, is a Songkran festival simulator on Chrome extension.</p></a></div><div class="box"><a href=exp.html><fm>exp</fm><p>CLI to create an opinionated temporary folder structure, automatically get cleaned up after they're expired.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2022</h2><a href='/site/oscd.html'><p>oscd</p></a><a href='/site/xen.html'><p>xen</p></a><a href='/site/acara.html'><p>acara</p></a></div><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p>bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p class="work-actived">worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/seeq.html'><p>seeq</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>

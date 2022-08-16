@@ -1,179 +1,160 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='Custom sequencer and live-coding environment.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>seeq — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2019/<a href='/site/seeq.html'>seeq</a></h1><px><p>Custom sequencer and live-coding environment.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/42019.jpg' alt='text sequencer picture' width='900' style='margin-top: 0;' /></figure><px><h2>a custom sequencer, draw an inspiration from String’s definition.</h2></px><q>String is  traditionally a sequence of letters.</q>
-
-<px style="display: inline; line-height: 1.75rem;">
-	Seeq is yet-another-live-coding-environment-alike sequencer. It's heavily inspired by <a target="_blank" href="https://hundredrabbits.itch.io/orca">Orca</a>.
-	Initially, the idea coming from being tired of keep remembering new available functions from <a target="_blank" href="https://tidalcycles.org/">TidalCycles</a>, a language for creating complex pattern purposely for <a target="_blank" href="https://toplap.org/">live-coding</a> performance.  
-	<br/><br/>Don't get me wrong. TidalCycles is hands-down obviously a great language out there. 
-	But for non-programming person like me. I cannot utilize the true power of TidalCycles without knowing <a target="_blank" href="https://www.haskell.org/">Haskell</a> language.
-	<br/><br/>
-	Thus, for the sake of understanding programming in general. I decided to roll my own.
-	JavaScript is a language of choice since it's personally more friendly for newbie. 
-	Creating programming language is considered advanced topic. 
-	So, I decided to looking for practical way like sequencer instead. and utilize from existing "language" like <a href="https://en.wikipedia.org/wiki/Regular_expression">RegEx</a> to create a pattern (i know, i know you may immediately argue that "but RegEx is not even considered a programming language!". well, you're right but lemme call it language in this context anyway.).
-	</px>
-
-<img style="width: 60%; align-self: center;" src="/media/images/seeq/05.gif">
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='Custom sequencer and live-coding environment.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>seeq — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2019/<a href='/site/seeq.html'>seeq</a></h1><px><p>Custom sequencer and live-coding environment.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/42019.jpg' alt='text sequencer picture' width='900' style='margin-top: 0;' /></figure><px><h2>a custom sequencer, draw an inspiration from String’s definition.</h2></px><div class='markdown-body'><blockquote>
+<p>String is  traditionally a sequence of letters.</p>
+</blockquote>
+<p>Seeq is yet-another-live-coding-environment-alike sequencer. It's heavily inspired by <a href="https://hundredrabbits.itch.io/orca">Orca</a>.
+Initially, the idea coming from being tired of keep remembering new available functions from <a href="https://tidalcycles.org/">TidalCycles</a>, a language for creating complex pattern purposely for <a target="_blank" href="https://toplap.org/">live-coding</a> performance.</p>
+<p>Don't get me wrong. TidalCycles is hands-down obviously a great language out there.
+But for non-programming person like me. I cannot utilize the true power of TidalCycles without knowing <a href="https://www.haskell.org/">Haskell</a> language.</p>
+<p>Thus, for the sake of understanding programming in general. I decided to roll my own.
+JavaScript is a language of choice since it's personally more friendly for newbie.
+Creating programming language is considered advanced topic.
+So, I decided to looking for practical way like sequencer instead. and utilize from existing &quot;language&quot; like <a href="https://en.wikipedia.org/wiki/Regular_expression">RegEx</a> to create a pattern (i know, i know you may immediately argue that &quot;but RegEx is not even considered a programming language!&quot;. well, you're right but lemme call it language in this context anyway).</p>
+<p><img src="/media/images/seeq/05.gif" alt="img1" /></p>
 <div style="width: 100%; height: 0; padding-top: 56.25%; position: relative;">
 	<iframe width="100%" height="100%" style="border:none;overflow:hidden;position:absolute;top:0;" src="https://www.youtube.com/embed/DGaakhSvYOg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
-
-<br/>
-<br/>
-<h2>Diagram</h2>
-
-<img src="/media/images/seeq/diagram.svg">
-<img src="/media/images/seeq/04.gif">
-
-
-
+<p><img src="/media/images/seeq/diagram.svg" alt="img-2" />
+<img src="/media/images/seeq/04.gif" alt="img-3" /></p>
 <h2>Usage</h2>
-<px style="display: inline; line-height: 1.75rem;">to play with it, just put any words, sentences, just like searching from Google or any search engine. Seeq will manage to find the descriptions for that keywords and use it as a step sequencer (using API from WikiPedia).<br/><br/>
-	a “trigger” is simply assigned by typing any words/letters in provided  <codesnippet>find</codesnippet> input,  <strong>Regex is also supported.</strong> in <codesnippet>regex</codesnippet> input.
-</px>
-<p>in order to move selection, the console has to be toggled off ( <codesnippet>cmd</codesnippet> + <codesnippet>i</codesnippet>).</p>
-<h3 style="margin: 1rem 0;">movement</h3>
+<p>to play with it, just put any words, sentences, just like searching from Google or any search engine. Seeq will manage to find the descriptions for that keywords and use it as a step sequencer (using API from WikiPedia).
+a “trigger” is simply assigned by typing any words/letters in provided  <code>find</code> input,  <strong>Regex is also supported.</strong> in <code>regex</code> input.
+in order to move selection, the console has to be toggled off ( <code>cmd</code> + <code>i</code>).</p>
+<h3>movement</h3>
 <table>
 <thead>
 <tr>
-<th>Description</th>
 <th>Operation</th>
+<th>keybinding</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>start / stop</td>
-<td><codesnippet>spacebar</codesnippet></td>
+<td>spacebar</td>
 </tr>
 <tr>
 <td>move</td>
-<td><codesnippet>arrow</codesnippet></td>
+<td>arrow</td>
 </tr>
 <tr>
 <td>leap</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>arrow</codesnippet></td>
+<td><code>cmd</code> + <code>arrow</code></td>
 </tr>
 </tbody>
 </table>
-<h3 style="margin: 1rem 0;">selection ( cursor )</h3>
+<h3>selection ( cursor )</h3>
 <table>
 <thead>
 <tr>
-<th>Description</th>
 <th>Operation</th>
+<th>keybinding</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>range</td>
-<td><codesnippet>shift</codesnippet> + <codesnippet>arrow</codesnippet></td>
+<td>shift   +   arrow</td>
 </tr>
 <tr>
 <td>large range</td>
-<td><codesnippet>shift</codesnippet> + <codesnippet>arrow</codesnippet> + <codesnippet>cmd</codesnippet></td>
+<td>shift   +   arrow   +   cmd</td>
 </tr>
 <tr>
 <td>add</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>n</codesnippet></td>
+<td>cmd   +   n</td>
 </tr>
 <tr>
 <td>delete</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>backspace</codesnippet></td>
+<td>cmd   +   backspace</td>
 </tr>
 <tr>
 <td>rename</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>e</codesnippet></td>
+<td>cmd   +   e</td>
 </tr>
 <tr>
 <td>show current name</td>
-<td><codesnippet>option</codesnippet> + <codesnippet>e</codesnippet></td>
+<td>option   +   e</td>
 </tr>
 <tr>
 <td>switch between</td>
-<td><codesnippet>option</codesnippet> + <codesnippet>tab</codesnippet></td>
+<td>option   +   tab</td>
 </tr>
 <tr>
 <td>get step within</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>return (enter)</codesnippet></td>
+<td>cmd   +   return (enter)</td>
 </tr>
 <tr>
 <td>focused</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>f</codesnippet></td>
+<td>cmd   +   f</td>
 </tr>
 </tbody>
 </table>
-<h3 style="margin: 1rem 0;">step ( within selection )</h3>
+<h3>step ( within selection )</h3>
 <table>
 <thead>
 <tr>
-<th>Description</th>
 <th>Operation</th>
+<th>keybinding</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>add step</td>
-<td><codesnippet>shift</codesnippet> + <codesnippet>+</codesnippet></td>
+<td>shift   +   +</td>
 </tr>
 </tbody>
 </table>
-<h3 style="margin: 1rem 0;">console -&gt; input</h3>
+<h3>console -&gt; input</h3>
 <table>
 <thead>
 <tr>
-<th>Description</th>
 <th>Operation</th>
+<th>keybinding</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>toggle insert</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>i</codesnippet></td>
+<td>cmd   +   i</td>
 </tr>
 <tr>
 <td>eval input</td>
-<td><codesnippet>enter</codesnippet></td>
+<td>enter</td>
 </tr>
 </tbody>
 </table>
-<h3 style="margin: 1rem 0;">console -&gt; status</h3>
+<h3>console -&gt; status</h3>
 <table>
 <thead>
 <tr>
-<th>Description</th>
 <th>Operation</th>
+<th>keybinding</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>BPM up</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>&gt;</codesnippet></td>
+<td>cmd   +   &gt;</td>
 </tr>
 <tr>
 <td>BPM down</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>&lt;</codesnippet></td>
+<td>cmd   +   &lt;</td>
 </tr>
 </tbody>
 </table>
-<h3 style="margin: 1rem 0;">config</h3>
+<h3>config</h3>
 <table>
 <thead>
 <tr>
-<th>Description</th>
 <th>Operation</th>
+<th>keybinding</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>set MIDI</td>
-<td><codesnippet>cmd</codesnippet> + <codesnippet>m</codesnippet></td>
+<td>cmd   +   m</td>
 </tr>
 </tbody>
 </table>
-
-<br/>
-<h2>Caveats</h2> 
-<div>currently, MIDI devices / OSC addrs / UDP port are not configurable.</div>
-
-<br/>
-<br/>
-<br/></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/seeq' target='_blank'>🔎  source</a></url><url><a href='https://kind-leavitt-379a63.netlify.app/' target='_blank'>🏓  playground</a></url></ul><p class="info-year">2019</p><px><p>JavaScript</p><ul><li>Electron</li></ul></px><px><tag>Development</tag><tag>Design</tag><tag>Music</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=again-again.html><fm>again-again</fm><p>re-interpretation of Cadson Demak song's "again-again".</p></a></div><div class="box"><a href=ect-etc-tec.html><fm>ect-etc-tec</fm><p>SJT algorithm for letters as a musical pattern.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p>bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p>worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/seeq.html'><p class="work-actived">seeq</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>
+</div></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/seeq' target='_blank'>🔎  source</a></url><url><a href='https://kind-leavitt-379a63.netlify.app/' target='_blank'>🏓  playground</a></url></ul><p class="info-year">2019</p><px><p>JavaScript</p><ul></ul></px><px><tag>Development</tag><tag>Design</tag><tag>Music</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=again-again.html><fm>again-again</fm><p>re-interpretation of Cadson Demak song's "again-again".</p></a></div><div class="box"><a href=ect-etc-tec.html><fm>ect-etc-tec</fm><p>SJT algorithm for letters as a musical pattern.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2022</h2><a href='/site/oscd.html'><p>oscd</p></a><a href='/site/xen.html'><p>xen</p></a><a href='/site/acara.html'><p>acara</p></a></div><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p>bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p>worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/seeq.html'><p class="work-actived">seeq</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>
