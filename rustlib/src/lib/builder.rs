@@ -305,7 +305,7 @@ fn build_section_details(
     for _stack in term.stack.iter() {
       file.write_fmt(format_args!("<p>{}</p>", _stack.parent))?;
       file.write_all(b"<ul>")?;
-      if _stack.children.is_empty() {
+      if !_stack.children.is_empty() {
         for stack_child in _stack.children.iter() {
           file.write_fmt(format_args!("<li>{}</li>", stack_child))?;
         }

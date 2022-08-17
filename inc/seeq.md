@@ -9,7 +9,7 @@ But for non-programming person like me. I cannot utilize the true power of Tidal
 Thus, for the sake of understanding programming in general. I decided to roll my own.
 JavaScript is a language of choice since it's personally more friendly for newbie. 
 Creating programming language is considered advanced topic. 
-So, I decided to looking for practical way like sequencer instead. and utilize from existing "language" like [RegEx](https://en.wikipedia.org/wiki/Regular_expression) to create a pattern (i know, i know you may immediately argue that "but RegEx is not even considered a programming language!". well, you're right but lemme call it language in this context anyway).
+So, I decided to looking for practical way like sequencer instead. and utilize from existing "language" like [RegEx](https://en.wikipedia.org/wiki/Regular_expression) to create a pattern (I know, I know you may immediately argue that "but RegEx is not even considered a programming language!". well, you're right but lemme call it language in this context anyway).
 
 ![img1](/media/images/seeq/05.gif)
 

@@ -28,17 +28,17 @@ iframe { margin: 0;}
 ul{ display: flex; flex-direction: column;}
 main pre { overflow: auto; background: var(--secondary-color); padding: 10px; font-size: 80%; margin-bottom: 30px;white-space: pre-wrap;}
 input:checked ~ .works-list {display: flex; flex: 1; flex-direction: row; padding: var(--main-padding); } 
-.home_menu ul{ margin: 0px 0px 0px 20px; list-style: none; line-height: 1.5em; }
-.home_menu ul li{ font-size: 16px; position: relative; }
-.home_menu ul li:before {  position: absolute; left: -15px; top: 0px; content: ''; display: block; border-left: 1px solid #ddd; height: 1em; border-bottom: 1px solid #ddd; width: 10px;}
-.home_menu ul li:after { position: absolute; left: -15px; bottom: -7px; content: ''; display: block; border-left: 1px solid #ddd; height: 100%; }
-.home_menu ul li.has-child:after{display: none;}
-.home_menu ul li:last-child:after { display: none }
-.home_menu ul li.root { margin: 0px 0px 0px -20px;}
-.home_menu ul li.root:before, ul li.root:after {  display: none;}
+.home_menu ul, px ul{ margin: 0px 0px 0px 20px; list-style: none; line-height: 1.5em; }
+.home_menu ul li, px ul li{ font-size: 16px; position: relative; }
+.home_menu ul li:before, px ul li:before {  position: absolute; left: -15px; top: 0px; content: ''; display: block; border-left: 1px solid #ddd; height: 1em; border-bottom: 1px solid #ddd; width: 10px;}
+.home_menu ul li:after, px ul li:after { position: absolute; left: -15px; bottom: -7px; content: ''; display: block; border-left: 1px solid #ddd; height: 100%; }
+.home_menu ul li.has-child:after, px ul li.has-child:after{display: none;}
+.home_menu ul li:last-child:after, px ul li:last-child:after { display: none }
+.home_menu ul li.root, px ul li.root { margin: 0px 0px 0px -20px;}
+.home_menu ul li.root:before, ul li.root:after, px ul li.root:before {  display: none;}
 ul { list-style-position: inside; }
 table { width:100%; }
-table, th, td { border: 1px solid black; border-collapse: collapse; }
+table, th, td { border-collapse: collapse; }
 th, td { padding: 8px; text-align: left; }
 small {color: rgb(179, 179, 179);}
 pre code {
@@ -897,6 +897,8 @@ color-scheme: light;
   padding: 6px 13px;
   border: 1px solid var(--color-border-default);
 }
+
+/* .markdown-body > table > tbody > tr > * { width: 100%;} */
 
 .markdown-body table tr {
   background-color: var(--color-canvas-default);

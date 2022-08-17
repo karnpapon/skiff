@@ -93,7 +93,7 @@ pub fn findlist(glo: &Glossary, name: &str) -> Option<Rc<RefCell<List>>> {
       return Some(glo.lists[i as usize].clone());
     }
   }
-  return None;
+  None
 }
 
 pub fn parse(path: String, glossary: &mut Glossary) -> Result<(), SkiffError> {
