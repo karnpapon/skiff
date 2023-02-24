@@ -348,3 +348,18 @@ TSIANGT
     <h2>tsiangt ( \sǐaŋ\ ) means "sound" in Thai language, is an terminal music player written in Rust. seamlessly jump between your terminal workflow.</h2>
   LINK
     source : https://github.com/karnpapon/tsiangt
+
+PDQBP
+  HOST : home
+  TYPE : index
+  BREF : an experimental generative system.
+  YEAR : 2023
+  TAGS
+    Development
+  STACK
+    JavaScript
+    Github Action
+  BODY 
+    <h2>pdqbp(probabilistic-determinism's-quirk-based procedures), a fully automated feedback-based github-embed gallery</h2>
+  LINK
+    source : https://github.com/karnpapon/pdqbp
