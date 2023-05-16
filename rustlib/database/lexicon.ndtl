@@ -136,23 +136,42 @@ THE-BLACKCODES
     www : https://theblackcodesweb.vercel.app/
     listen : https://theblackcodes.bandcamp.com/releases
 
-SEEQ
+; SEEQ
+;   HOST : home
+;   TYPE : index
+;   BREF : Custom sequencer and live-coding environment.
+;   YEAR : 2019
+;   TAGS
+;     Development
+;     Design
+;     Music
+;   STACK
+;     JavaScript
+;       Electron
+;   BODY
+;     <h2>a custom sequencer, draw an inspiration from String’s definition.</h2>
+;   LINK
+;     source : https://github.com/karnpapon/seeq
+;     playground : https://kind-leavitt-379a63.netlify.app
+
+
+ANU
   HOST : home
   TYPE : index
-  BREF : Custom sequencer and live-coding environment.
-  YEAR : 2019
+  BREF : custom sequencer and live-coding environment.
+  YEAR : 2023
   TAGS
     Development
     Design
     Music
   STACK
     JavaScript
-      Electron
+    Rust
+      Tauri
   BODY
-    <h2>a custom sequencer, draw an inspiration from String’s definition.</h2>
+    <h2>a tiny backend-agnostic step-sequencer/live-coding environment that harnesses the power of matching patterns (RegEx)</h2>
   LINK
-    source : https://github.com/karnpapon/seeq
-    playground : https://kind-leavitt-379a63.netlify.app/
+    source : https://github.com/karnpapon/anu
 
 
 SONGKRANIZER

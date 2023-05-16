@@ -23,7 +23,7 @@ p,li { margin: 0.25rem 0;}
 p { line-height:  1.75rem;}
 inc { display: inline; line-height: 1.75rem; margin: 20px 0}
 q { font-size: 2rem; font-weight: bolder; font-style: italic; width: 100%; text-align: center; padding: 2rem 0;}
-img { width: 100%; margin: 2rem 0;}
+img { width: 100%; margin: 0rem 0;}
 iframe { margin: 0;}
 ul{ display: flex; flex-direction: column;}
 main pre { overflow: auto; background: var(--secondary-color); padding: 10px; font-size: 80%; margin-bottom: 30px;white-space: pre-wrap;}
