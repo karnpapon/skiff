@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='simple note taking tool, focus on writing.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>jot — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2023/<a href='/site/jot.html'>jot</a></h1><px><p>simple note taking tool, focus on writing.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/250523.jpg' alt='jot picture' width='900' style='margin-top: 0;' /></figure><px><h2>a simple writing tool focus on writing, no fancy viewer, no image-embed, no mind-map, no graph, etc. it's literally what-you-type-is-what-you-get text editor.</h2></px><div class='markdown-body'><p>inspired by the a simplicity of <a href="https://support.apple.com/en-ae/guide/textedit/welcome/mac">TextEditor</a>, and an intuitive distractionless of <a href="https://github.com/hundredrabbits/Left">Left</a>. Powered by <a href="https://tauri.app">Tauri</a>, a framework for building tiny, blazingly fast binaries for all major desktop platforms.</p>
+<video alt="jot-demo" width="100%" autoplay loop controls>
+  <source src="/media/images/jot/jot-demo.mp4" type="video/mp4">
+</video>
+<h1>features</h1>
+<ul>
+<li>lightweight (~3mb)</li>
+<li>writing-focus only</li>
+<li>quick inserts</li>
+<li>quick word referencing</li>
+<li>support extensions <code>.txt</code>, <code>.md</code>, <code>.doc</code>, <code>.docx</code>, <code>.rft</code>, <code>.rtf</code></li>
+</ul>
+<h1>download</h1>
+<p><a href="https://github.com/karnpapon/jot/releases"> download </a> lastest installer at release page, support major platforms(Win/OSX/Linux)</p>
+<h1>usages</h1>
+<details><summary>marker will be created by <code>#</code>, <code>##</code> or <code>###</code>. eg. <code>`# header marker`</code>, or <code>## sub-header marker</code> or <code>### marker</code> for quickly navigate between header.</summary><img alt="00" src="/media/images/jot/jot-header-tut.gif"></details>
+<details><summary>for word referencing(eg. <code>word¹</code>), use <code>^</code> follow by any number eg. <code>word^1</code> and type <code>Cmd+Shift+6</code> (make sure the cursor is within the target word) will be converted to <code>word¹</code> and append reference to the end of the file.</summary><img alt="00" src="/media/images/jot/jot-ref-tut.gif"></details>
+<h1>build</h1>
+<ul>
+<li><code>pnpm i</code>, install deps first</li>
+<li><code>pnpm run build</code>, built file will be located at <code>src-tauri/target/release/bundle/&lt;depends-on-your-os&gt;</code></li>
+</ul>
+<h1>development</h1>
+<ul>
+<li><code>pnpm run dev</code></li>
+</ul>
+<h2>shortcuts</h2>
+<ul>
+<li><code>Cmd+o</code> : open file</li>
+<li><code>Cmd+n</code> : new file</li>
+<li><code>Cmd+s</code> : save file</li>
+<li><code>Cmd+Shift+s</code> : save as file</li>
+<li><code>Cmd+f</code> : find text</li>
+<li><code>Cmd+'</code> : toggle navigator</li>
+<li><code>Cmd+b</code> : open url</li>
+<li><code>Cmd+[</code> : move to previous marker</li>
+<li><code>Cmd+]</code> : move to next marker</li>
+<li><code>Cmd+Shift+6</code> : convert to footnote superscript</li>
+<li><code>Cmd+Shift+;</code> : switch between dark/light theme</li>
+</ul>
+<h2>inserts</h2>
+<ul>
+<li><code>Cmd+d</code> : Date</li>
+<li><code>Cmd+t</code> : Time</li>
+<li><code>Cmd+p</code> : Path</li>
+<li><code>Cmd+h</code> : Header¹</li>
+<li><code>Cmd+H</code> : Sub-Header¹</li>
+<li><code>Cmd+/</code> : Comment</li>
+</ul>
+<p>¹will create marker at navigator</p>
+<h2>QA</h2>
+<details><summary>is this WYSIWYG editor?</summary>it intentionally designed to focus on distractionless writing, thus <code>textarea</code> is being used. in this sense, <code>jot</code> is NOT a WYSIWYG editor.</details>
+</div></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/jot' target='_blank'>🔎  source</a></url></ul><p class="info-year">2023</p><px><p>JavaScript</p><ul></ul><p>Rust</p><ul><li>Tauri</li></ul></px><px><tag>Development</tag><tag>Tools</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=pdqbp.html><fm>pdqbp</fm><p>an experimental generative system.</p></a></div><div class="box"><a href=anu.html><fm>anu</fm><p>custom sequencer and live-coding environment.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2023</h2><a href='/site/pdqbp.html'><p>pdqbp</p></a><a href='/site/jot.html'><p class="work-actived">jot</p></a><a href='/site/anu.html'><p>anu</p></a></div><div class="works"><h2>2022</h2><a href='/site/oscd.html'><p>oscd</p></a><a href='/site/xen.html'><p>xen</p></a><a href='/site/acara.html'><p>acara</p></a></div><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p>bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p>worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was statically generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>
