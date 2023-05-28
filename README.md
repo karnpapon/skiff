@@ -7,10 +7,9 @@ by taking out JavaScript and only using html/css and plaintext with custom datab
 
 ## usage
 
-the ideas is super simple, the database tables are in the human-readable plaintext (see: `./rustlib/databases` ) The lexicon body uses a simple markup language for more detailed explaination see [here](https://asdfsdfds.com/site/skiff.html).
+the ideas is super simple, the database tables are in the human-readable plaintext (see: `./database` ) The lexicon body uses a simple markup language for more detailed explaination see [here](https://asdfsdfds.com/site/skiff.html).
 
 ## build
 
-- go to folder by `cd rustlib`.
 - build by `cargo run`.
 - skiff will generate static HTML file (eg. `/site/dynamic-static-page.html`) depends on data in `/database`

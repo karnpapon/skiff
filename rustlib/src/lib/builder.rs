@@ -24,7 +24,7 @@ pub fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
     if &lex_term.r#type == "category" {
       continue;
     }
-    let mut filepath: String = format!("{}/{}.{}", "../site/", lex_term.filename, "html");
+    let mut filepath: String = format!("{}/{}.{}", "./site", lex_term.filename, "html");
     if &lex_term.name == "home" {
       filepath = format!("{}/{}.{}", "../", "index", "html");
     }
@@ -547,7 +547,7 @@ fn build_body_part(file: &mut LineWriter<File>, lex: &Lexicon, term: &Term) {
 }
 
 fn build_include(file: &mut LineWriter<File>, term: &Term) -> Result<(), Box<dyn Error>> {
-  let filepath: String = format!("{}/{}.{}", "../inc", term.filename, "md");
+  let filepath: String = format!("{}/{}.{}", "./inc", term.filename, "md");
   let path = Path::new(&filepath);
   let buff = match fs::read_to_string(path) {
     Ok(c) => { 
