@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta property="og:title" content='Karnpapon Boonput'/><meta property="og:type" content='garden'/><meta property="og:description" content='a small stack-based language for creating procedural binary graphic.'/><meta property="og:url" content='https://asdfsdfds.com' /><meta property="og:image" content='https://asdfsdfds.com/media/icon/web-logo.jpg' /><link rel='stylesheet' type='text/css' href='../styles/main.css'><link rel='shortcut icon' type='image/png' href='../media/services/icon.png'><title>flure — karnpapon</title></head><body><main class="container-ctrl scroll-wrapper"><section class="s0"><div><h1><a class="link-default" href="/index.html">~</a>/2023/<a href='/site/flure.html'>flure</a></h1><px><p>a small stack-based language for creating procedural binary graphic.</p></px></div></section><section class="s1"><div><div><figure><img src='../media/images/260623.jpg' alt='flure picture' width='900' style='margin-top: 0;' /></figure><px><h2>a small stack-based language for creating procedural binary graphic (1-bit). run in FORTH-like interpreter, written in lua, hence the name flure (FORTH-like lua).</h2></px><div class='markdown-body'><p>basically, <code>flure</code> (build-image mode) run in 128px * 128px, correspond to <code>x</code>,<code>y</code> coordinates.
+which means it can compute a 1-bit image from simple code like <code>x y ^ 5 % !</code>.</p>
+<video alt="flure-demo" width="100%" autoplay loop controls>
+  <source src="/media/images/flure/flure-demo.mp4" type="video/mp4">
+</video>
+<h2>prerequisites</h2>
+<ul>
+<li>install lua packages by <code>sh ./requirements_install.sh</code>, makesure <a href="https://luarocks.org/"><code>luarocks</code></a> is already installed.</li>
+</ul>
+<h2>run</h2>
+<ul>
+<li><code>lua main.lua</code> for REPL mode.</li>
+<li><code>lua main.lua --build &lt;OPTIONAL_FILE_NAME&gt;</code>, to output 1-bit graphic image.</li>
+</ul>
+<h2>example codes</h2>
+<ul>
+<li><code>x y ^ 5 % !</code> will compute an image as <a href="https://oceancolor.gsfc.nasa.gov/staff/norman/seawifs_image_cookbook/faux_shuttle/pbm.html"><code>.pbm</code></a> file. the procedurals are
+<ul>
+<li>start from <code>x</code> xor <code>y</code></li>
+<li>then modulo by <code>5</code></li>
+<li>and convert to <code>1</code> or <code>0</code> by <code>!</code></li>
+<li>the process will be computed in matrix's manner(current size is <code>128px</code>*<code>128px</code>, these number can be substituted by <code>w</code>, <code>h</code>).</li>
+<li>you can try copy <code>x y ^ 5 % !</code> to <a href="https://flure-lang.netlify.app">the playground</a> to see the result.</li>
+</ul>
+</li>
+</ul>
+<h2>usages</h2>
+<ul>
+<li><code>flure</code> use reverse polish notation (<a href="https://mathworld.wolfram.com/ReversePolishNotation.html">RPN</a>) eg <code>10 10 +</code> = <code>20</code></li>
+<li><code>x</code> and <code>y</code> correspond to x,y coordinates</li>
+<li><code>w</code> and <code>h</code> = <code>128</code>(px), <code>128</code>(px), eg. <code>x w 2 / - w 4 / * y w 2 / - % !</code> <a href="https://flure-lang.netlify.app/">try on flure's playground</a></li>
+<li>[operators] arithmatics = <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>abs</code>(make absolute number)</li>
+<li>[operators] bitwise = <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code></li>
+<li>[operators] stack = <code>pop</code>, <code>push</code>, <code>show</code></li>
+<li>[operators] core = (<code>-1</code> = <code>true</code>, <code>0</code> = <code>false</code>) <a href="./docs/example.md">see example</a>
+<ul>
+<li><code>= (equal)</code></li>
+<li><code>&lt;&gt; (not_equal)</code></li>
+<li><code>and</code></li>
+<li><code>or</code></li>
+<li><code>&gt; (greater_than)</code></li>
+<li><code>&lt; (less_than)</code></li>
+<li><code>dup (duplicate)</code></li>
+<li><code>swap</code></li>
+<li><code>2dup (double duplicates)</code></li>
+<li><code>rot (rotate)</code></li>
+</ul>
+</li>
+<li>function declaration (or <code>word</code> in <code>FORTH</code>'s term) <code>: &lt;function_name&gt; &lt;...args&gt; ;</code> eg. <code>: loop 1 - dup 0 = if else loop then ;</code></li>
+<li>compile mode = <code>:</code>, delimited compile mode = <code>;</code></li>
+<li>basic control flow <code>&lt;condition&gt; if &lt;if_case&gt; else &lt;else_case&gt; then ;</code></li>
+<li>comments = <code>( &lt;...any_comments_here&gt; )</code></li>
+<li><code>immediate</code>ly call a function = eg. <code>: bob 20 20 + ; immediate</code>, will return <code>40</code> without calling <code>bob</code> function.</li>
+<li>to exit = <code>bye</code></li>
+</ul>
+<h2>resources</h2>
+<ul>
+<li><a href="https://beza1e1.tuxen.de/articles/forth.html">https://beza1e1.tuxen.de/articles/forth.html</a></li>
+<li><a href="https://www.youtube.com/watch?v=gPk-e9vGSWU&amp;list=PLGY0au-SczlkeccjBFsLIE_BKp_sRfEdb&amp;ab_channel=CodeandCrux">https://www.youtube.com/watch?v=gPk-e9vGSWU&amp;list=PLGY0au-SczlkeccjBFsLIE_BKp_sRfEdb&amp;ab_channel=CodeandCrux</a></li>
+<li><a href="https://github.com/nornagon/jonesforth/blob/master/jonesforth.S">https://github.com/nornagon/jonesforth/blob/master/jonesforth.S</a></li>
+</ul>
+</div></div><div><div class="position-sticky"><ul style='margin: 0;'><url><a href='https://github.com/karnpapon/flure' target='_blank'>🔎  source</a></url><url><a href='https://flure-lang.netlify.app' target='_blank'>🏓  playground</a></url></ul><p class="info-year">2023</p><px><p>Lua</p><ul></ul></px><px><tag>Development</tag><tag>Programming Language</tag></px><a id='go-home' href='/index.html'> ~ </a></div></div></div><div class="scroll-spacing"></div><div class="s2"><lc><fb class="pad2">Projects</fb></lc><rc class="flex-col"><div class="box"><a href=pdqbp.html><fm>pdqbp</fm><p>an experimental generative system.</p></a></div><div class="box"><a href=jot.html><fm>jot</fm><p>simple note taking tool, focus on writing.</p></a></div></rc></div></section></main><footer><div class="footer"><div><div class='footer-mobile-index'><a href='/index.html'>~</a></div><lc><div><input type="checkbox"/><label>INDEX</label><div class="works-list"><div class="works"><h2>2023</h2><a href='/site/pdqbp.html'><p>pdqbp</p></a><a href='/site/flure.html'><p class="work-actived">flure</p></a><a href='/site/jot.html'><p>jot</p></a><a href='/site/anu.html'><p>anu</p></a></div><div class="works"><h2>2022</h2><a href='/site/oscd.html'><p>oscd</p></a><a href='/site/xen.html'><p>xen</p></a><a href='/site/acara.html'><p>acara</p></a></div><div class="works"><h2>2021</h2><a href='/site/exp.html'><p>exp</p></a><a href='/site/bela-i2c.html'><p>bela-i2c</p></a><a href='/site/skiff.html'><p>skiff</p></a></div><div class="works"><h2>2020</h2><a href='/site/patithin.html'><p>patithin</p></a><a href='/site/songkranizer.html'><p>songkranizer</p></a><a href='/site/worng.html'><p>worng</p></a></div><div class="works"><h2>2019</h2><a href='/site/tsiangt.html'><p>tsiangt</p></a><a href='/site/again-again.html'><p>again-again</p></a><a href='/site/ect-etc-tec.html'><p>ect-etc-tec</p></a></div><div class="works"><h2>2018</h2><a href='/site/livecodefest.html'><p>livecodefest</p></a><a href='/site/i-saw-russolo.html'><p>i-saw-russolo</p></a><a href='/site/as-far-as-i-can-tell.html'><p>as-far-as-i-can-tell</p></a><a href='/site/bkkdw.html'><p>bkkdw</p></a><a href='/site/the-blackcodes.html'><p>the-blackcodes</p></a><a href='/site/the-blackcodes-artworks.html'><p>the-blackcodes-artworks</p></a></div><div class="works"><h2>2017</h2><a href='/site/illustrations.html'><p>illustrations</p></a></div><div class="works"><h2>-</h2><a href='/site/about.html'><p>about</p></a></div></div></div></lc><rc><p>this website was statically generated by <a href='/site/skiff.html'> skiff</a><div class='footer-extlink'><div class='footer-cc'>BY-NC-SA 4.0</div><a target='_blank' href='https://creativecommons.org/licenses/by-nc-sa/4.0'><img src='../media/icon/cc.svg'/></a><a target='_blank' href='https://github.com/karnpapon'><img src='../media/icon/github.png' alt='github'/></a></div></rc></div></div></footer></body></html>

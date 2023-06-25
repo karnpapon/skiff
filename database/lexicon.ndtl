@@ -192,6 +192,23 @@ JOT
     source : https://github.com/karnpapon/jot
 
 
+FLURE
+  HOST : home
+  TYPE : index
+  BREF : a small stack-based language for creating procedural binary graphic.
+  YEAR : 2023
+  TAGS
+    Development
+    Programming Language
+  STACK
+    Lua
+  BODY
+    <h2>a small stack-based language for creating procedural binary graphic (1-bit). run in FORTH-like interpreter, written in lua, hence the name flure (FORTH-like lua).</h2>
+  LINK
+    source : https://github.com/karnpapon/flure
+    playground : https://flure-lang.netlify.app
+
+
 SONGKRANIZER
   HOST : home
   TYPE : index

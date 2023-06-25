@@ -26,7 +26,7 @@ pub fn build(lex: &Lexicon, jou: &Journal) -> Result<(), SkiffError> {
     }
     let mut filepath: String = format!("{}/{}.{}", "./site", lex_term.filename, "html");
     if &lex_term.name == "home" {
-      filepath = format!("{}/{}.{}", "../", "index", "html");
+      filepath = format!("{}/{}.{}", ".", "index", "html");
     }
 
     let path = Path::new(&filepath);

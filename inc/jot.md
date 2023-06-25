@@ -12,18 +12,11 @@ inspired by the a simplicity of [TextEditor](https://support.apple.com/en-ae/gui
 - support extensions `.txt`, `.md`, `.doc`, `.docx`, `.rft`, `.rtf`
 
 # download
-[ download ](https://github.com/karnpapon/jot/releases) lastest installer at release page, support major platforms(Win/OSX/Linux)
+[ download ](https://github.com/karnpapon/jot/releases) latest installer at release page, support major platforms(Win/OSX/Linux)
 
 # usages
 <details><summary>marker will be created by <code>#</code>, <code>##</code> or <code>###</code>. eg. <code>`# header marker`</code>, or <code>## sub-header marker</code> or <code>### marker</code> for quickly navigate between header.</summary><img alt="00" src="/media/images/jot/jot-header-tut.gif"></details>
 <details><summary>for word referencing(eg. <code>word¹</code>), use <code>^</code> follow by any number eg. <code>word^1</code> and type <code>Cmd+Shift+6</code> (make sure the cursor is within the target word) will be converted to <code>word¹</code> and append reference to the end of the file.</summary><img alt="00" src="/media/images/jot/jot-ref-tut.gif"></details>
-
-# build
-- `pnpm i`, install deps first
-- `pnpm run build`, built file will be located at `src-tauri/target/release/bundle/<depends-on-your-os>`
-
-# development
-- `pnpm run dev`
 
 ## shortcuts
 - `Cmd+o` : open file

@@ -41,17 +41,8 @@ written in plain JavaScript with dependencies as less as possible in minds. powe
 - mono step (when finish running current marker it'll automatically run the next marker, and so on, basically the marker will run one-by-one)
 - [!experimental] [ratcheting](https://learningmodular.com/glossary/ratcheting/)
 
-## building the native app
-
-- [Install Rust/Cargo](https://www.rust-lang.org/learn/get-started)
-- [Install Node/NPM](https://nodejs.org/)
-- Run `yarn build`, built file will be located at `src-tauri/target/release/bundle/<depends-on-your-os>`
-
-## developing
-- `yarn dev`, for development
-
-## caveats
-- cannot be built on `aarch64` and `arm`, since it's blocked by `linuxdeploy`. [#4174](https://github.com/tauri-apps/tauri/issues/4174#issuecomment-1134954542) [#175](https://github.com/linuxdeploy/linuxdeploy/issues/175)
+# download
+[ download ](https://github.com/karnpapon/anu/releases) latest installer at release page, support major platforms(Win/OSX/Linux)
 
 ## inspirations
 draw an inspirations from Xenakis's work [Achorripsis](https://muse.jhu.edu/article/7871/summary)(1956) and Esoteric Environment like [Orca](https://hundredrabbits.itch.io/orca) also others obsoleted music software.
