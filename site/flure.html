@@ -3,6 +3,10 @@ which means it can compute a 1-bit image from simple code like <code>x y ^ 5 % !
 <video alt="flure-demo" width="100%" autoplay loop controls>
   <source src="/media/images/flure/flure-demo.mp4" type="video/mp4">
 </video>
+<video alt="flure-demo" width="100%" autoplay loop controls>
+  <source src="/media/images/flure/flure-byob.mp4" type="video/mp4">
+</video>
+presented in <a href="https://byobbkk.mov" target="_blank">BYOB Bangkok 2023</a> @ <a href="https://bangkokcitycity.com" target="_blank">Bangkok City City Gallery</a>
 <h2>prerequisites</h2>
 <ul>
 <li>install lua packages by <code>sh ./requirements_install.sh</code>, makesure <a href="https://luarocks.org/"><code>luarocks</code></a> is already installed.</li>
@@ -20,15 +24,15 @@ which means it can compute a 1-bit image from simple code like <code>x y ^ 5 % !
 <li>then modulo by <code>5</code></li>
 <li>and convert to <code>1</code> or <code>0</code> by <code>!</code></li>
 <li>the process will be computed in matrix's manner(current size is <code>128px</code>*<code>128px</code>, these number can be substituted by <code>w</code>, <code>h</code>).</li>
-<li>you can try copy <code>x y ^ 5 % !</code> to <a href="https://flure-lang.netlify.app">the playground</a> to see the result.</li>
+<li>you can try copy <code>x y ^ 5 % !</code> to <a href="https://flure-lang.netlify.app" target="_blank">the playground</a> to see the result.</li>
 </ul>
 </li>
 </ul>
 <h2>usages</h2>
 <ul>
-<li><code>flure</code> use reverse polish notation (<a href="https://mathworld.wolfram.com/ReversePolishNotation.html">RPN</a>) eg <code>10 10 +</code> = <code>20</code></li>
+<li><code>flure</code> use reverse polish notation (<a href="https://mathworld.wolfram.com/ReversePolishNotation.html" target="_blank">RPN</a>) eg <code>10 10 +</code> = <code>20</code></li>
 <li><code>x</code> and <code>y</code> correspond to x,y coordinates</li>
-<li><code>w</code> and <code>h</code> = <code>128</code>(px), <code>128</code>(px), eg. <code>x w 2 / - w 4 / * y w 2 / - % !</code> <a href="https://flure-lang.netlify.app/">try on flure's playground</a></li>
+<li><code>w</code> and <code>h</code> = <code>128</code>(px), <code>128</code>(px), eg. <code>x w 2 / - w 4 / * y w 2 / - % !</code> <a href="https://flure-lang.netlify.app" target="_blank">try on flure playground</a></li>
 <li>[operators] arithmatics = <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>abs</code>(make absolute number)</li>
 <li>[operators] bitwise = <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code></li>
 <li>[operators] stack = <code>pop</code>, <code>push</code>, <code>show</code></li>
